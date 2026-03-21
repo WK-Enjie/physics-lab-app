@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Lab Experiments | Physics Lab 6091</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .sim-container canvas { aspect-ratio: 2; }
+        .hooke-canvas { aspect-ratio: 4/3 !important; }
+        .density-canvas { aspect-ratio: 3/2 !important; }
+        .moments-canvas { aspect-ratio: 5/3 !important; }
+        .motion-canvas { aspect-ratio: 16/9 !important; }
+
+        .lab-header { display:flex; align-items:center; gap:.8rem; margin-bottom:.5rem; }
+        .lab-number {
+            background:var(--primary); color:#fff; width:36px; height:36px;
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            font-weight:800; font-size:1rem; flex-shrink:0;
+        }
+        .lab-aim {
+            background:linear-gradient(135deg,#e0f2fe,#f0f4ff);
+            border-left:4px solid var(--primary);
+            padding:1rem 1.3rem; border-radius:0 8px 8px 0; margin:1rem 0;
+        }
+        .lab-aim strong { color:var(--primary-dark); }
+        .lab-apparatus {
+            display:flex; flex-wrap:wrap; gap:.5rem; margin:.8rem 0;
+        }
+        .apparatus-tag {
+            padding:.3rem .7rem; background:#f0fdf4; border:1px solid #86efac;
+            border-radius:20px; font-size:.8rem; color:#166534; font-weight:500;
+        }
+        .data-table-wrap { overflow-x:auto; margin:1rem 0; }
+        .data-table { width:100%; border-collapse:collapse; font-size:.88rem; }
+        .data-table th {
+            background:#1e3a5f; color:#fff; padding:.65rem .8rem;
+            text-align:center; font-weight:600; white-space:nowrap;
+        }
+        .data-table td {
+            padding:.55rem .8rem; text-align:center; border:1px solid #e2e8f0;
+            font-family:var(--font-mono); font-size:.85rem;
+        }
+        .data-table tr:nth-child(even) td { background:#f8fafc; }
+        .data-table tr:hover td { background:#e8f0fe; }
+        .data-table .editable {
+            background:#fffbeb; border:2px solid #fbbf24; cursor:pointer;
+            font-weight:600; color:#92400e;
+        }
+
+        .graph-container {
+            background:#0f172a; border-radius:8px; padding:1rem;
+            margin:1rem 0; position:relative;
+        }
+        .graph-container canvas { width:100%; border-radius:6px; }
+
+        .result-box {
+            background:linear-gradient(135deg,#dcfce7,#f0fdf4);
+            border:2px solid #22c55e; border-radius:8px;
+            padding:1.2rem; margin:1rem 0; text-align:center;
+        }
+        .result-box .result-value {
+            font-size:1.8rem; font-weight:800; color:#166534;
+            font-family:var(--font-mono);
+        }
+        .result-box .result-label {
+            font-size:.9rem; color:#15803d; margin-top:.3rem;
+        }
+
+        .error-box {
+            background:#fefce8; border-left:4px solid #eab308;
+            padding:1rem 1.3rem; border-radius:0 8px 8px 0; margin:1rem 0;
+        }
+        .error-box h4 { color:#854d0e; margin-bottom:.4rem; }
+        .error-box ul { padding-left:1.2rem; }
+        .error-box li { font-size:.88rem; color:#713f12; margin-bottom:.3rem; }
+
+        .procedure-steps { counter-reset:step; margin:1rem 0; }
+        .proc-step {
+            display:flex; gap:.8rem; margin-bottom:.8rem; align-items:flex-start;
+        }
+        .proc-step-num {
+            background:var(--primary); color:#fff; width:28px; height:28px;
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            font-size:.82rem; font-weight:700; flex-shrink:0; margin-top:.1rem;
+        }
+        .proc-step-text { flex:1; font-size:.92rem; color:var(--text-secondary); line-height:1.6; }
+
+        .sim-readout {
+            display:inline-flex; align-items:center; gap:.4rem;
+            background:rgba(0,0,0,.4); padding:.4rem .9rem; border-radius:6px;
+            font-family:var(--font-mono); font-size:.95rem; color:#22c55e;
+            margin:.3rem .3rem 0 0;
+        }
+        .sim-readout .readout-label { color:rgba(255,255,255,.5); font-size:.78rem; }
+
+        .challenge-box {
+            background:linear-gradient(135deg,#ede9fe,#f5f3ff);
+            border:2px solid #8b5cf6; border-radius:8px; padding:1.2rem; margin:1rem 0;
+        }
+        .challenge-box h4 { color:#6d28d9; margin-bottom:.5rem; display:flex; align-items:center; gap:.4rem; }
+        .challenge-box p, .challenge-box li { font-size:.9rem; color:#5b21b6; }
+
+        .calc-display { background:rgba(0,0,0,.3); border-radius:8px; padding:1rem; margin-top:1rem; font-family:var(--font-mono); font-size:.88rem; color:rgba(255,255,255,.85); line-height:1.8; }
+        .calc-display .calc-label { color:var(--primary-light); font-weight:600; }
+        .calc-display .calc-val { color:#34d399; }
+        .highlight-row { background:rgba(74,158,255,.15); padding:.2rem .5rem; border-radius:4px; display:inline-block; margin:.1rem 0; }
+    </style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="topic-header">
+    <nav class="navbar">
+        <a href="../index.html" class="logo" style="text-decoration:none">⚛️ Physics Lab 6091</a>
+        <div class="nav-links">
+            <a href="../index.html">← All Topics</a>
+        </div>
+    </nav>
+    <div class="topic-hero">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a><span>›</span> Virtual Lab Experiments
+        </div>
+        <h1>🔬 Virtual Lab Experiments</h1>
+        <p>Interactive practicals — collect data, plot graphs, analyse results and discuss errors</p>
+    </div>
+</header>
+
+<!-- ============ TAB NAV ============ -->
+<div class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="hooke"><span class="tab-emoji">🔩</span> Hooke's Law</button>
+    <button class="tab-btn" data-tab="density"><span class="tab-emoji">⚖️</span> Density</button>
+    <button class="tab-btn" data-tab="moments-exp"><span class="tab-emoji">📏</span> Principle of Moments</button>
+    <button class="tab-btn" data-tab="motion"><span class="tab-emoji">🏎️</span> Speed &amp; Acceleration</button>
+</div>
+
+<!-- ============================================================
+     EXPERIMENT 1 — HOOKE'S LAW
+     ============================================================ -->
+<div class="tab-content active" id="tab-hooke">
+    <div class="content-card">
+        <div class="lab-header">
+            <div class="lab-number">1</div>
+            <h2>Hooke's Law — Spring Extension Experiment</h2>
+        </div>
+
+        <div class="lab-aim">
+            <strong>Aim:</strong> To investigate the relationship between force (load) and extension of a spring, and to determine the spring constant <em>k</em>.
+        </div>
+
+        <h3>Apparatus</h3>
+        <div class="lab-apparatus">
+            <span class="apparatus-tag">Helical spring</span>
+            <span class="apparatus-tag">Retort stand + clamp</span>
+            <span class="apparatus-tag">Metre rule</span>
+            <span class="apparatus-tag">Slotted masses (50g each)</span>
+            <span class="apparatus-tag">Mass hanger</span>
+            <span class="apparatus-tag">Pointer / marker</span>
+        </div>
+
+        <h3>Theory</h3>
+        <div class="formula-box">
+            <span class="formula-label">Hooke's Law</span>
+            <span class="formula">F = k × e</span>
+        </div>
+        <p>Where <strong>F</strong> = applied force (N), <strong>k</strong> = spring constant (N/m), <strong>e</strong> = extension (m).</p>
+        <p>The law holds up to the <strong>limit of proportionality</strong> — beyond this, the spring deforms permanently.</p>
+
+        <div class="key-concept">
+            <strong>💡 Extension vs Length:</strong> Extension = Current length − Original (natural) length. Always measure <strong>extension</strong>, not total length!
+        </div>
+
+        <h3>Procedure</h3>
+        <div class="procedure-steps">
+            <div class="proc-step"><div class="proc-step-num">1</div><div class="proc-step-text">Set up the spring on the clamp stand. Record the <strong>natural length</strong> L₀ with no load.</div></div>
+            <div class="proc-step"><div class="proc-step-num">2</div><div class="proc-step-text">Add a 50 g mass (0.5 N). Record the new length. Calculate extension = new length − L₀.</div></div>
+            <div class="proc-step"><div class="proc-step-num">3</div><div class="proc-step-text">Continue adding masses in steps of 50 g (up to 350 g). Record length and extension each time.</div></div>
+            <div class="proc-step"><div class="proc-step-num">4</div><div class="proc-step-text">Plot a graph of Force (y-axis) vs Extension (x-axis).</div></div>
+            <div class="proc-step"><div class="proc-step-num">5</div><div class="proc-step-text">The gradient of the straight-line portion = spring constant <em>k</em>.</div></div>
+        </div>
+    </div>
+
+    <!-- INTERACTIVE SIM -->
+    <div class="sim-container">
+        <canvas id="hookeCanvas" width="800" height="550" class="hooke-canvas"></canvas>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>Load: <span id="hookeLoadVal" class="value-display">0 g (0 N)</span></label>
+                <input type="range" id="hookeLoad" min="0" max="400" value="0" step="50">
+            </div>
+            <div class="sim-control-group">
+                <label>Spring stiffness:</label>
+                <select id="hookeSpring">
+                    <option value="25">Soft (k ≈ 25 N/m)</option>
+                    <option value="40" selected>Medium (k ≈ 40 N/m)</option>
+                    <option value="80">Stiff (k ≈ 80 N/m)</option>
+                </select>
+            </div>
+            <button class="sim-btn sim-btn-play" id="hookeRecord">📝 Record Reading</button>
+            <button class="sim-btn sim-btn-reset" id="hookeClear">↺ Clear Data</button>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem">
+            <div class="sim-readout"><span class="readout-label">Natural length:</span> <span id="hookeL0">20.0 cm</span></div>
+            <div class="sim-readout"><span class="readout-label">Current length:</span> <span id="hookeLCur">20.0 cm</span></div>
+            <div class="sim-readout"><span class="readout-label">Extension:</span> <span id="hookeExt">0.0 cm</span></div>
+            <div class="sim-readout"><span class="readout-label">Force:</span> <span id="hookeForce">0.00 N</span></div>
+        </div>
+    </div>
+
+    <!-- DATA TABLE -->
+    <div class="content-card" style="margin-top:1.5rem">
+        <h3>📊 Recorded Data</h3>
+        <div class="data-table-wrap">
+            <table class="data-table" id="hookeTable">
+                <thead>
+                    <tr><th>#</th><th>Mass (g)</th><th>Force (N)</th><th>Length (cm)</th><th>Extension (cm)</th><th>Extension (m)</th></tr>
+                </thead>
+                <tbody id="hookeTableBody">
+                    <tr><td colspan="6" style="color:#94a3b8;font-style:italic">Add loads and click "Record Reading" to collect data</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- GRAPH -->
+    <div class="content-card" style="margin-top:1rem">
+        <h3>📈 Force vs Extension Graph</h3>
+        <div class="graph-container">
+            <canvas id="hookeGraph" width="700" height="400"></canvas>
+        </div>
+        <div id="hookeResult" style="display:none">
+            <div class="result-box">
+                <div class="result-value" id="hookeKVal">—</div>
+                <div class="result-label">Spring Constant k (N/m) — from gradient</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ERRORS & CHALLENGES -->
+    <div class="content-card" style="margin-top:1rem">
+        <div class="error-box">
+            <h4>⚠️ Sources of Error &amp; Precautions</h4>
+            <ul>
+                <li><strong>Parallax error</strong> — read the ruler at eye level, perpendicular to the scale.</li>
+                <li><strong>Spring not vertical</strong> — ensure spring hangs freely without touching the ruler.</li>
+                <li><strong>Exceeding elastic limit</strong> — do not add too much mass; the spring should return to original length when unloaded.</li>
+                <li><strong>Oscillation</strong> — wait for the spring to stop oscillating before reading.</li>
+                <li><strong>Zero error</strong> — check that the pointer reads correctly at zero load.</li>
+            </ul>
+        </div>
+
+        <div class="challenge-box">
+            <h4>🏆 Extension Challenge</h4>
+            <ul>
+                <li>Predict what happens if you use a stiffer spring. How does the graph change?</li>
+                <li>What would happen if two identical springs are connected in series? In parallel?</li>
+                <li>Add masses beyond the elastic limit — what do you observe about the extension?</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     EXPERIMENT 2 — DENSITY
+     ============================================================ -->
+<div class="tab-content" id="tab-density">
+    <div class="content-card">
+        <div class="lab-header">
+            <div class="lab-number">2</div>
+            <h2>Determining Density of Regular &amp; Irregular Objects</h2>
+        </div>
+
+        <div class="lab-aim">
+            <strong>Aim:</strong> To determine the density of solid objects using measurements of mass and volume.
+        </div>
+
+        <h3>Apparatus</h3>
+        <div class="lab-apparatus">
+            <span class="apparatus-tag">Electronic balance</span>
+            <span class="apparatus-tag">Ruler / Vernier calipers</span>
+            <span class="apparatus-tag">Measuring cylinder</span>
+            <span class="apparatus-tag">Water</span>
+            <span class="apparatus-tag">Overflow can</span>
+            <span class="apparatus-tag">Various solid objects</span>
+        </div>
+
+        <h3>Theory</h3>
+        <div class="formula-box">
+            <span class="formula-label">Density</span>
+            <span class="formula">ρ = m / V</span>
+        </div>
+        <p>Density = mass ÷ volume. Unit: <strong>kg/m³</strong> or <strong>g/cm³</strong>.</p>
+
+        <div class="key-concept">
+            <strong>💡 Methods for Volume:</strong><br>
+            <strong>Regular objects</strong> (cubes, cylinders): Calculate from dimensions (V = lwh, V = πr²h).<br>
+            <strong>Irregular objects</strong>: Use displacement method — submerge in measuring cylinder and read the rise in water level.
+        </div>
+    </div>
+
+    <div class="sim-container">
+        <canvas id="densityCanvas" width="800" height="500" class="density-canvas"></canvas>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>Object:</label>
+                <select id="densityObj">
+                    <option value="aluminium">Aluminium Block</option>
+                    <option value="iron">Iron Cylinder</option>
+                    <option value="wood">Wooden Block</option>
+                    <option value="stone">Irregular Stone</option>
+                    <option value="brass">Brass Sphere</option>
+                </select>
+            </div>
+            <div class="sim-control-group">
+                <label>Method:</label>
+                <select id="densityMethod">
+                    <option value="dimensions">Ruler (dimensions)</option>
+                    <option value="displacement">Displacement</option>
+                </select>
+            </div>
+            <button class="sim-btn sim-btn-play" id="densityMeasure">📏 Measure</button>
+            <button class="sim-btn sim-btn-reset" id="densityReset">↺ Reset</button>
+        </div>
+
+        <div class="calc-display" id="densityCalc">
+            <span class="calc-label">Select an object and method, then click Measure.</span>
+        </div>
+    </div>
+
+    <!-- DATA TABLE -->
+    <div class="content-card" style="margin-top:1.5rem">
+        <h3>📊 Measurement Records</h3>
+        <div class="data-table-wrap">
+            <table class="data-table" id="densityTable">
+                <thead>
+                    <tr><th>Object</th><th>Mass (g)</th><th>Volume (cm³)</th><th>Density (g/cm³)</th><th>Density (kg/m³)</th><th>Known Value</th></tr>
+                </thead>
+                <tbody id="densityTableBody">
+                    <tr><td colspan="6" style="color:#94a3b8;font-style:italic">Click "Measure" to collect data</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="error-box" style="margin-top:1rem">
+            <h4>⚠️ Sources of Error</h4>
+            <ul>
+                <li><strong>Meniscus reading</strong> — read at the bottom of the meniscus for water.</li>
+                <li><strong>Trapped air bubbles</strong> — tap the measuring cylinder to release bubbles when using displacement.</li>
+                <li><strong>Irregular shapes</strong> — cannot use ruler method; must use displacement.</li>
+                <li><strong>Object absorbs water</strong> — wood, sponge etc. may absorb water, affecting volume reading.</li>
+                <li><strong>Object too large</strong> — if it doesn't fit in the measuring cylinder, use an overflow can.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     EXPERIMENT 3 — PRINCIPLE OF MOMENTS VERIFICATION
+     ============================================================ -->
+<div class="tab-content" id="tab-moments-exp">
+    <div class="content-card">
+        <div class="lab-header">
+            <div class="lab-number">3</div>
+            <h2>Verification of the Principle of Moments</h2>
+        </div>
+
+        <div class="lab-aim">
+            <strong>Aim:</strong> To verify that for a body in equilibrium, the sum of clockwise moments equals the sum of anticlockwise moments about any point.
+        </div>
+
+        <h3>Apparatus</h3>
+        <div class="lab-apparatus">
+            <span class="apparatus-tag">Metre rule</span>
+            <span class="apparatus-tag">Knife-edge pivot</span>
+            <span class="apparatus-tag">Slotted masses</span>
+            <span class="apparatus-tag">String loops</span>
+            <span class="apparatus-tag">Electronic balance</span>
+        </div>
+
+        <h3>Procedure</h3>
+        <div class="procedure-steps">
+            <div class="proc-step"><div class="proc-step-num">1</div><div class="proc-step-text">Balance the metre rule on the knife-edge. Note the balance point (should be ≈50 cm for a uniform rule).</div></div>
+            <div class="proc-step"><div class="proc-step-num">2</div><div class="proc-step-text">Hang mass m₁ on the left side at distance d₁ from pivot.</div></div>
+            <div class="proc-step"><div class="proc-step-num">3</div><div class="proc-step-text">Adjust the position of mass m₂ on the right side until the rule balances horizontally.</div></div>
+            <div class="proc-step"><div class="proc-step-num">4</div><div class="proc-step-text">Record m₁, d₁, m₂, d₂. Calculate CW and ACW moments. They should be equal.</div></div>
+            <div class="proc-step"><div class="proc-step-num">5</div><div class="proc-step-text">Repeat with different masses and positions for at least 5 trials.</div></div>
+        </div>
+    </div>
+
+    <div class="sim-container">
+        <canvas id="momentsExpCanvas" width="800" height="450" class="moments-canvas"></canvas>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>m₁ (g): <span id="me_m1Val" class="value-display">100</span></label>
+                <input type="range" id="me_m1" min="50" max="400" value="100" step="10">
+            </div>
+            <div class="sim-control-group">
+                <label>d₁ (cm): <span id="me_d1Val" class="value-display">30</span></label>
+                <input type="range" id="me_d1" min="5" max="45" value="30" step="1">
+            </div>
+            <div class="sim-control-group">
+                <label>m₂ (g): <span id="me_m2Val" class="value-display">150</span></label>
+                <input type="range" id="me_m2" min="50" max="400" value="150" step="10">
+            </div>
+            <div class="sim-control-group">
+                <label>d₂ (cm): <span id="me_d2Val" class="value-display">20</span></label>
+                <input type="range" id="me_d2" min="5" max="45" value="20" step="1">
+            </div>
+            <button class="sim-btn sim-btn-play" id="meRecord">📝 Record Trial</button>
+            <button class="sim-btn sim-btn-reset" id="meClear">↺ Clear</button>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem">
+            <div class="sim-readout"><span class="readout-label">ACW moment:</span> <span id="meACW">—</span> N cm</div>
+            <div class="sim-readout"><span class="readout-label">CW moment:</span> <span id="meCW">—</span> N cm</div>
+            <div class="sim-readout" id="meStatus" style="color:#facc15"><span>Adjust d₂ to balance</span></div>
+        </div>
+    </div>
+
+    <div class="content-card" style="margin-top:1.5rem">
+        <h3>📊 Results Table</h3>
+        <div class="data-table-wrap">
+            <table class="data-table" id="meTable">
+                <thead>
+                    <tr><th>Trial</th><th>m₁ (g)</th><th>d₁ (cm)</th><th>m₂ (g)</th><th>d₂ (cm)</th><th>ACW (N cm)</th><th>CW (N cm)</th><th>Balanced?</th></tr>
+                </thead>
+                <tbody id="meTableBody">
+                    <tr><td colspan="8" style="color:#94a3b8;font-style:italic">Balance the rule then click "Record Trial"</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="challenge-box" style="margin-top:1rem">
+            <h4>🏆 Challenge Tasks</h4>
+            <ul>
+                <li>Can you find 3 different combinations of m₁, d₁, m₂, d₂ that balance?</li>
+                <li>Try using 3 masses on the beam. Does the principle still work?</li>
+                <li>What percentage error do your results show? (|ACW − CW| / average × 100%)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     EXPERIMENT 4 — SPEED & ACCELERATION (TICKER TAPE)
+     ============================================================ -->
+<div class="tab-content" id="tab-motion">
+    <div class="content-card">
+        <div class="lab-header">
+            <div class="lab-number">4</div>
+            <h2>Investigating Speed &amp; Acceleration</h2>
+        </div>
+
+        <div class="lab-aim">
+            <strong>Aim:</strong> To measure speed and determine acceleration of a trolley on a ramp using a ticker tape timer (or equivalent).
+        </div>
+
+        <h3>Apparatus</h3>
+        <div class="lab-apparatus">
+            <span class="apparatus-tag">Trolley</span>
+            <span class="apparatus-tag">Ramp / inclined plane</span>
+            <span class="apparatus-tag">Ticker tape timer (50 Hz)</span>
+            <span class="apparatus-tag">Ticker tape</span>
+            <span class="apparatus-tag">Ruler</span>
+            <span class="apparatus-tag">Scissors</span>
+        </div>
+
+        <h3>Theory</h3>
+        <div class="formula-box">
+            <span class="formula-label">Speed from ticker tape</span>
+            <span class="formula">speed = distance between dots / time between dots</span>
+        </div>
+        <p>At <strong>50 Hz</strong>, the timer makes <strong>50 dots per second</strong>, so the time interval between consecutive dots = <strong>0.02 s</strong>.</p>
+        <p>A common method: cut the tape into strips of <strong>5 dot-spaces</strong> (= 0.10 s each) and arrange them as a bar chart to visualise acceleration.</p>
+
+        <div class="formula-box" style="margin-top:.5rem;border-left-color:var(--secondary)">
+            <span class="formula-label">Acceleration</span>
+            <span class="formula">a = (v − u) / t &nbsp;&nbsp; or &nbsp;&nbsp; a = Δv / Δt</span>
+        </div>
+    </div>
+
+    <div class="sim-container">
+        <canvas id="motionCanvas" width="800" height="420" class="motion-canvas"></canvas>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>Ramp angle: <span id="motAngleVal" class="value-display">10°</span></label>
+                <input type="range" id="motAngle" min="2" max="30" value="10" step="1">
+            </div>
+            <div class="sim-control-group">
+                <label>Trolley mass: <span id="motMassVal" class="value-display">0.5 kg</span></label>
+                <input type="range" id="motMass" min="0.2" max="2" value="0.5" step="0.1">
+            </div>
+            <div class="sim-control-group">
+                <label>Friction:</label>
+                <select id="motFric">
+                    <option value="0">None (smooth)</option>
+                    <option value="0.1" selected>Low</option>
+                    <option value="0.3">Medium</option>
+                    <option value="0.5">High</option>
+                </select>
+            </div>
+            <button class="sim-btn sim-btn-play" id="motPlay">▶ Release Trolley</button>
+            <button class="sim-btn sim-btn-reset" id="motReset">↺ Reset</button>
+        </div>
+
+        <div class="calc-display" id="motionCalc">
+            <span class="calc-label">Set ramp angle and release the trolley to generate ticker tape data.</span>
+        </div>
+    </div>
+
+    <!-- Ticker tape strip chart -->
+    <div class="content-card" style="margin-top:1.5rem">
+        <h3>📊 Ticker Tape Strip Chart</h3>
+        <p style="font-size:.88rem;color:var(--text-secondary)">Each strip represents a <strong>5-dot interval (0.10 s)</strong>. Taller strips = faster speed. Increasing height = acceleration.</p>
+        <div class="graph-container">
+            <canvas id="tickerChart" width="700" height="300"></canvas>
+        </div>
+
+        <h3 style="margin-top:1rem">📈 Speed-Time Graph</h3>
+        <div class="graph-container">
+            <canvas id="motionGraph" width="700" height="350"></canvas>
+        </div>
+        <div id="motionResult" style="display:none">
+            <div class="result-box">
+                <div class="result-value" id="motAccelVal">—</div>
+                <div class="result-label">Acceleration (m/s²) — from gradient of speed-time graph</div>
+            </div>
+        </div>
+
+        <div class="error-box" style="margin-top:1rem">
+            <h4>⚠️ Sources of Error</h4>
+            <ul>
+                <li><strong>Friction on tape</strong> — ticker tape drags through the timer, adding friction.</li>
+                <li><strong>Dots overlap</strong> — at low speed, dots are very close; hard to measure accurately.</li>
+                <li><strong>Ruler precision</strong> — measurements to ±0.5 mm affect calculated speeds.</li>
+                <li><strong>Release inconsistency</strong> — must release cleanly without pushing.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+    <p><strong>Physics Lab 6091</strong> — Virtual Lab Experiments</p>
+    <p style="margin-top:.5rem"><a href="../index.html">← Back to Topics</a></p>
+</footer>
+<a href="#" class="back-to-top" id="btt">↑</a>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+var G = 10;
+
+// ========== UTILITIES ==========
+function roundedRect(ctx,x,y,w,h,r){
+    if(w<2*r)r=w/2; if(h<2*r)r=h/2;
+    ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+}
+function drawArrow(ctx,x1,y1,x2,y2,color,lw){
+    lw=lw||3;var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+    if(len<2)return;var a=Math.atan2(dy,dx),hl=Math.min(12,len*.35);
+    ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-hl*Math.cos(a-.4),y2-hl*Math.sin(a-.4));
+    ctx.lineTo(x2-hl*Math.cos(a+.4),y2-hl*Math.sin(a+.4));ctx.closePath();ctx.fill();ctx.restore();
+}
+function drawLabel(ctx,text,x,y,color,align,size){
+    ctx.save();ctx.font='600 '+(size||13)+'px Inter,sans-serif';ctx.fillStyle=color;
+    ctx.textAlign=align||'center';ctx.textBaseline='middle';ctx.fillText(text,x,y);ctx.restore();
+}
+function clearSim(ctx,c){
+    var g=ctx.createLinearGradient(0,0,0,c.height);
+    g.addColorStop(0,'#0f172a');g.addColorStop(1,'#1e293b');
+    ctx.fillStyle=g;ctx.fillRect(0,0,c.width,c.height);
+}
+
+// ========== TABS ==========
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+        document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+        document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});
+        btn.classList.add('active');
+        document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+        if(btn.dataset.tab==='hooke') hookeDraw();
+        if(btn.dataset.tab==='density') densityDraw();
+        if(btn.dataset.tab==='moments-exp') meDraw();
+        if(btn.dataset.tab==='motion') motionDraw();
+    });
+});
+var bttBtn=document.getElementById('btt');
+window.addEventListener('scroll',function(){bttBtn.classList.toggle('visible',window.scrollY>400)});
+
+
+// ============================================================
+//  EXPERIMENT 1 — HOOKE'S LAW
+// ============================================================
+(function(){
+    var canvas=document.getElementById('hookeCanvas');
+    var ctx=canvas.getContext('2d');
+    var graphCanvas=document.getElementById('hookeGraph');
+    var gctx=graphCanvas.getContext('2d');
+
+    var load=0, k=40; // N/m
+    var L0=20; // cm
+    var data=[];
+
+    document.getElementById('hookeLoad').addEventListener('input',function(e){
+        load=parseInt(e.target.value);
+        var f=(load/1000)*G;
+        document.getElementById('hookeLoadVal').textContent=load+' g ('+f.toFixed(2)+' N)';
+        hookeDraw();
+    });
+    document.getElementById('hookeSpring').addEventListener('change',function(e){
+        k=parseInt(e.target.value);
+        data=[];
+        renderHookeTable();
+        hookeDraw();
+        drawHookeGraph();
+    });
+    document.getElementById('hookeRecord').addEventListener('click',function(){
+        var f=(load/1000)*G;
+        var ext_m=f/k;
+        var ext_cm=ext_m*100;
+        // Add some realistic noise
+        var noise=(Math.random()-0.5)*0.3;
+        var extNoisy=ext_cm+noise;
+        if(extNoisy<0)extNoisy=0;
+        // Check if this load already recorded
+        for(var i=0;i<data.length;i++){if(data[i].mass===load)return;}
+        data.push({mass:load, force:f, length:L0+extNoisy, ext_cm:extNoisy, ext_m:extNoisy/100});
+        data.sort(function(a,b){return a.mass-b.mass;});
+        renderHookeTable();
+        drawHookeGraph();
+    });
+    document.getElementById('hookeClear').addEventListener('click',function(){
+        data=[];
+        renderHookeTable();
+        drawHookeGraph();
+        document.getElementById('hookeResult').style.display='none';
+    });
+
+    function renderHookeTable(){
+        var tbody=document.getElementById('hookeTableBody');
+        if(data.length===0){
+            tbody.innerHTML='<tr><td colspan="6" style="color:#94a3b8;font-style:italic">Add loads and click "Record Reading" to collect data</td></tr>';
+            return;
+        }
+        var html='';
+        for(var i=0;i<data.length;i++){
+            var d=data[i];
+            html+='<tr><td>'+(i+1)+'</td><td>'+d.mass+'</td><td>'+d.force.toFixed(2)+'</td><td>'+d.length.toFixed(1)+'</td><td>'+d.ext_cm.toFixed(1)+'</td><td>'+d.ext_m.toFixed(4)+'</td></tr>';
+        }
+        tbody.innerHTML=html;
+    }
+
+    window.hookeDraw=function(){
+        clearSim(ctx,canvas);
+        var W=canvas.width, H=canvas.height;
+        var f=(load/1000)*G;
+        var ext_m=f/k;
+        var ext_cm=ext_m*100;
+        // Limit proportionality check
+        var elastic_limit=k*0.15; // beyond this extension, non-linear
+        var isLinear=ext_m<=0.15;
+
+        // Retort stand
+        ctx.save();
+        ctx.fillStyle='#475569';
+        ctx.fillRect(140,30,8,H-80); // vertical pole
+        ctx.fillRect(80,H-50,120,10); // base
+        ctx.fillRect(140,60,110,8); // clamp arm
+        ctx.restore();
+
+        // Spring
+        var springTopY=68+8;
+        var springX=245;
+        var springLen=L0*2+ext_cm*2; // visual scale
+        var coils=12;
+        var coilW=14;
+
+        ctx.save();
+        ctx.strokeStyle=isLinear?'#60a5fa':'#ef4444';
+        ctx.lineWidth=2.5;
+        ctx.lineCap='round';
+        ctx.beginPath();
+        ctx.moveTo(springX,springTopY);
+        for(var i=0;i<=coils;i++){
+            var t=i/coils;
+            var sy=springTopY+t*springLen;
+            var sx=springX+((i%2===0)?-coilW:coilW);
+            ctx.lineTo(sx,sy);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        var springBotY=springTopY+springLen;
+
+        // Mass hanger
+        ctx.save();
+        ctx.fillStyle='#94a3b8';
+        ctx.fillRect(springX-3,springBotY,6,15); // hook
+        ctx.fillStyle=load>0?'#f97316':'#64748b';
+        var massH=20+Math.min(load/10,30);
+        roundedRect(ctx,springX-22,springBotY+15,44,massH,5);
+        ctx.fill();
+        ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.stroke();
+        ctx.font='700 11px Inter';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(load+'g',springX,springBotY+15+massH/2);
+        ctx.restore();
+
+        // Ruler
+        var rulerX=310;
+        ctx.save();
+        ctx.fillStyle='rgba(255,255,255,.08)';
+        ctx.fillRect(rulerX,springTopY-5,30,300);
+        ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=1;
+        for(var cm=0;cm<=30;cm++){
+            var ry=springTopY+cm*10-5;
+            var isMajor=cm%5===0;
+            ctx.beginPath();ctx.moveTo(rulerX,ry);ctx.lineTo(rulerX+(isMajor?25:12),ry);ctx.stroke();
+            if(isMajor){
+                ctx.font='500 9px Inter';ctx.fillStyle='rgba(255,255,255,.4)';ctx.textAlign='left';
+                ctx.fillText(cm+'',rulerX+28,ry);
+            }
+        }
+        ctx.restore();
+
+        // Pointer line to ruler
+        ctx.save();
+        ctx.strokeStyle='#facc15';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+        ctx.beginPath();ctx.moveTo(springX+22,springBotY);ctx.lineTo(rulerX,springBotY);ctx.stroke();
+        ctx.setLineDash([]);ctx.restore();
+
+        // Labels - natural length mark
+        ctx.save();ctx.strokeStyle='rgba(34,197,94,.4)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+        var natBot=springTopY+L0*2;
+        ctx.beginPath();ctx.moveTo(springX-40,natBot);ctx.lineTo(rulerX+5,natBot);ctx.stroke();
+        ctx.setLineDash([]);
+        drawLabel(ctx,'L₀',springX-50,natBot,'#22c55e','center',10);
+        ctx.restore();
+
+        // Extension dimension
+        if(ext_cm>0.5){
+            drawArrow(ctx,rulerX+50,natBot+3,rulerX+50,springBotY-3,'#facc15',2);
+            drawLabel(ctx,'e = '+ext_cm.toFixed(1)+' cm',rulerX+85,(natBot+springBotY)/2,'#facc15','left',12);
+        }
+
+        // Elastic limit warning
+        if(!isLinear){
+            drawLabel(ctx,'⚠ Beyond elastic limit!',W/2,30,'#ef4444','center',15);
+        }
+
+        // Force arrow
+        if(f>0){
+            drawArrow(ctx,springX,springBotY+15+massH+5,springX,springBotY+15+massH+40,'#ef4444',2);
+            drawLabel(ctx,'F = '+f.toFixed(2)+' N',springX+40,springBotY+15+massH+25,'#ef4444','left',11);
+        }
+
+        // Readouts
+        document.getElementById('hookeL0').textContent=L0.toFixed(1)+' cm';
+        document.getElementById('hookeLCur').textContent=(L0+ext_cm).toFixed(1)+' cm';
+        document.getElementById('hookeExt').textContent=ext_cm.toFixed(1)+' cm';
+        document.getElementById('hookeForce').textContent=f.toFixed(2)+' N';
+
+        // Info area on right
+        ctx.save();
+        ctx.font='600 14px Inter';ctx.fillStyle='#60a5fa';ctx.textAlign='left';
+        ctx.fillText('Spring k = '+k+' N/m',450,80);
+        ctx.font='500 12px Inter';ctx.fillStyle='rgba(255,255,255,.5)';
+        ctx.fillText('Hooke\'s Law: F = k × e',450,105);
+        ctx.fillText('Predicted e = F/k = '+f.toFixed(2)+'/'+k+' = '+(ext_m*100).toFixed(2)+' cm',450,125);
+        if(data.length>0){
+            ctx.fillStyle='#22c55e';
+            ctx.fillText('✓ '+data.length+' reading(s) recorded',450,160);
+        }
+        ctx.restore();
+    };
+
+    function drawHookeGraph(){
+        var gc=graphCanvas;
+        var g=gctx;
+        g.fillStyle='#0f172a';g.fillRect(0,0,gc.width,gc.height);
+
+        if(data.length<2){
+            g.font='500 14px Inter';g.fillStyle='rgba(255,255,255,.3)';g.textAlign='center';
+            g.fillText('Record at least 2 readings to plot graph',gc.width/2,gc.height/2);
+            return;
+        }
+
+        var padL=70, padR=40, padT=40, padB=60;
+        var plotW=gc.width-padL-padR, plotH=gc.height-padT-padB;
+
+        // Find max values
+        var maxExt=0, maxF=0;
+        for(var i=0;i<data.length;i++){
+            if(data[i].ext_m>maxExt)maxExt=data[i].ext_m;
+            if(data[i].force>maxF)maxF=data[i].force;
+        }
+        maxExt*=1.2; maxF*=1.2;
+        if(maxExt<0.01)maxExt=0.01;
+        if(maxF<0.5)maxF=0.5;
+
+        // Axes
+        g.save();
+        g.strokeStyle='rgba(255,255,255,.3)';g.lineWidth=1;
+        g.beginPath();g.moveTo(padL,padT);g.lineTo(padL,padT+plotH);g.lineTo(padL+plotW,padT+plotH);g.stroke();
+
+        // Grid
+        g.strokeStyle='rgba(255,255,255,.06)';
+        for(var i=1;i<=5;i++){
+            var gy=padT+plotH-plotH*i/5;
+            g.beginPath();g.moveTo(padL,gy);g.lineTo(padL+plotW,gy);g.stroke();
+            g.font='500 10px "JetBrains Mono"';g.fillStyle='rgba(255,255,255,.4)';g.textAlign='right';
+            g.fillText((maxF*i/5).toFixed(1),padL-8,gy+3);
+        }
+        for(var i=1;i<=5;i++){
+            var gx=padL+plotW*i/5;
+            g.beginPath();g.moveTo(gx,padT);g.lineTo(gx,padT+plotH);g.stroke();
+            g.textAlign='center';
+            g.fillText((maxExt*i/5*100).toFixed(1),gx,padT+plotH+18);
+        }
+
+        // Axis labels
+        g.font='600 12px Inter';g.fillStyle='rgba(255,255,255,.6)';g.textAlign='center';
+        g.fillText('Extension (cm)',padL+plotW/2,padT+plotH+45);
+        g.save();g.translate(18,padT+plotH/2);g.rotate(-Math.PI/2);g.fillText('Force (N)',0,0);g.restore();
+
+        // Plot points
+        for(var i=0;i<data.length;i++){
+            var px=padL+(data[i].ext_m/maxExt)*plotW;
+            var py=padT+plotH-(data[i].force/maxF)*plotH;
+            g.fillStyle='#60a5fa';
+            g.beginPath();g.arc(px,py,5,0,Math.PI*2);g.fill();
+            g.strokeStyle='#fff';g.lineWidth=1.5;g.stroke();
+        }
+
+        // Best fit line (linear regression)
+        var sumX=0,sumY=0,sumXY=0,sumX2=0,n=data.length;
+        for(var i=0;i<n;i++){
+            sumX+=data[i].ext_m; sumY+=data[i].force;
+            sumXY+=data[i].ext_m*data[i].force;
+            sumX2+=data[i].ext_m*data[i].ext_m;
+        }
+        var slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX);
+        var intercept=(sumY-slope*sumX)/n;
+
+        // Draw line
+        g.strokeStyle='#22c55e';g.lineWidth=2;g.setLineDash([8,4]);
+        g.beginPath();
+        var lx1=0, ly1=intercept;
+        var lx2=maxExt, ly2=slope*maxExt+intercept;
+        g.moveTo(padL+(lx1/maxExt)*plotW, padT+plotH-(ly1/maxF)*plotH);
+        g.lineTo(padL+(lx2/maxExt)*plotW, padT+plotH-(ly2/maxF)*plotH);
+        g.stroke();
+        g.setLineDash([]);
+
+        // Gradient label
+        g.font='700 13px "JetBrains Mono"';g.fillStyle='#22c55e';g.textAlign='left';
+        g.fillText('Gradient (k) = '+slope.toFixed(1)+' N/m',padL+plotW*0.5,padT+25);
+
+        g.restore();
+
+        // Show result
+        document.getElementById('hookeResult').style.display='block';
+        document.getElementById('hookeKVal').textContent='k = '+slope.toFixed(1)+' N/m';
+    }
+
+    hookeDraw();
+    drawHookeGraph();
+})();
+
+
+// ============================================================
+//  EXPERIMENT 2 — DENSITY
+// ============================================================
+(function(){
+    var canvas=document.getElementById('densityCanvas');
+    var ctx=canvas.getContext('2d');
+    var calcDiv=document.getElementById('densityCalc');
+    var data=[];
+
+    var objects={
+        aluminium:{name:'Aluminium Block',shape:'rect',l:5,w:3,h:2,mass:81,rhoTrue:2700,color:'#94a3b8'},
+        iron:{name:'Iron Cylinder',shape:'cyl',r:1.5,h:4,mass:222,rhoTrue:7874,color:'#64748b'},
+        wood:{name:'Wooden Block',shape:'rect',l:6,w:4,h:3,mass:36,rhoTrue:500,color:'#d4a574'},
+        stone:{name:'Irregular Stone',shape:'irreg',vol:45,mass:117,rhoTrue:2600,color:'#78716c'},
+        brass:{name:'Brass Sphere',shape:'sphere',r:2,mass:286,rhoTrue:8500,color:'#d4a017'}
+    };
+
+    function getVolume(obj){
+        if(obj.shape==='rect') return obj.l*obj.w*obj.h;
+        if(obj.shape==='cyl') return Math.PI*obj.r*obj.r*obj.h;
+        if(obj.shape==='sphere') return (4/3)*Math.PI*obj.r*obj.r*obj.r;
+        return obj.vol;
+    }
+
+    document.getElementById('densityMeasure').addEventListener('click',function(){
+        var key=document.getElementById('densityObj').value;
+        var method=document.getElementById('densityMethod').value;
+        var obj=objects[key];
+        var vol=getVolume(obj);
+        var noise_m=(Math.random()-0.5)*2;
+        var noise_v=(Math.random()-0.5)*1.5;
+        var mMeasured=obj.mass+noise_m;
+        var vMeasured=vol+noise_v;
+        var rho=mMeasured/vMeasured;
+        var rhoKg=rho*1000;
+
+        // Check if already measured
+        for(var i=0;i<data.length;i++){if(data[i].key===key&&data[i].method===method)return;}
+        data.push({key:key,method:method,name:obj.name,mass:mMeasured,vol:vMeasured,rho:rho,rhoKg:rhoKg,rhoTrue:obj.rhoTrue});
+        renderDensityTable();
+        densityDraw();
+
+        var methodStr=method==='dimensions'?'Using ruler: ':'Using displacement: ';
+        var volCalc='';
+        if(method==='dimensions'){
+            if(obj.shape==='rect') volCalc='V = l×w×h = '+obj.l+'×'+obj.w+'×'+obj.h+' = '+vol.toFixed(1)+' cm³';
+            else if(obj.shape==='cyl') volCalc='V = πr²h = π×'+obj.r+'²×'+obj.h+' = '+vol.toFixed(1)+' cm³';
+            else if(obj.shape==='sphere') volCalc='V = (4/3)πr³ = (4/3)π×'+obj.r+'³ = '+vol.toFixed(1)+' cm³';
+            else volCalc='⚠ Cannot use ruler for irregular shapes! Use displacement method.';
+        } else {
+            volCalc='Initial water level: 100.0 cm³ → Final level: '+(100+vMeasured).toFixed(1)+' cm³\nVolume = '+(vMeasured).toFixed(1)+' cm³';
+        }
+
+        calcDiv.innerHTML=
+            '<span class="calc-label">'+methodStr+'</span><br>'+
+            '<span class="calc-label">Mass:</span> '+mMeasured.toFixed(1)+' g (from balance)<br>'+
+            '<span class="calc-label">Volume:</span> '+volCalc+'<br><br>'+
+            '<span class="calc-label">Density:</span> ρ = m/V = '+mMeasured.toFixed(1)+' / '+vMeasured.toFixed(1)+' = <span class="calc-val highlight-row">'+rho.toFixed(2)+' g/cm³ = '+rhoKg.toFixed(0)+' kg/m³</span><br>'+
+            '<span class="calc-label">Known value:</span> '+(obj.rhoTrue/1000).toFixed(2)+' g/cm³ = '+obj.rhoTrue+' kg/m³<br>'+
+            '<span class="calc-label">% Error:</span> <span class="calc-val">'+Math.abs((rhoKg-obj.rhoTrue)/obj.rhoTrue*100).toFixed(1)+'%</span>';
+    });
+
+    document.getElementById('densityReset').addEventListener('click',function(){
+        data=[];
+        renderDensityTable();
+        calcDiv.innerHTML='<span class="calc-label">Select an object and method, then click Measure.</span>';
+        densityDraw();
+    });
+
+    function renderDensityTable(){
+        var tbody=document.getElementById('densityTableBody');
+        if(data.length===0){
+            tbody.innerHTML='<tr><td colspan="6" style="color:#94a3b8;font-style:italic">Click "Measure" to collect data</td></tr>';
+            return;
+        }
+        var html='';
+        for(var i=0;i<data.length;i++){
+            var d=data[i];
+            html+='<tr><td>'+d.name+'</td><td>'+d.mass.toFixed(1)+'</td><td>'+d.vol.toFixed(1)+'</td><td>'+d.rho.toFixed(2)+'</td><td>'+d.rhoKg.toFixed(0)+'</td><td>'+(d.rhoTrue/1000).toFixed(2)+'</td></tr>';
+        }
+        tbody.innerHTML=html;
+    }
+
+    window.densityDraw=function(){
+        clearSim(ctx,canvas);
+        var W=canvas.width,H=canvas.height;
+        var key=document.getElementById('densityObj').value;
+        var method=document.getElementById('densityMethod').value;
+        var obj=objects[key];
+
+        // Balance
+        ctx.save();
+        ctx.fillStyle='#334155';
+        roundedRect(ctx,80,H-120,180,20,4);ctx.fill();
+        ctx.fillStyle='#475569';
+        roundedRect(ctx,100,H-100,140,60,6);ctx.fill();
+        // Display
+        ctx.fillStyle='#0f172a';
+        roundedRect(ctx,115,H-90,110,30,4);ctx.fill();
+        ctx.font='700 16px "JetBrains Mono"';ctx.fillStyle='#22c55e';ctx.textAlign='center';
+        ctx.fillText(obj.mass.toFixed(1)+' g',170,H-70);
+        drawLabel(ctx,'Electronic Balance',170,H-35,'rgba(255,255,255,.4)','center',10);
+        ctx.restore();
+
+        // Object on balance
+        ctx.save();
+        ctx.fillStyle=obj.color;
+        if(obj.shape==='rect'){
+            roundedRect(ctx,140,H-120-30,60,30,3);ctx.fill();
+        } else if(obj.shape==='cyl'){
+            ctx.beginPath();ctx.ellipse(170,H-120-20,25,8,0,0,Math.PI*2);ctx.fill();
+            ctx.fillRect(145,H-120-40,50,20);
+            ctx.beginPath();ctx.ellipse(170,H-120-40,25,8,0,0,Math.PI*2);ctx.fill();
+        } else if(obj.shape==='sphere'){
+            ctx.beginPath();ctx.arc(170,H-120-20,20,0,Math.PI*2);ctx.fill();
+        } else {
+            // Irregular
+            ctx.beginPath();ctx.moveTo(150,H-120);ctx.lineTo(145,H-145);ctx.lineTo(155,H-155);
+            ctx.lineTo(175,H-150);ctx.lineTo(195,H-140);ctx.lineTo(190,H-120);ctx.closePath();ctx.fill();
+        }
+        ctx.restore();
+
+        // Measuring instrument (right side)
+        if(method==='displacement'){
+            // Measuring cylinder
+            var mcX=500,mcBot=H-60,mcH=280,mcW=60;
+            ctx.save();
+            ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=2;
+            ctx.beginPath();ctx.moveTo(mcX,mcBot-mcH);ctx.lineTo(mcX,mcBot);ctx.lineTo(mcX+mcW,mcBot);
+            ctx.lineTo(mcX+mcW,mcBot-mcH);ctx.stroke();
+            // Water
+            var waterLevel=mcH*0.6;
+            ctx.fillStyle='rgba(59,130,246,0.25)';
+            ctx.fillRect(mcX+2,mcBot-waterLevel,mcW-4,waterLevel-2);
+            // Meniscus
+            ctx.strokeStyle='rgba(59,130,246,0.6)';ctx.lineWidth=2;
+            ctx.beginPath();
+            ctx.moveTo(mcX+2,mcBot-waterLevel);
+            ctx.quadraticCurveTo(mcX+mcW/2,mcBot-waterLevel+6,mcX+mcW-2,mcBot-waterLevel);
+            ctx.stroke();
+            // Scale markings
+            ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;
+            ctx.font='500 9px Inter';ctx.fillStyle='rgba(255,255,255,.3)';ctx.textAlign='left';
+            for(var ml=0;ml<=250;ml+=25){
+                var my=mcBot-ml*mcH/300;
+                ctx.beginPath();ctx.moveTo(mcX+mcW,my);ctx.lineTo(mcX+mcW+(ml%50===0?12:6),my);ctx.stroke();
+                if(ml%50===0) ctx.fillText(ml+' ml',mcX+mcW+15,my+3);
+            }
+            drawLabel(ctx,'Measuring Cylinder',mcX+mcW/2,mcBot+20,'rgba(255,255,255,.4)','center',10);
+            drawLabel(ctx,'100 cm³',mcX+mcW/2+50,mcBot-waterLevel,'rgba(96,165,250,.6)','left',10);
+            ctx.restore();
+        } else {
+            // Ruler with dimensions shown
+            var rX=450,rY=H/2-30;
+            ctx.save();
+            ctx.fillStyle=obj.color;ctx.globalAlpha=0.5;
+            if(obj.shape==='rect'){
+                ctx.fillRect(rX,rY,obj.l*25,obj.h*25);
+                ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.globalAlpha=1;
+                ctx.strokeRect(rX,rY,obj.l*25,obj.h*25);
+                // Dimension lines
+                drawArrow(ctx,rX,rY+obj.h*25+20,rX+obj.l*25,rY+obj.h*25+20,'#facc15',1.5);
+                drawLabel(ctx,obj.l+' cm',(rX*2+obj.l*25)/2,rY+obj.h*25+35,'#facc15','center',11);
+                drawArrow(ctx,rX+obj.l*25+20,rY,rX+obj.l*25+20,rY+obj.h*25,'#facc15',1.5);
+                drawLabel(ctx,obj.h+' cm',rX+obj.l*25+40,(rY*2+obj.h*25)/2,'#facc15','left',11);
+                drawLabel(ctx,'w = '+obj.w+' cm',rX+obj.l*12,rY-15,'#facc15','center',11);
+            } else if(obj.shape==='cyl'){
+                ctx.fillRect(rX,rY,obj.r*2*20,obj.h*25);
+                ctx.globalAlpha=1;ctx.strokeStyle='#fff';ctx.lineWidth=1;
+                ctx.strokeRect(rX,rY,obj.r*2*20,obj.h*25);
+                drawLabel(ctx,'d='+obj.r*2+' cm',rX+obj.r*20,rY-15,'#facc15','center',11);
+                drawLabel(ctx,'h='+obj.h+' cm',rX+obj.r*2*20+25,rY+obj.h*12,'#facc15','left',11);
+            } else if(obj.shape==='sphere'){
+                ctx.beginPath();ctx.arc(rX+50,rY+50,40,0,Math.PI*2);ctx.fill();
+                ctx.globalAlpha=1;ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.stroke();
+                drawLabel(ctx,'r='+obj.r+' cm',rX+50,rY-5,'#facc15','center',11);
+            } else {
+                ctx.globalAlpha=0.5;
+                ctx.beginPath();ctx.moveTo(rX,rY+60);ctx.lineTo(rX+10,rY+20);ctx.lineTo(rX+40,rY);
+                ctx.lineTo(rX+80,rY+15);ctx.lineTo(rX+90,rY+50);ctx.lineTo(rX+70,rY+70);ctx.closePath();ctx.fill();
+                ctx.globalAlpha=1;
+                drawLabel(ctx,'⚠ Use displacement!',rX+45,rY+90,'#ef4444','center',12);
+            }
+            ctx.restore();
+        }
+
+        // Title
+        drawLabel(ctx,obj.name,W/2,25,'#fff','center',16);
+    };
+    densityDraw();
+})();
+
+
+// ============================================================
+//  EXPERIMENT 3 — PRINCIPLE OF MOMENTS VERIFICATION
+// ============================================================
+(function(){
+    var canvas=document.getElementById('momentsExpCanvas');
+    var ctx=canvas.getContext('2d');
+    var trialData=[];
+    var m1=100,d1=30,m2=150,d2=20;
+
+    function getSliders(){
+        m1=parseInt(document.getElementById('me_m1').value);
+        d1=parseInt(document.getElementById('me_d1').value);
+        m2=parseInt(document.getElementById('me_m2').value);
+        d2=parseInt(document.getElementById('me_d2').value);
+        document.getElementById('me_m1Val').textContent=m1;
+        document.getElementById('me_d1Val').textContent=d1;
+        document.getElementById('me_m2Val').textContent=m2;
+        document.getElementById('me_d2Val').textContent=d2;
+    }
+
+    ['me_m1','me_d1','me_m2','me_d2'].forEach(function(id){
+        document.getElementById(id).addEventListener('input',function(){getSliders();meDraw();});
+    });
+
+    document.getElementById('meRecord').addEventListener('click',function(){
+        getSliders();
+        var acw=(m1/1000)*G*d1;
+        var cw=(m2/1000)*G*d2;
+        var bal=Math.abs(acw-cw)<0.5;
+        trialData.push({m1:m1,d1:d1,m2:m2,d2:d2,acw:acw,cw:cw,bal:bal});
+        renderMeTable();
+    });
+
+    document.getElementById('meClear').addEventListener('click',function(){
+        trialData=[];renderMeTable();
+    });
+
+    function renderMeTable(){
+        var tbody=document.getElementById('meTableBody');
+        if(trialData.length===0){
+            tbody.innerHTML='<tr><td colspan="8" style="color:#94a3b8;font-style:italic">Balance the rule then click "Record Trial"</td></tr>';
+            return;
+        }
+        var html='';
+        for(var i=0;i<trialData.length;i++){
+            var d=trialData[i];
+            var balStr=d.bal?'<span style="color:#22c55e">✓ Yes</span>':'<span style="color:#ef4444">✗ No</span>';
+            html+='<tr><td>'+(i+1)+'</td><td>'+d.m1+'</td><td>'+d.d1+'</td><td>'+d.m2+'</td><td>'+d.d2+'</td><td>'+d.acw.toFixed(1)+'</td><td>'+d.cw.toFixed(1)+'</td><td>'+balStr+'</td></tr>';
+        }
+        tbody.innerHTML=html;
+    }
+
+    window.meDraw=function(){
+        clearSim(ctx,canvas);
+        var W=canvas.width,H=canvas.height;
+
+        var acw=(m1/1000)*G*d1;
+        var cw=(m2/1000)*G*d2;
+        var net=cw-acw;
+        var balanced=Math.abs(net)<0.5;
+        var tiltDeg=Math.max(-15,Math.min(15,net*2));
+        var tiltRad=tiltDeg*Math.PI/180;
+
+        var px=W/2, py=220;
+        var ruleLen=500; // px = 100 cm
+
+        // Pivot
+        ctx.save();ctx.fillStyle='#94a3b8';
+        ctx.beginPath();ctx.moveTo(px,py+8);ctx.lineTo(px-20,py+42);ctx.lineTo(px+20,py+42);ctx.closePath();ctx.fill();
+        ctx.strokeStyle='#475569';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(30,py+42);ctx.lineTo(W-30,py+42);ctx.stroke();
+        ctx.restore();
+
+        // Rule (rotated)
+        ctx.save();ctx.translate(px,py);ctx.rotate(tiltRad);
+
+        // Rule body
+        ctx.fillStyle='#8b7355';ctx.strokeStyle='#a08060';ctx.lineWidth=2;
+        ctx.fillRect(-ruleLen/2,-10,ruleLen,20);
+        ctx.strokeRect(-ruleLen/2,-10,ruleLen,20);
+
+        // cm markings
+        ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;
+        ctx.font='500 8px Inter';ctx.fillStyle='rgba(255,255,255,.5)';ctx.textAlign='center';
+        for(var cm=0;cm<=100;cm+=5){
+            var tx=-ruleLen/2+cm*5;
+            var major=cm%10===0;
+            ctx.beginPath();ctx.moveTo(tx,10);ctx.lineTo(tx,10+(major?10:5));ctx.stroke();
+            if(major) ctx.fillText(cm,tx,32);
+        }
+
+        // Pivot mark at 50
+        ctx.fillStyle='rgba(255,255,255,.3)';ctx.textAlign='center';
+        ctx.fillText('▲',0,35);
+
+        // Left mass (ACW)
+        var lx=-d1*5;
+        ctx.save();ctx.strokeStyle='#60a5fa';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(lx,10);ctx.lineTo(lx,55);ctx.stroke();
+        ctx.fillStyle='#60a5fa';
+        roundedRect(ctx,lx-22,55,44,28,4);ctx.fill();
+        ctx.font='700 10px Inter';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(m1+'g',lx,69);
+        ctx.restore();
+
+        // Right mass (CW)
+        var rx=d2*5;
+        ctx.save();ctx.strokeStyle='#f97316';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(rx,10);ctx.lineTo(rx,55);ctx.stroke();
+        ctx.fillStyle='#f97316';
+        roundedRect(ctx,rx-22,55,44,28,4);ctx.fill();
+        ctx.font='700 10px Inter';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(m2+'g',rx,69);
+        ctx.restore();
+
+        // Distance labels
+        ctx.save();ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+        ctx.beginPath();ctx.moveTo(lx,-15);ctx.lineTo(0,-15);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(0,-15);ctx.lineTo(rx,-15);ctx.stroke();
+        ctx.setLineDash([]);
+        drawLabel(ctx,d1+' cm',(lx)/2,-28,'#60a5fa','center',11);
+        drawLabel(ctx,d2+' cm',(rx)/2,-28,'#f97316','center',11);
+        ctx.restore();
+
+        ctx.restore();
+
+        // Status
+        ctx.save();ctx.font='700 18px Inter';ctx.textAlign='center';
+        if(balanced){
+            ctx.fillStyle='#22c55e';ctx.fillText('✓ BALANCED!',W/2,30);
+        } else {
+            ctx.fillStyle=net>0?'#f97316':'#60a5fa';
+            ctx.fillText(net>0?'↻ Tilting Right — increase d₂ or decrease m₂':'↺ Tilting Left — decrease d₂ or increase m₂',W/2,30);
+        }
+        ctx.restore();
+
+        // Moment readouts
+        document.getElementById('meACW').textContent=acw.toFixed(1);
+        document.getElementById('meCW').textContent=cw.toFixed(1);
+        var statusEl=document.getElementById('meStatus');
+        if(balanced){
+            statusEl.style.color='#22c55e';
+            statusEl.innerHTML='<span>✓ ACW = CW — Principle verified!</span>';
+        } else {
+            statusEl.style.color='#facc15';
+            statusEl.innerHTML='<span>Difference: '+Math.abs(net).toFixed(1)+' N cm</span>';
+        }
+    };
+    meDraw();
+})();
+
+
+// ============================================================
+//  EXPERIMENT 4 — SPEED & ACCELERATION (TICKER TAPE)
+// ============================================================
+(function(){
+    var canvas=document.getElementById('motionCanvas');
+    var ctx=canvas.getContext('2d');
+    var chartCanvas=document.getElementById('tickerChart');
+    var cctx=chartCanvas.getContext('2d');
+    var graphCanvas=document.getElementById('motionGraph');
+    var gctx=graphCanvas.getContext('2d');
+    var calcDiv=document.getElementById('motionCalc');
+
+    var angle=10, mass=0.5, mu=0.1;
+    var running=false, animId=null;
+    var trolleyX=0, trolleyV=0, t=0;
+    var tickerDots=[];
+    var strips=[];
+
+    function getAccel(){
+        var rad=angle*Math.PI/180;
+        var a=G*(Math.sin(rad)-mu*Math.cos(rad));
+        return Math.max(0,a);
+    }
+
+    document.getElementById('motAngle').addEventListener('input',function(e){
+        angle=parseInt(e.target.value);document.getElementById('motAngleVal').textContent=angle+'°';motionDraw();
+    });
+    document.getElementById('motMass').addEventListener('input',function(e){
+        mass=parseFloat(e.target.value);document.getElementById('motMassVal').textContent=mass+' kg';
+    });
+    document.getElementById('motFric').addEventListener('change',function(e){mu=parseFloat(e.target.value);});
+
+    document.getElementById('motPlay').addEventListener('click',function(){
+        if(running)return;
+        running=true;trolleyX=0;trolleyV=0;t=0;tickerDots=[];strips=[];
+        document.getElementById('motPlay').textContent='Running...';
+        animateMotion();
+    });
+    document.getElementById('motReset').addEventListener('click',function(){
+        running=false;cancelAnimationFrame(animId);
+        trolleyX=0;trolleyV=0;t=0;tickerDots=[];strips=[];
+        document.getElementById('motPlay').textContent='▶ Release Trolley';
+        motionDraw();drawTickerChart();drawMotionGraph();
+        document.getElementById('motionResult').style.display='none';
+        calcDiv.innerHTML='<span class="calc-label">Set ramp angle and release the trolley to generate ticker tape data.</span>';
+    });
+
+    function animateMotion(){
+        if(!running)return;
+        var dt=0.02; // ticker tape interval
+        var a=getAccel();
+        trolleyV+=a*dt;
+        trolleyX+=trolleyV*dt;
+        t+=dt;
+
+        // Record dot
+        tickerDots.push({t:t, x:trolleyX, v:trolleyV});
+
+        if(t>2.5 || trolleyX>3){
+            running=false;
+            document.getElementById('motPlay').textContent='▶ Release Trolley';
+            processTickerData();
+            drawTickerChart();
+            drawMotionGraph();
+        }
+
+        motionDraw();
+        if(running) animId=requestAnimationFrame(animateMotion);
+    }
+
+    function processTickerData(){
+        // Group dots into strips of 5
+        strips=[];
+        for(var i=0;i<tickerDots.length-5;i+=5){
+            var dist=tickerDots[i+5].x-tickerDots[i].x;
+            var time=5*0.02; // 5 intervals of 0.02s = 0.10s
+            var speed=dist/time;
+            var midT=tickerDots[i+2].t;
+            strips.push({dist:dist*100, time:time, speed:speed, midT:midT}); // dist in cm
+        }
+        // Calculate acceleration from strips
+        if(strips.length>=2){
+            var firstV=strips[0].speed;
+            var lastV=strips[strips.length-1].speed;
+            var totalT=strips[strips.length-1].midT-strips[0].midT;
+            var accel=(lastV-firstV)/totalT;
+            document.getElementById('motionResult').style.display='block';
+            document.getElementById('motAccelVal').textContent='a = '+accel.toFixed(2)+' m/s²';
+
+            var theoretical=getAccel();
+            calcDiv.innerHTML=
+                '<span class="calc-label">Ticker tape analysis (50 Hz timer, 5-dot strips = 0.10 s each):</span><br><br>'+
+                '<span class="calc-label">Strips recorded:</span> '+strips.length+'<br>'+
+                '<span class="calc-label">First strip speed:</span> '+strips[0].speed.toFixed(3)+' m/s<br>'+
+                '<span class="calc-label">Last strip speed:</span> '+strips[strips.length-1].speed.toFixed(3)+' m/s<br>'+
+                '<span class="calc-label">Time interval:</span> '+totalT.toFixed(2)+' s<br><br>'+
+                '<span class="calc-val highlight-row">a = (v − u) / t = ('+(lastV).toFixed(3)+' − '+(firstV).toFixed(3)+') / '+totalT.toFixed(2)+' = '+accel.toFixed(2)+' m/s²</span><br><br>'+
+                '<span class="calc-label">Theoretical:</span> a = g(sinθ − μcosθ) = 10×(sin'+angle+'° − '+mu+'×cos'+angle+'°) = <span class="calc-val">'+theoretical.toFixed(2)+' m/s²</span><br>'+
+                '<span class="calc-label">% Difference:</span> '+Math.abs((accel-theoretical)/theoretical*100).toFixed(1)+'%';
+        }
+    }
+
+    window.motionDraw=function(){
+        clearSim(ctx,canvas);
+        var W=canvas.width,H=canvas.height;
+        var rad=angle*Math.PI/180;
+
+        // Ramp
+        var rampLen=500;
+        var rampStartX=80, rampEndX=rampStartX+rampLen;
+        var rampTopY=H-60-rampLen*Math.sin(rad);
+        var rampBotY=H-60;
+
+        ctx.save();
+        ctx.fillStyle='#334155';
+        ctx.beginPath();
+        ctx.moveTo(rampStartX,rampBotY);
+        ctx.lineTo(rampEndX,rampBotY);
+        ctx.lineTo(rampStartX,rampTopY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle='#64748b';ctx.lineWidth=2;ctx.stroke();
+        // Surface
+        ctx.strokeStyle='#94a3b8';ctx.lineWidth=3;
+        ctx.beginPath();ctx.moveTo(rampStartX,rampTopY);ctx.lineTo(rampEndX,rampBotY);ctx.stroke();
+        ctx.restore();
+
+        // Angle arc
+        ctx.save();ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;
+        ctx.beginPath();ctx.arc(rampEndX,rampBotY,40,Math.PI,-Math.PI+rad,true);ctx.stroke();
+        drawLabel(ctx,angle+'°',rampEndX-55,rampBotY-15,'rgba(255,255,255,.4)','center',11);
+        ctx.restore();
+
+        // Trolley on ramp
+        var tFrac=Math.min(trolleyX/2.5,0.95);
+        var tX=rampStartX+(rampEndX-rampStartX)*tFrac;
+        var tY=rampTopY+(rampBotY-rampTopY)*tFrac;
+
+        ctx.save();
+        ctx.translate(tX,tY-15);
+        ctx.rotate(rad);
+        // Trolley body
+        ctx.fillStyle='#3b82f6';
+        roundedRect(ctx,-25,-15,50,20,4);ctx.fill();
+        ctx.strokeStyle='#60a5fa';ctx.lineWidth=1.5;ctx.stroke();
+        // Wheels
+        ctx.fillStyle='#94a3b8';
+        ctx.beginPath();ctx.arc(-15,8,5,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.arc(15,8,5,0,Math.PI*2);ctx.fill();
+        ctx.restore();
+
+        // Ticker tape trail
+        if(tickerDots.length>0){
+            ctx.save();ctx.fillStyle='rgba(250,204,21,.6)';
+            for(var i=0;i<tickerDots.length;i+=2){
+                var df=tickerDots[i].x/2.5;
+                var dx=rampStartX+(rampEndX-rampStartX)*Math.min(df,0.95);
+                var dy=rampTopY+(rampBotY-rampTopY)*Math.min(df,0.95);
+                ctx.beginPath();ctx.arc(dx,dy-5,2,0,Math.PI*2);ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        // Timer device at top
+        ctx.save();ctx.fillStyle='#475569';
+        roundedRect(ctx,rampStartX-15,rampTopY-50,60,30,4);ctx.fill();
+        ctx.font='500 9px Inter';ctx.fillStyle='rgba(255,255,255,.5)';ctx.textAlign='center';
+        ctx.fillText('50 Hz Timer',rampStartX+15,rampTopY-30);
+        ctx.restore();
+
+        // Info
+        ctx.save();ctx.font='600 13px "JetBrains Mono"';ctx.fillStyle='#fff';ctx.textAlign='right';
+        ctx.fillText('v = '+trolleyV.toFixed(2)+' m/s',W-20,25);
+        ctx.fillText('t = '+t.toFixed(2)+' s',W-20,45);
+        ctx.fillText('a = '+getAccel().toFixed(2)+' m/s² (theoretical)',W-20,65);
+        ctx.restore();
+
+        // Ground
+        ctx.save();ctx.strokeStyle='#475569';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(50,rampBotY);ctx.lineTo(W-20,rampBotY);ctx.stroke();
+        ctx.restore();
+    };
+
+    function drawTickerChart(){
+        var c=chartCanvas;
+        cctx.fillStyle='#0f172a';cctx.fillRect(0,0,c.width,c.height);
+        if(strips.length<2){
+            cctx.font='500 14px Inter';cctx.fillStyle='rgba(255,255,255,.3)';cctx.textAlign='center';
+            cctx.fillText('Release trolley to generate ticker tape strips',c.width/2,c.height/2);
+            return;
+        }
+
+        var padL=50,padR=30,padT=30,padB=50;
+        var plotW=c.width-padL-padR, plotH=c.height-padT-padB;
+        var maxDist=0;
+        for(var i=0;i<strips.length;i++){if(strips[i].dist>maxDist)maxDist=strips[i].dist;}
+        maxDist*=1.2;
+
+        // Axes
+        cctx.save();cctx.strokeStyle='rgba(255,255,255,.3)';cctx.lineWidth=1;
+        cctx.beginPath();cctx.moveTo(padL,padT);cctx.lineTo(padL,padT+plotH);cctx.lineTo(padL+plotW,padT+plotH);cctx.stroke();
+        cctx.font='600 11px Inter';cctx.fillStyle='rgba(255,255,255,.5)';cctx.textAlign='center';
+        cctx.fillText('Strip Number (each = 0.10 s)',padL+plotW/2,padT+plotH+40);
+        cctx.save();cctx.translate(15,padT+plotH/2);cctx.rotate(-Math.PI/2);cctx.fillText('Strip Length (cm)',0,0);cctx.restore();
+
+        // Bars
+        var barW=Math.min(40, (plotW-20)/strips.length - 4);
+        for(var i=0;i<strips.length;i++){
+            var bh=(strips[i].dist/maxDist)*plotH;
+            var bx=padL+10+i*(barW+4);
+            var by=padT+plotH-bh;
+
+            // Gradient color based on speed
+            var t=i/(strips.length-1);
+            var r=Math.floor(59+t*190);
+            var g=Math.floor(130-t*80);
+            var b=Math.floor(246-t*200);
+            cctx.fillStyle='rgb('+r+','+g+','+b+')';
+            roundedRect(cctx,bx,by,barW,bh,3);cctx.fill();
+
+            // Strip number
+            cctx.font='500 9px Inter';cctx.fillStyle='rgba(255,255,255,.5)';cctx.textAlign='center';
+            cctx.fillText(i+1,bx+barW/2,padT+plotH+15);
+
+            // Value on top
+            cctx.font='600 8px "JetBrains Mono"';cctx.fillStyle='rgba(255,255,255,.6)';
+            cctx.fillText(strips[i].dist.toFixed(1),bx+barW/2,by-8);
+        }
+        cctx.restore();
+    }
+
+    function drawMotionGraph(){
+        var c=graphCanvas;
+        gctx.fillStyle='#0f172a';gctx.fillRect(0,0,c.width,c.height);
+        if(strips.length<2){
+            gctx.font='500 14px Inter';gctx.fillStyle='rgba(255,255,255,.3)';gctx.textAlign='center';
+            gctx.fillText('Release trolley to plot speed-time graph',c.width/2,c.height/2);
+            return;
+        }
+
+        var padL=70,padR=40,padT=40,padB=60;
+        var plotW=c.width-padL-padR, plotH=c.height-padT-padB;
+        var maxV=0, maxT=0;
+        for(var i=0;i<strips.length;i++){
+            if(strips[i].speed>maxV) maxV=strips[i].speed;
+            if(strips[i].midT>maxT) maxT=strips[i].midT;
+        }
+        maxV*=1.2; maxT*=1.15;
+
+        // Axes
+        gctx.save();gctx.strokeStyle='rgba(255,255,255,.3)';gctx.lineWidth=1;
+        gctx.beginPath();gctx.moveTo(padL,padT);gctx.lineTo(padL,padT+plotH);gctx.lineTo(padL+plotW,padT+plotH);gctx.stroke();
+
+        // Grid
+        gctx.strokeStyle='rgba(255,255,255,.06)';
+        for(var i=1;i<=5;i++){
+            var gy=padT+plotH-plotH*i/5;
+            gctx.beginPath();gctx.moveTo(padL,gy);gctx.lineTo(padL+plotW,gy);gctx.stroke();
+            gctx.font='500 10px "JetBrains Mono"';gctx.fillStyle='rgba(255,255,255,.4)';gctx.textAlign='right';
+            gctx.fillText((maxV*i/5).toFixed(2),padL-8,gy+3);
+        }
+        for(var i=1;i<=5;i++){
+            var gx=padL+plotW*i/5;
+            gctx.beginPath();gctx.moveTo(gx,padT);gctx.lineTo(gx,padT+plotH);gctx.stroke();
+            gctx.textAlign='center';
+            gctx.fillText((maxT*i/5).toFixed(2),gx,padT+plotH+18);
+        }
+
+        // Axis labels
+        gctx.font='600 12px Inter';gctx.fillStyle='rgba(255,255,255,.6)';gctx.textAlign='center';
+        gctx.fillText('Time (s)',padL+plotW/2,padT+plotH+48);
+        gctx.save();gctx.translate(18,padT+plotH/2);gctx.rotate(-Math.PI/2);gctx.fillText('Speed (m/s)',0,0);gctx.restore();
+
+        // Plot points and line
+        gctx.strokeStyle='#60a5fa';gctx.lineWidth=2;
+        gctx.beginPath();
+        for(var i=0;i<strips.length;i++){
+            var px=padL+(strips[i].midT/maxT)*plotW;
+            var py=padT+plotH-(strips[i].speed/maxV)*plotH;
+            if(i===0) gctx.moveTo(px,py);
+            else gctx.lineTo(px,py);
+        }
+        gctx.stroke();
+
+        // Points
+        for(var i=0;i<strips.length;i++){
+            var px=padL+(strips[i].midT/maxT)*plotW;
+            var py=padT+plotH-(strips[i].speed/maxV)*plotH;
+            gctx.fillStyle='#60a5fa';
+            gctx.beginPath();gctx.arc(px,py,4,0,Math.PI*2);gctx.fill();
+            gctx.strokeStyle='#fff';gctx.lineWidth=1.5;gctx.stroke();
+        }
+
+        // Best fit line
+        var sumX=0,sumY=0,sumXY=0,sumX2=0,n=strips.length;
+        for(var i=0;i<n;i++){sumX+=strips[i].midT;sumY+=strips[i].speed;sumXY+=strips[i].midT*strips[i].speed;sumX2+=strips[i].midT*strips[i].midT;}
+        var slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX);
+        var intercept=(sumY-slope*sumX)/n;
+        gctx.strokeStyle='#22c55e';gctx.lineWidth=2;gctx.setLineDash([8,4]);
+        gctx.beginPath();
+        gctx.moveTo(padL+(0/maxT)*plotW, padT+plotH-(intercept/maxV)*plotH);
+        gctx.lineTo(padL+(maxT/maxT)*plotW, padT+plotH-((slope*maxT+intercept)/maxV)*plotH);
+        gctx.stroke();gctx.setLineDash([]);
+
+        gctx.font='700 13px "JetBrains Mono"';gctx.fillStyle='#22c55e';gctx.textAlign='left';
+        gctx.fillText('Gradient (a) = '+slope.toFixed(2)+' m/s²',padL+20,padT+20);
+
+        gctx.restore();
+    }
+
+    motionDraw();
+    drawTickerChart();
+    drawMotionGraph();
+})();
+</script>
+</body>
+</html>
