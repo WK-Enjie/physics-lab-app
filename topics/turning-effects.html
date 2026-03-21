@@ -360,6 +360,7 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
 
 // ============================================================
 // ROTATING OBJECTS — WITH PERPENDICULAR DISTANCE EMPHASIS
+// (FIXED ROTATION DIRECTION)
 // ============================================================
 (function(){
     var canvas = document.getElementById('rotateCanvas');
@@ -368,21 +369,19 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
 
     var scenario = 'lever';
     var force = 40, angle = 60, armLen = 0.40;
-    var rotAngle = 0, animating = false, animId = null;
+    var rotAngle = 0, angVel = 0, animating = false, animId = null;
     var showComps = true, showPerpDist = true;
 
-    // Scenario selection
+    // ===== Scenario selection =====
     document.querySelectorAll('#rotateScenarios .rotate-scenario').forEach(function(card){
         card.addEventListener('click', function(){
             document.querySelectorAll('#rotateScenarios .rotate-scenario').forEach(function(c){ c.classList.remove('active'); });
             card.classList.add('active');
             scenario = card.dataset.scenario;
-            rotAngle = 0;
+            rotAngle = 0; angVel = 0;
             animating = false;
             cancelAnimationFrame(animId);
             document.getElementById('rotAnimate').textContent = '▶ Animate Rotation';
-
-            // Show/hide controls
             var isCouple = (scenario === 'steering');
             var isProp = (scenario === 'propeller');
             document.getElementById('rotAngleGroup').style.display = (isCouple || isProp) ? 'none' : '';
@@ -392,7 +391,7 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
         });
     });
 
-    // Slider events
+    // ===== Sliders =====
     document.getElementById('rotForce').addEventListener('input', function(e){
         force = parseInt(e.target.value);
         document.getElementById('rotForceVal').textContent = force + ' N';
@@ -416,29 +415,645 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
         showPerpDist = e.target.checked; rotateDraw();
     });
 
-    // Animation
+    // ===== Animation =====
     document.getElementById('rotAnimate').addEventListener('click', function(){
-        if(animating){ animating = false; cancelAnimationFrame(animId); this.textContent = '▶ Animate Rotation'; return; }
-        animating = true; this.textContent = '⏸ Pause';
-        function anim(){
+        if(animating){
+            animating = false;
+            cancelAnimationFrame(animId);
+            this.textContent = '▶ Animate Rotation';
+            return;
+        }
+        animating = true;
+        angVel = 0;
+        this.textContent = '⏸ Pause';
+        var lastTime = null;
+        function anim(timestamp){
             if(!animating) return;
+            if(!lastTime) lastTime = timestamp;
+            var dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+            lastTime = timestamp;
+
+            // Calculate signed torque
+            // For lever/spanner/trapdoor:
+            //   Force at angle θ (0-180°) measured FROM the lever direction
+            //   θ between 0° and 180° → sinθ is always ≥ 0
+            //   The perpendicular component F sinθ pushes AWAY from the lever
+            //   This creates a CLOCKWISE moment (positive rotation angle in our canvas coords)
+            //   when the force pulls "downward" relative to lever direction
+            //
+            //   In our coordinate system (canvas: y-down):
+            //   - Lever points to the right (positive x in local coords)
+            //   - Force direction = (−cosθ, −sinθ) in local coords
+            //   - The y-component (−sinθ) is UPWARD (negative y = up in canvas)
+            //   - This creates a COUNTER-CLOCKWISE torque (negative rotation)
+            //
+            //   So signed torque = −F × L × sinθ for angles 0-180°
+            //   (force pulls the lever end upward/counter-clockwise)
+
             var rad = angle * PI / 180;
-            var moment = force * armLen * Math.sin(rad);
-            if(scenario === 'steering') moment = force * armLen * 2;
-            if(scenario === 'propeller') moment = 3 * force * 0.25;
-            rotAngle += moment * 0.0002;
+            var signedTorque = 0;
+
+            if(scenario === 'lever' || scenario === 'spanner' || scenario === 'trapdoor'){
+                // Force direction in lever-local coords: (-cosθ, -sinθ)
+                // Cross product r × F for torque sign:
+                // r = (L, 0), F_direction = (-cosθ, -sinθ)
+                // Cross product z-component = L × (-sinθ) - 0 × (-cosθ) = -L sinθ
+                // So torque = F × (-L sinθ) → rotation in negative direction (CCW in math, but CW visually)
+                // In canvas coords (y-down), negative rotation = counter-clockwise visually
+                // We want: force pointing "below" lever → CW rotation (positive canvas angle)
+                //          force pointing "above" lever → CCW rotation (negative canvas angle)
+                
+                // The perpendicular component of force in local coords:
+                // F_perp = -F sinθ (points in -y direction = upward in canvas)
+                // This pulls the end of the lever UP → CCW rotation → negative angular change
+                signedTorque = -force * armLen * Math.sin(rad);
+                
+                // Special: if angle > 180°, sin is negative, so torque flips
+                // But our slider is 0-180, so sinθ ≥ 0 always
+                // Force is always in the "upper" half → always CCW
+
+            } else if(scenario === 'steering'){
+                // Couple: always rotates CCW (left hand pushes up, right pushes down)
+                signedTorque = -force * armLen * 2;
+            } else if(scenario === 'propeller'){
+                // Engine-driven: always CCW
+                signedTorque = -3 * force * 0.25;
+            }
+
+            // Simple physics: angular acceleration = torque / moment_of_inertia
+            // Use a fake moment of inertia for visual effect
+            var I = 5; // arbitrary
+            var angAccel = signedTorque / I;
+            angVel += angAccel * dt;
+            // Add damping so it doesn't spin forever
+            angVel *= 0.97;
+            rotAngle += angVel * dt;
+
             rotateDraw();
             animId = requestAnimationFrame(anim);
         }
-        anim();
+        animId = requestAnimationFrame(anim);
     });
+
     document.getElementById('rotStop').addEventListener('click', function(){
-        animating = false; cancelAnimationFrame(animId);
-        rotAngle = 0;
+        animating = false;
+        cancelAnimationFrame(animId);
+        rotAngle = 0; angVel = 0;
         document.getElementById('rotAnimate').textContent = '▶ Animate Rotation';
         rotateDraw();
     });
 
+    // ===== Right angle symbol =====
+    function drawRightAngle(ctx, x, y, a1, a2, size, color){
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        var dx1 = Math.cos(a1)*size, dy1 = Math.sin(a1)*size;
+        var dx2 = Math.cos(a2)*size, dy2 = Math.sin(a2)*size;
+        ctx.beginPath();
+        ctx.moveTo(x+dx1, y+dy1);
+        ctx.lineTo(x+dx1+dx2, y+dy1+dy2);
+        ctx.lineTo(x+dx2, y+dy2);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // ===== Determine rotation direction label =====
+    function getRotLabel(signedMoment){
+        if(Math.abs(signedMoment) < 0.01) return {text: 'No rotation', color: 'rgba(255,255,255,.4)'};
+        // In canvas coords: negative rotation = CCW visually, positive = CW visually
+        // Our signedTorque is negative for the standard setup → CCW
+        if(signedMoment < 0) return {text: '↺ Counter-clockwise (ACW)', color: '#60a5fa'};
+        return {text: '↻ Clockwise (CW)', color: '#f97316'};
+    }
+
+    // ===== MAIN DRAW =====
+    window.rotateDraw = function(){
+        clearCanvas(ctx, canvas);
+        var W = canvas.width, H = canvas.height;
+        var rad = angle * PI / 180;
+        var sinA = Math.sin(rad), cosA = Math.cos(rad);
+        var moment = force * armLen * sinA;
+        var Fperp = force * sinA;
+        var Fpar = force * cosA;
+        var dPerp = armLen * sinA;
+
+        // Signed moment for direction display
+        var signedMoment = -force * armLen * sinA; // negative = CCW
+
+        // ============ LEVER / SPANNER ============
+        if(scenario === 'lever' || scenario === 'spanner'){
+            var pivotX = W * 0.3, pivotY = H * 0.42;
+            var armPx = armLen * 500;
+            var fArrowLen = Math.min(100, force * 1.8);
+
+            // === Pivot ===
+            ctx.save();
+            if(scenario === 'spanner'){
+                ctx.fillStyle = '#475569'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.arc(pivotX, pivotY, 20, 0, PI*2); ctx.fill(); ctx.stroke();
+                ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.lineWidth = 1;
+                for(var i=0;i<6;i++){
+                    var ha = i*PI/3 + rotAngle;
+                    ctx.beginPath(); ctx.moveTo(pivotX, pivotY);
+                    ctx.lineTo(pivotX+14*Math.cos(ha), pivotY+14*Math.sin(ha)); ctx.stroke();
+                }
+                ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(pivotX,pivotY,6,0,PI*2); ctx.fill();
+            } else {
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath(); ctx.arc(pivotX, pivotY, 8, 0, PI*2); ctx.fill();
+                ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+            }
+            ctx.restore();
+            drawLabel(ctx, 'Pivot', pivotX, pivotY + 32, 'rgba(255,255,255,.5)', 'center', 11);
+
+            // === Lever (rotated) ===
+            ctx.save();
+            ctx.translate(pivotX, pivotY);
+            ctx.rotate(rotAngle);
+
+            // Lever body
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = scenario === 'spanner' ? 14 : 6;
+            ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(armPx, 0); ctx.stroke();
+
+            if(scenario === 'spanner'){
+                ctx.fillStyle = '#64748b'; ctx.fillRect(-12, -18, 24, 36);
+            }
+
+            // Length label
+            ctx.save();
+            ctx.strokeStyle = 'rgba(250,204,21,.4)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+            ctx.beginPath(); ctx.moveTo(0, 24); ctx.lineTo(armPx, 24); ctx.stroke();
+            ctx.setLineDash([]);
+            drawLabel(ctx, 'L = '+armLen.toFixed(2)+' m', armPx/2, 40, '#facc15', 'center', 12);
+            ctx.restore();
+
+            // Application point
+            ctx.fillStyle = '#3b82f6';
+            ctx.beginPath(); ctx.arc(armPx, 0, 5, 0, PI*2); ctx.fill();
+
+            // === Force arrow ===
+            // Force direction in lever-local coords:
+            // θ is measured between the force and the lever
+            // Force points "up and to the left" relative to lever end
+            var fDirX = -cosA;  // component along negative lever direction
+            var fDirY = -sinA;  // component perpendicular (upward in canvas = negative y)
+
+            var fEndX = armPx + fArrowLen * fDirX;
+            var fEndY = fArrowLen * fDirY;
+
+            drawArrow(ctx, armPx, 0, fEndX, fEndY, '#3b82f6', 3);
+            drawLabel(ctx, 'F = '+force+' N',
+                fEndX + (fDirX < 0 ? -10 : 10), fEndY - 12,
+                '#3b82f6', fDirX < 0 ? 'right' : 'left', 13);
+
+            // === LINE OF ACTION (extended) ===
+            if(showPerpDist){
+                ctx.save();
+                ctx.strokeStyle = 'rgba(96,165,250,0.3)';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([8, 6]);
+                var extLen = 350;
+                ctx.beginPath();
+                ctx.moveTo(armPx - extLen*fDirX, -extLen*fDirY);
+                ctx.lineTo(armPx + extLen*fDirX, extLen*fDirY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                // Label
+                var loaLabelX = armPx + extLen*0.5*fDirX;
+                var loaLabelY = extLen*0.5*fDirY;
+                drawLabel(ctx, 'Line of action',
+                    loaLabelX + 15, loaLabelY + 15,
+                    'rgba(96,165,250,0.4)', 'left', 10);
+                ctx.restore();
+
+                // === PERPENDICULAR DISTANCE from pivot to line of action ===
+                // Line: P(s) = (armPx, 0) + s*(fDirX, fDirY)
+                // Foot from origin: s = -(armPx*fDirX + 0*fDirY) / (fDirX²+fDirY²)
+                var denom = fDirX*fDirX + fDirY*fDirY;
+                if(denom < 0.001) denom = 0.001;
+                var s_foot = -(armPx * fDirX) / denom;
+                var footX = armPx + s_foot * fDirX;
+                var footY = s_foot * fDirY;
+
+                // Perpendicular line: pivot → foot
+                ctx.save();
+                ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 2.5;
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(footX, footY); ctx.stroke();
+
+                // Right angle symbol
+                var pAngle1 = Math.atan2(fDirY, fDirX);
+                var pAngle2 = Math.atan2(-footY, -footX);
+                drawRightAngle(ctx, footX, footY, pAngle1, pAngle2, 12, '#22c55e');
+
+                // Dot at foot
+                ctx.fillStyle = '#22c55e';
+                ctx.beginPath(); ctx.arc(footX, footY, 4, 0, PI*2); ctx.fill();
+                ctx.restore();
+
+                // d⊥ label
+                var midX = footX/2, midY = footY/2;
+                var offX = footY > 0 ? -20 : 20;
+                var offY = footX > 0 ? 20 : -20;
+                ctx.save();
+                ctx.font = '700 14px "JetBrains Mono",monospace';
+                ctx.fillStyle = '#22c55e'; ctx.textAlign = 'center';
+                ctx.fillText('d⊥ = '+(dPerp*100).toFixed(1)+' cm', midX+offX, midY+offY);
+                ctx.font = '500 11px Inter'; ctx.fillStyle = 'rgba(34,197,94,.6)';
+                ctx.fillText('('+dPerp.toFixed(3)+' m)', midX+offX, midY+offY+16);
+                ctx.restore();
+            }
+
+            // === Force components ===
+            if(showComps && angle > 2 && angle < 178 && angle !== 90){
+                var compScale = fArrowLen;
+                // F⊥ (perpendicular to lever: points in -y = up)
+                var fperpLen = sinA * compScale;
+                ctx.save(); ctx.setLineDash([5, 4]);
+                drawArrow(ctx, armPx, 0, armPx, -fperpLen, '#22c55e', 2.5);
+                ctx.setLineDash([]); ctx.restore();
+                drawLabel(ctx, 'F⊥ = '+Fperp.toFixed(1)+' N', armPx+15, -fperpLen/2, '#22c55e', 'left', 11);
+                drawLabel(ctx, '(creates moment)', armPx+15, -fperpLen/2+14, 'rgba(34,197,94,.5)', 'left', 9);
+
+                // F∥ (along lever: points in -x = toward pivot)
+                var fparLen = Math.abs(cosA) * compScale;
+                ctx.save(); ctx.setLineDash([5, 4]);
+                drawArrow(ctx, armPx, 0, armPx - fparLen, 0, '#ef4444', 2);
+                ctx.setLineDash([]); ctx.restore();
+                drawLabel(ctx, 'F∥ = '+Math.abs(Fpar).toFixed(1)+' N', armPx-fparLen/2, 18, '#ef4444', 'center', 10);
+                drawLabel(ctx, '(wasted — no moment)', armPx-fparLen/2, 30, 'rgba(239,68,68,.5)', 'center', 9);
+
+                // Dashed box showing resolution
+                ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+                ctx.strokeRect(armPx - fparLen, -fperpLen, fparLen, fperpLen);
+                ctx.setLineDash([]); ctx.restore();
+            }
+
+            // === Angle arc ===
+            if(angle > 2 && angle < 178){
+                ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.5;
+                var arcR = 32;
+                // Arc from lever direction (0°=right) to force direction
+                // Force is at angle (PI + PI - rad) from positive x... 
+                // Actually force direction angle from positive x = atan2(fDirY, fDirX) = atan2(-sinA, -cosA) = PI + A (measured from +x)
+                var leverAngle = 0; // lever points right
+                var forceAngle = Math.atan2(fDirY, fDirX); // direction of force
+
+                // Draw arc from lever to force direction (the angle between them = θ)
+                ctx.beginPath();
+                // Always draw the SMALLER arc
+                ctx.arc(armPx, 0, arcR, PI, PI + rad, false);
+                ctx.stroke();
+
+                var labelA = PI + rad/2;
+                drawLabel(ctx, 'θ = '+angle+'°',
+                    armPx + (arcR+18)*Math.cos(labelA), (arcR+18)*Math.sin(labelA),
+                    'rgba(255,255,255,.7)', 'center', 12);
+                ctx.restore();
+            }
+
+            ctx.restore(); // end lever rotation
+
+            // === Rotation direction arrow (world coords) ===
+            if(animating && Math.abs(angVel) > 0.01){
+                ctx.save();
+                var rotDir = angVel > 0 ? 1 : -1;
+                var arcStart = rotAngle - rotDir * 0.2;
+                var arcEnd = rotAngle + rotDir * 0.9;
+                ctx.strokeStyle = rotDir > 0 ? 'rgba(249,115,22,.5)' : 'rgba(96,165,250,.5)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                if(rotDir > 0) ctx.arc(pivotX, pivotY, armPx+25, arcStart, arcEnd);
+                else ctx.arc(pivotX, pivotY, armPx+25, arcEnd, arcStart);
+                ctx.stroke();
+                // Arrowhead
+                var tipAngle = arcEnd;
+                var tipR = armPx + 25;
+                var tipX = pivotX + tipR*Math.cos(tipAngle);
+                var tipY = pivotY + tipR*Math.sin(tipAngle);
+                var prevAngle = tipAngle - rotDir*0.08;
+                var prevX = pivotX + tipR*Math.cos(prevAngle);
+                var prevY = pivotY + tipR*Math.sin(prevAngle);
+                drawArrow(ctx, prevX, prevY, tipX, tipY, ctx.strokeStyle, 2.5);
+                ctx.restore();
+            }
+
+            // === Rotation direction label ===
+            var rotInfo = getRotLabel(signedMoment);
+            if(angle > 0 && angle < 180){
+                ctx.save();
+                ctx.font = '600 14px Inter'; ctx.textAlign = 'center';
+                ctx.fillStyle = rotInfo.color;
+                ctx.fillText(rotInfo.text, pivotX + armPx/2, pivotY - armPx*0.5 - 20);
+                ctx.fillStyle = 'rgba(255,255,255,.3)';
+                ctx.font = '500 11px Inter';
+                ctx.fillText('F pulls lever end upward → rotates ACW', pivotX + armPx/2, pivotY - armPx*0.5 - 3);
+                ctx.restore();
+            }
+
+            // === Moment gauge ===
+            var maxMoment = 100 * 0.6;
+            var gaugeX = W-130, gaugeY = 50, gaugeH = 200, gaugeW = 25;
+            ctx.save();
+            ctx.fillStyle = 'rgba(255,255,255,.05)';
+            roundedRect(ctx, gaugeX, gaugeY, gaugeW, gaugeH, 4); ctx.fill();
+            var fillH = Math.min(gaugeH, (moment/maxMoment)*gaugeH);
+            var gCol = moment > maxMoment*0.7 ? '#22c55e' : moment > maxMoment*0.3 ? '#facc15' : '#ef4444';
+            ctx.fillStyle = gCol;
+            roundedRect(ctx, gaugeX, gaugeY+gaugeH-fillH, gaugeW, fillH, 4); ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.lineWidth = 1;
+            roundedRect(ctx, gaugeX, gaugeY, gaugeW, gaugeH, 4); ctx.stroke();
+            drawLabel(ctx, 'τ', gaugeX+gaugeW/2, gaugeY-12, 'rgba(255,255,255,.4)', 'center', 11);
+            // 90° reference line
+            ctx.strokeStyle = 'rgba(34,197,94,.4)'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(gaugeX-4, gaugeY); ctx.lineTo(gaugeX+gaugeW+4, gaugeY); ctx.stroke();
+            drawLabel(ctx, '90°→max', gaugeX+gaugeW+8, gaugeY, 'rgba(34,197,94,.4)', 'left', 9);
+            ctx.restore();
+
+            // === Big readout ===
+            ctx.save();
+            ctx.font = '800 26px "JetBrains Mono"'; ctx.fillStyle = '#fff'; ctx.textAlign = 'right';
+            ctx.fillText('τ = '+moment.toFixed(1)+' N m', W-20, H-30);
+            ctx.font = '500 12px Inter'; ctx.fillStyle = rotInfo.color;
+            ctx.fillText(rotInfo.text, W-20, H-10);
+            ctx.restore();
+
+            // === sin θ indicator ===
+            ctx.save();
+            ctx.font = '600 16px "JetBrains Mono"'; ctx.fillStyle = '#facc15'; ctx.textAlign = 'left';
+            ctx.fillText('sin '+angle+'° = '+sinA.toFixed(4), 20, H-50);
+            ctx.font = '500 12px Inter'; ctx.fillStyle = 'rgba(255,255,255,.4)';
+            var effMsg = angle===90 ? '→ Maximum moment!' : (angle===0||angle===180) ? '→ Zero moment!' : '→ '+(sinA*100).toFixed(0)+'% of maximum';
+            ctx.fillText(effMsg, 20, H-30);
+            ctx.restore();
+
+            // === Calc panel ===
+            var dirText = signedMoment < 0 ? '↺ ACW (counter-clockwise)' : signedMoment > 0 ? '↻ CW (clockwise)' : 'No rotation';
+
+            calcDiv.innerHTML =
+                '<span class="calc-label">Method 1 — Perpendicular Distance:</span><br>' +
+                'd⊥ = L sinθ = '+armLen.toFixed(2)+' × sin'+angle+'° = '+armLen.toFixed(2)+' × '+sinA.toFixed(4)+' = <span class="calc-val">'+dPerp.toFixed(4)+' m</span><br>' +
+                'τ = F × d⊥ = '+force+' × '+dPerp.toFixed(4)+' = <span class="calc-val highlight-row">'+moment.toFixed(2)+' N m</span><br><br>' +
+                '<span class="calc-label">Method 2 — Perpendicular Component:</span><br>' +
+                'F⊥ = F sinθ = '+force+' × sin'+angle+'° = <span class="calc-val">'+Fperp.toFixed(1)+' N</span> (creates moment)<br>' +
+                'F∥ = F cosθ = '+force+' × cos'+angle+'° = <span style="color:#ef4444">'+Math.abs(Fpar).toFixed(1)+' N</span> (wasted — pushes along lever)<br>' +
+                'τ = F⊥ × L = '+Fperp.toFixed(1)+' × '+armLen.toFixed(2)+' = <span class="calc-val highlight-row">'+(Fperp*armLen).toFixed(2)+' N m ✓</span><br><br>' +
+                '<span class="calc-label">Direction:</span> <span style="color:'+rotInfo.color+'">'+dirText+'</span><br>' +
+                '<span class="calc-label">Reason:</span> F⊥ pushes the end of the lever <strong>upward</strong> (away from lever) → ACW rotation about pivot.<br><br>' +
+                (angle===90 ? '<span style="color:#22c55e">💡 At 90°: ALL of F is perpendicular → maximum moment!</span>' :
+                 (angle===0||angle===180) ? '<span style="color:#ef4444">⚠ At 0°/180°: F is along the lever → zero moment! Line of action passes through pivot.</span>' :
+                 '<span class="calc-label">💡 Efficiency:</span> <span class="calc-val">'+(sinA*100).toFixed(0)+'%</span> of F creates moment. <span style="color:#ef4444">'+(Math.abs(cosA)*100).toFixed(0)+'%</span> is wasted.');
+
+        // ============ TRAPDOOR ============
+        } else if(scenario === 'trapdoor'){
+            var hingeX = 150, hingeY = H * 0.55;
+            var doorLen = armLen * 500;
+            signedMoment = -force * armLen * sinA;
+            moment = force * armLen * sinA;
+
+            // Wall
+            ctx.save();
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(hingeX-25, hingeY-150, 25, 200);
+            ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
+            ctx.strokeRect(hingeX-25, hingeY-150, 25, 200);
+            ctx.restore();
+
+            // Hinge
+            ctx.save();
+            ctx.fillStyle = '#f97316';
+            ctx.beginPath(); ctx.arc(hingeX, hingeY, 8, 0, PI*2); ctx.fill();
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+            ctx.restore();
+            drawLabel(ctx, 'Hinge (pivot)', hingeX, hingeY+28, 'rgba(255,255,255,.5)', 'center', 11);
+
+            // Door (rotated)
+            ctx.save();
+            ctx.translate(hingeX, hingeY);
+            ctx.rotate(rotAngle);
+
+            // Door panel
+            ctx.fillStyle = 'rgba(139,92,42,.3)'; ctx.strokeStyle = '#a0785a'; ctx.lineWidth = 3;
+            ctx.fillRect(0, -8, doorLen, 16);
+            ctx.strokeRect(0, -8, doorLen, 16);
+
+            // Rope attachment
+            ctx.fillStyle = '#3b82f6';
+            ctx.beginPath(); ctx.arc(doorLen, 0, 5, 0, PI*2); ctx.fill();
+
+            // Rope force: same angle convention as lever
+            var fLen = Math.min(100, force*1.5);
+            var rDirX = -cosA, rDirY = -sinA;
+            drawArrow(ctx, doorLen, 0, doorLen+fLen*rDirX, fLen*rDirY, '#3b82f6', 3);
+            drawLabel(ctx, 'T = '+force+' N',
+                doorLen+fLen*rDirX+(rDirX<0?-10:10), fLen*rDirY-12,
+                '#3b82f6', rDirX<0?'right':'left', 13);
+
+            // Line of action
+            if(showPerpDist){
+                ctx.save();
+                ctx.strokeStyle = 'rgba(96,165,250,.3)'; ctx.lineWidth = 1.5; ctx.setLineDash([8,6]);
+                ctx.beginPath();
+                ctx.moveTo(doorLen-250*rDirX, -250*rDirY);
+                ctx.lineTo(doorLen+250*rDirX, 250*rDirY);
+                ctx.stroke(); ctx.setLineDash([]);
+                ctx.restore();
+
+                // Perpendicular from hinge to line of action
+                var d2 = rDirX*rDirX + rDirY*rDirY;
+                if(d2<0.001) d2=0.001;
+                var sf = -(doorLen*rDirX)/d2;
+                var fX = doorLen+sf*rDirX, fY = sf*rDirY;
+                ctx.save();
+                ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 2.5;
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(fX,fY); ctx.stroke();
+                ctx.fillStyle = '#22c55e';
+                ctx.beginPath(); ctx.arc(fX,fY,4,0,PI*2); ctx.fill();
+                drawRightAngle(ctx, fX, fY, Math.atan2(rDirY,rDirX), Math.atan2(-fY,-fX), 12, '#22c55e');
+                ctx.restore();
+                drawLabel(ctx, 'd⊥ = '+(dPerp*100).toFixed(1)+' cm', fX/2-20, fY/2+22, '#22c55e', 'center', 13);
+            }
+
+            // Components
+            if(showComps && angle>2 && angle<178 && angle!==90){
+                var cS = fLen;
+                ctx.save(); ctx.setLineDash([5,4]);
+                drawArrow(ctx, doorLen, 0, doorLen, -sinA*cS, '#22c55e', 2.5);
+                drawArrow(ctx, doorLen, 0, doorLen-Math.abs(cosA)*cS, 0, '#ef4444', 2);
+                ctx.setLineDash([]); ctx.restore();
+                drawLabel(ctx, 'T⊥='+Fperp.toFixed(1)+'N', doorLen+12, -sinA*cS/2, '#22c55e', 'left', 10);
+                drawLabel(ctx, 'T∥='+Math.abs(Fpar).toFixed(1)+'N', doorLen-Math.abs(cosA)*cS/2, 16, '#ef4444', 'center', 10);
+            }
+
+            // Angle arc
+            if(angle>2 && angle<178){
+                ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.arc(doorLen, 0, 30, PI, PI+rad, false); ctx.stroke();
+                drawLabel(ctx, 'θ='+angle+'°', doorLen-40, -22, 'rgba(255,255,255,.6)', 'center', 11);
+                ctx.restore();
+            }
+
+            // Length
+            drawLabel(ctx, 'L = '+armLen.toFixed(2)+' m', doorLen/2, 30, '#facc15', 'center', 12);
+
+            ctx.restore(); // end door rotation
+
+            // Rotation indicator
+            if(animating && Math.abs(angVel)>0.01){
+                ctx.save();
+                var rd = angVel>0?1:-1;
+                ctx.strokeStyle = rd>0?'rgba(249,115,22,.5)':'rgba(96,165,250,.5)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                var as = rotAngle-rd*0.2, ae = rotAngle+rd*0.8;
+                if(rd>0) ctx.arc(hingeX, hingeY, doorLen+15, as, ae);
+                else ctx.arc(hingeX, hingeY, doorLen+15, ae, as);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Direction label
+            var rl = getRotLabel(signedMoment);
+            ctx.save(); ctx.font='600 14px Inter'; ctx.textAlign='center';
+            ctx.fillStyle = rl.color;
+            ctx.fillText(rl.text + ' — rope lifts door', W/2, 30);
+            ctx.restore();
+
+            // Big readout
+            ctx.save();
+            ctx.font='800 26px "JetBrains Mono"'; ctx.fillStyle='#fff'; ctx.textAlign='right';
+            ctx.fillText('τ = '+moment.toFixed(1)+' N m', W-20, H-30);
+            ctx.restore();
+
+            calcDiv.innerHTML =
+                '<span class="calc-label">🪟 Rope on Trapdoor:</span><br>' +
+                'τ = F × L × sinθ = '+force+' × '+armLen.toFixed(2)+' × sin'+angle+'°<br>' +
+                '= '+force+' × '+armLen.toFixed(2)+' × '+sinA.toFixed(4)+'<br>' +
+                '<span class="calc-val highlight-row">τ = '+moment.toFixed(2)+' N m ('+rl.text+')</span><br><br>' +
+                'd⊥ = L sinθ = '+(dPerp*100).toFixed(1)+' cm<br>' +
+                '<span class="calc-label">Direction:</span> Rope pulls door end <strong>upward</strong> → door opens (ACW about hinge).<br>' +
+                '<span class="calc-label">At 90°:</span> τ = '+(force*armLen).toFixed(1)+' N m — currently at '+(sinA*100).toFixed(0)+'% efficiency.';
+
+        // ============ STEERING WHEEL ============
+        } else if(scenario === 'steering'){
+            var cx = W*0.45, cy = H*0.45, wheelR = armLen*350;
+            moment = force * armLen * 2;
+            signedMoment = -moment; // CCW
+
+            ctx.save(); ctx.fillStyle='#475569';
+            ctx.fillRect(cx-8, cy+wheelR+5, 16, 80); ctx.restore();
+
+            ctx.save(); ctx.translate(cx,cy); ctx.rotate(rotAngle);
+            ctx.strokeStyle='#94a3b8'; ctx.lineWidth=10;
+            ctx.beginPath(); ctx.arc(0,0,wheelR,0,PI*2); ctx.stroke();
+            ctx.lineWidth=3;
+            for(var i=0;i<3;i++){var a=i*PI*2/3;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(wheelR*Math.cos(a),wheelR*Math.sin(a));ctx.stroke();}
+            ctx.fillStyle='#475569'; ctx.beginPath();ctx.arc(0,0,14,0,PI*2);ctx.fill();
+
+            // Left hand pushes UP (CCW contribution)
+            var fLen=Math.min(70,force);
+            drawArrow(ctx, -wheelR, 0, -wheelR, -fLen, '#3b82f6', 3);
+            drawLabel(ctx, 'F='+force+'N (up)', -wheelR-15, -fLen/2, '#3b82f6', 'right', 11);
+            // Right hand pushes DOWN (also CCW contribution)
+            drawArrow(ctx, wheelR, 0, wheelR, fLen, '#ef4444', 3);
+            drawLabel(ctx, 'F='+force+'N (down)', wheelR+15, fLen/2, '#ef4444', 'left', 11);
+
+            // Diameter label
+            ctx.save(); ctx.strokeStyle='rgba(250,204,21,.3)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+            ctx.beginPath(); ctx.moveTo(-wheelR,14); ctx.lineTo(wheelR,14); ctx.stroke();
+            ctx.setLineDash([]);
+            drawLabel(ctx, 'd = '+(armLen*2).toFixed(2)+' m', 0, 30, '#facc15', 'center', 12);
+            ctx.restore();
+
+            // CCW arrow
+            ctx.save(); ctx.strokeStyle='rgba(96,165,250,.5)'; ctx.lineWidth=3;
+            ctx.beginPath(); ctx.arc(0,0,wheelR+25, -0.5, PI*1.2); ctx.stroke();
+            drawArrow(ctx,
+                (wheelR+25)*Math.cos(PI*1.2-0.05), (wheelR+25)*Math.sin(PI*1.2-0.05),
+                (wheelR+25)*Math.cos(PI*1.2), (wheelR+25)*Math.sin(PI*1.2),
+                'rgba(96,165,250,.6)', 2);
+            drawLabel(ctx, '↺ ACW', 0, -wheelR-40, '#60a5fa', 'center', 13);
+            ctx.restore();
+
+            ctx.restore();
+
+            ctx.save(); ctx.font='800 26px "JetBrains Mono"'; ctx.fillStyle='#fff'; ctx.textAlign='right';
+            ctx.fillText('τ = '+moment.toFixed(1)+' N m', W-20, H-30); ctx.restore();
+
+            calcDiv.innerHTML =
+                '<span class="calc-label">🚗 Steering Wheel — Couple:</span><br>' +
+                'Left hand pushes UP, right hand pushes DOWN → both contribute to <strong>↺ ACW</strong> rotation.<br><br>' +
+                'Torque = F × d = '+force+' × '+(armLen*2).toFixed(2)+' = <span class="calc-val highlight-row">'+moment.toFixed(1)+' N m (ACW)</span><br><br>' +
+                '<span class="calc-label">💡</span> ΣF = 0 (forces cancel) but Στ ≠ 0 → <strong>pure rotation</strong>.<br>' +
+                'Both forces create ACW moments: left force (up) × left radius + right force (down) × right radius.';
+
+        // ============ PROPELLER ============
+        } else if(scenario === 'propeller'){
+            var cx = W*0.45, cy = H*0.45, bladeR = 130;
+            moment = 3 * force * 0.25;
+            signedMoment = -moment;
+
+            ctx.save(); ctx.translate(cx,cy); ctx.rotate(rotAngle);
+            ctx.fillStyle='#475569'; ctx.strokeStyle='#94a3b8'; ctx.lineWidth=2;
+            ctx.beginPath(); ctx.arc(0,0,16,0,PI*2); ctx.fill(); ctx.stroke();
+            for(var i=0;i<3;i++){
+                var a=i*PI*2/3;
+                ctx.save(); ctx.rotate(a);
+                ctx.fillStyle='rgba(96,165,250,.25)'; ctx.strokeStyle='#60a5fa'; ctx.lineWidth=2;
+                ctx.beginPath();
+                ctx.moveTo(16,0);
+                ctx.quadraticCurveTo(bladeR*0.4,-22,bladeR,-6);
+                ctx.lineTo(bladeR,6);
+                ctx.quadraticCurveTo(bladeR*0.4,18,16,0);
+                ctx.fill(); ctx.stroke();
+                // Force on each blade (perpendicular to blade)
+                drawArrow(ctx, bladeR, 0, bladeR, -(force*0.5), '#22c55e', 2);
+                drawLabel(ctx, 'F', bladeR+10, -(force*0.25), '#22c55e', 'left', 10);
+                ctx.restore();
+            }
+            // CCW indicator
+            ctx.save(); ctx.strokeStyle='rgba(96,165,250,.4)'; ctx.lineWidth=3;
+            ctx.beginPath(); ctx.arc(0,0,bladeR+20, 0.2, PI*1.5); ctx.stroke();
+            drawLabel(ctx, '↺', (bladeR+35)*Math.cos(PI*0.8), (bladeR+35)*Math.sin(PI*0.8), 'rgba(96,165,250,.6)', 'center', 20);
+            ctx.restore();
+            ctx.restore();
+
+            ctx.save(); ctx.font='800 26px "JetBrains Mono"'; ctx.fillStyle='#fff'; ctx.textAlign='right';
+            ctx.fillText('τ = '+moment.toFixed(1)+' N m', W-20, H-30); ctx.restore();
+
+            calcDiv.innerHTML =
+                '<span class="calc-label">✈️ Propeller (3 blades, each perpendicular force):</span><br>' +
+                'Each: F = '+force+' N at r = 0.25 m → τ = '+force+' × 0.25 = '+(force*0.25).toFixed(1)+' N m<br>' +
+                'Total = 3 × '+(force*0.25).toFixed(1)+' = <span class="calc-val highlight-row">'+moment.toFixed(1)+' N m (ACW)</span><br><br>' +
+                '<span class="calc-label">💡</span> Engine provides this torque. Each blade pushes air backward → reaction pushes aircraft forward.';
+        }
+    };
+
+    // ===== ANGLE TABLE =====
+    function updateAngleTable(){
+        var tbody = document.getElementById('angleTableBody');
+        if(!tbody) return;
+        var angles = [0,15,30,45,60,75,90,120,150,180];
+        var html = '';
+        for(var i=0;i<angles.length;i++){
+            var a = angles[i], s = Math.sin(a*PI/180);
+            var dp = armLen*s, mom = force*dp;
+            var eff = '';
+            if(a===0||a===180) eff='❌ Zero';
+            else if(a===90) eff='✅ Maximum';
+            else if(s>0.85) eff='🟢 Excellent';
+            else if(s>0.5) eff='🟡 Good';
+            else eff='🟠 Poor';
+            var hl = (a===angle) ? ' style="background:#1e3a5f;color:#fff;font-weight:700"' : '';
+            html += '<tr'+hl+'><td>'+a+'°'+(a===angle?' ◄':'')+'</td><td>'+s.toFixed(4)+'</td><td>'+(dp*100).toFixed(1)+' cm</td><td>'+mom.toFixed(1)+' N m</td><td>'+eff+'</td></tr>';
+        }
+        tbody.innerHTML = html;
+    }
+    updateAngleTable();
+    rotateDraw();
+})();
     // ===== DRAW RIGHT ANGLE SYMBOL =====
     function drawRightAngle(ctx, x, y, angle1, angle2, size, color){
         ctx.save();
