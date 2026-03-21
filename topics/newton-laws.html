@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newton's Laws of Motion | Physics Lab 6091</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .sim-container canvas { aspect-ratio: 2; }
+        .fbd-canvas { aspect-ratio: 4/3 !important; }
+        .connected-canvas { aspect-ratio: 16/9 !important; }
+        .force-arrow-legend { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.8rem; }
+        .legend-item { display:flex; align-items:center; gap:.35rem; font-size:.82rem; color:rgba(255,255,255,.7); }
+        .legend-dot { width:12px; height:12px; border-radius:3px; }
+        .scenario-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:.7rem; margin:1rem 0; }
+        .scenario-card { padding:.8rem; background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.1); border-radius:8px; cursor:pointer; transition:all .2s; text-align:center; color:rgba(255,255,255,.7); font-size:.85rem; }
+        .scenario-card:hover, .scenario-card.active { border-color:var(--primary-light); background:rgba(74,158,255,.1); color:#fff; }
+        .scenario-card .sc-icon { font-size:1.6rem; margin-bottom:.3rem; }
+        .dual-fbd { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0; }
+        .dual-fbd canvas { aspect-ratio:1 !important; }
+        .calc-display { background:rgba(0,0,0,.3); border-radius:8px; padding:1rem; margin-top:1rem; font-family:var(--font-mono); font-size:.88rem; color:rgba(255,255,255,.85); line-height:1.8; }
+        .calc-display .calc-label { color:var(--primary-light); font-weight:600; }
+        .calc-display .calc-val { color:#34d399; }
+        .highlight-row { background:rgba(74,158,255,.15); padding:.2rem .5rem; border-radius:4px; display:inline-block; margin:.1rem 0; }
+    </style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="topic-header">
+    <nav class="navbar">
+        <a href="../index.html" class="logo" style="text-decoration:none">⚛️ Physics Lab 6091</a>
+        <div class="nav-links">
+            <a href="../index.html">← All Topics</a>
+        </div>
+    </nav>
+    <div class="topic-hero">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a><span>›</span> Newton's Laws of Motion
+        </div>
+        <h1>🚀 Newton's Laws of Motion</h1>
+        <p>Inertia, F = ma, action-reaction pairs, free body diagrams, connected objects &amp; types of forces</p>
+    </div>
+</header>
+
+<!-- ============ TAB NAV ============ -->
+<div class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="theory"><span class="tab-emoji">📖</span> Theory</button>
+    <button class="tab-btn" data-tab="fma-lab"><span class="tab-emoji">🔬</span> F = ma Lab</button>
+    <button class="tab-btn" data-tab="fbd"><span class="tab-emoji">📐</span> FBD Explorer</button>
+    <button class="tab-btn" data-tab="connected"><span class="tab-emoji">🔗</span> Connected Objects</button>
+    <button class="tab-btn" data-tab="quiz"><span class="tab-emoji">✏️</span> Practice</button>
+</div>
+
+<!-- ============================================================
+     TAB 1 — THEORY
+     ============================================================ -->
+<div class="tab-content active" id="tab-theory">
+
+    <!-- ===== NEWTON'S FIRST LAW ===== -->
+    <div class="content-card">
+        <h2>⚖️ Newton's First Law — The Law of Inertia</h2>
+
+        <div class="formula-box">
+            <span class="formula-label">Newton's First Law</span>
+            <span class="formula">Every body continues in its state of rest or uniform motion in a straight line unless acted upon by a resultant external force.</span>
+        </div>
+
+        <h3>What Is Inertia?</h3>
+        <p><strong>Inertia</strong> is the tendency of an object to <em>resist any change</em> in its state of motion. It is <strong>not a force</strong> — it is a property of matter.</p>
+
+        <div class="key-concept">
+            <strong>💡 Key Idea:</strong> The <strong>mass</strong> of an object is a measure of its inertia. A more massive object has greater inertia — it is harder to start moving, harder to stop, and harder to change direction.
+        </div>
+
+        <h3>Understanding the First Law</h3>
+        <ul>
+            <li>If the <strong>resultant force = 0</strong>, the object is either <strong>at rest</strong> or moving at <strong>constant velocity</strong> (constant speed in a straight line).</li>
+            <li>An object does <strong>not</strong> need a force to keep moving — only to <strong>change</strong> its motion.</li>
+            <li>"Resultant force" means the <strong>vector sum</strong> of all forces. Individual forces may exist, but if they cancel out, the result is the same as no force.</li>
+        </ul>
+
+        <h3>Everyday Examples</h3>
+        <div class="example-box">
+            <h4>🚗 Seatbelts</h4>
+            <p>When a car stops suddenly, your body tends to <strong>continue moving forward</strong> (inertia). The seatbelt provides the external force to decelerate your body with the car.</p>
+        </div>
+        <div class="example-box">
+            <h4>🪙 Coin on Card Trick</h4>
+            <p>Place a coin on a card on top of a glass. Flick the card away quickly — the coin drops into the glass. The coin's <strong>inertia</strong> keeps it roughly stationary while the card is swept away.</p>
+        </div>
+        <div class="example-box">
+            <h4>🧹 Hitting a Dusty Carpet</h4>
+            <p>When you beat a carpet, the carpet suddenly moves forward but the dust stays behind due to inertia, separating from the carpet.</p>
+        </div>
+    </div>
+
+    <!-- ===== NEWTON'S SECOND LAW ===== -->
+    <div class="content-card">
+        <h2>🔥 Newton's Second Law — F = ma</h2>
+
+        <div class="formula-box">
+            <span class="formula-label">Newton's Second Law</span>
+            <span class="formula">F<sub>net</sub> = m × a</span>
+        </div>
+
+        <p>The <strong>resultant (net) force</strong> acting on an object equals the product of its <strong>mass</strong> and <strong>acceleration</strong>.</p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Quantity</th><th>Symbol</th><th>SI Unit</th><th>Notes</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Resultant Force</td><td>F</td><td>Newton (N)</td><td>Vector — has direction</td></tr>
+                    <tr><td>Mass</td><td>m</td><td>kilogram (kg)</td><td>Scalar — always positive</td></tr>
+                    <tr><td>Acceleration</td><td>a</td><td>m/s²</td><td>Vector — same direction as F</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="key-concept">
+            <strong>💡 Definition of 1 Newton:</strong> 1 N is the resultant force needed to give a <strong>1 kg</strong> mass an acceleration of <strong>1 m/s²</strong>.
+        </div>
+
+        <h3>Weight — A Special Case of F = ma</h3>
+        <div class="formula-box">
+            <span class="formula-label">Weight</span>
+            <span class="formula">W = m × g &nbsp;&nbsp;&nbsp; (g = 10 m/s² for O-Levels)</span>
+        </div>
+        <p>Weight is the <strong>gravitational force</strong> on an object. Since gravity causes a free-falling object to accelerate at <em>g</em>, applying F = ma gives W = mg.</p>
+
+        <div class="warning-box">
+            <strong>⚠️ Common Mistake:</strong> Mass and weight are <strong>not</strong> the same. Mass (kg) is a measure of matter; weight (N) is a gravitational force. A 60 kg person has a weight of 600 N on Earth, but only ~100 N on the Moon.
+        </div>
+
+        <!-- Worked Example 1 -->
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example 1 — Horizontal Force</div>
+            <div class="worked-example-body">
+                <p><strong>Question:</strong> A 4 kg block on a smooth (frictionless) surface is pushed by a horizontal force of 20 N. Find the acceleration.</p>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <p>Identify: F = 20 N, m = 4 kg, surface is smooth → no friction.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <p>Apply Newton's Second Law:</p>
+                        <span class="math">F = ma</span><br>
+                        <span class="math">20 = 4 × a</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <p>Solve for acceleration:</p>
+                        <span class="math">a = 20 ÷ 4 = 5.0 m/s²</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Worked Example 2 -->
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example 2 — With Friction</div>
+            <div class="worked-example-body">
+                <p><strong>Question:</strong> A 5 kg box is pushed by a 40 N horizontal force on a rough surface. Friction is 15 N. Find the acceleration.</p>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <p>Identify forces in the horizontal direction:</p>
+                        <p>Applied force = 40 N (→) &nbsp;&nbsp; Friction = 15 N (←)</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <p>Find resultant (net) force:</p>
+                        <span class="math">F<sub>net</sub> = 40 − 15 = 25 N (→)</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <p>Apply F = ma:</p>
+                        <span class="math">25 = 5 × a</span><br>
+                        <span class="math">a = 25 ÷ 5 = 5.0 m/s² (→)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NEWTON'S THIRD LAW ===== -->
+    <div class="content-card">
+        <h2>🔄 Newton's Third Law — Action &amp; Reaction</h2>
+
+        <div class="formula-box">
+            <span class="formula-label">Newton's Third Law</span>
+            <span class="formula">If body A exerts a force on body B, then body B exerts an equal and opposite force on body A.</span>
+        </div>
+
+        <h3>Properties of Action–Reaction Pairs</h3>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Property</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td>Equal in magnitude</td><td>Both forces are the <strong>same size</strong></td></tr>
+                    <tr><td>Opposite in direction</td><td>They point in <strong>opposite directions</strong></td></tr>
+                    <tr><td>Act on <strong>different</strong> bodies</td><td>One force on body A, the other on body B</td></tr>
+                    <tr><td>Same type of force</td><td>Both are the same kind (e.g. both gravitational, both contact)</td></tr>
+                    <tr><td>Exist simultaneously</td><td>They appear and disappear <strong>together</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ Action–Reaction ≠ Balanced Forces!</strong><br>
+            Balanced forces act on the <strong>same</strong> object. Action–reaction pairs act on <strong>different</strong> objects. A book resting on a table: its weight and the normal force are <strong>balanced forces</strong> (both act on the book). The action–reaction pair for the book's weight is the <em>gravitational pull of the book on the Earth</em>.
+        </div>
+
+        <h3>Examples</h3>
+        <div class="example-box">
+            <h4>🚶 Walking</h4>
+            <p><strong>Action:</strong> Your foot pushes <strong>backward</strong> on the ground (friction).<br>
+            <strong>Reaction:</strong> The ground pushes your foot <strong>forward</strong> (friction).<br>
+            Both forces are <em>frictional forces</em> and act on <em>different bodies</em> (foot vs ground).</p>
+        </div>
+        <div class="example-box">
+            <h4>🚀 Rocket Propulsion</h4>
+            <p><strong>Action:</strong> Rocket pushes exhaust gases <strong>downward</strong>.<br>
+            <strong>Reaction:</strong> Exhaust gases push rocket <strong>upward</strong>.<br>
+            This is why rockets work in space — no air needed!</p>
+        </div>
+    </div>
+
+    <!-- ===== TYPES OF FORCES ===== -->
+    <div class="content-card">
+        <h2>🏷️ Types of Forces</h2>
+        <p>In O-Level Physics, you need to identify and describe several types of forces. Each has specific properties and directions.</p>
+
+        <div class="force-list">
+            <div class="force-item">
+                <div class="force-color" style="background:#ef444433;color:#ef4444">W</div>
+                <div>
+                    <h4>Weight (Gravitational Force)</h4>
+                    <p>W = mg. Acts <strong>vertically downward</strong> from centre of gravity toward centre of Earth. Acts on all objects with mass, even in mid-air.</p>
+                </div>
+            </div>
+            <div class="force-item">
+                <div class="force-color" style="background:#22c55e33;color:#22c55e">N</div>
+                <div>
+                    <h4>Normal Contact Force</h4>
+                    <p>Acts <strong>perpendicular to the surface</strong> of contact. A "push-back" force from a surface. Only exists when objects are in contact.</p>
+                </div>
+            </div>
+            <div class="force-item">
+                <div class="force-color" style="background:#f9731633;color:#f97316">f</div>
+                <div>
+                    <h4>Friction</h4>
+                    <p>Acts <strong>parallel to the surface</strong>, opposing motion (or attempted motion). Depends on surface roughness and normal force. f ≤ μN.</p>
+                </div>
+            </div>
+            <div class="force-item">
+                <div class="force-color" style="background:#a855f733;color:#a855f7">T</div>
+                <div>
+                    <h4>Tension</h4>
+                    <p>A <strong>pulling force</strong> along a string, rope, or cable. Acts <strong>away from the object</strong> along the line of the string. For a massless string, tension is the same throughout.</p>
+                </div>
+            </div>
+            <div class="force-item">
+                <div class="force-color" style="background:#06b6d433;color:#06b6d4">D</div>
+                <div>
+                    <h4>Air Resistance / Drag</h4>
+                    <p>Acts <strong>opposite to velocity</strong> (against motion through a fluid). Increases with speed and surface area. At terminal velocity, drag = weight.</p>
+                </div>
+            </div>
+            <div class="force-item">
+                <div class="force-color" style="background:#3b82f633;color:#3b82f6">F</div>
+                <div>
+                    <h4>Applied / Push / Pull Force</h4>
+                    <p>Any externally applied force. Direction is specified in the problem. Can act at any angle.</p>
+                </div>
+            </div>
+            <div class="force-item">
+                <div class="force-color" style="background:#eab30833;color:#eab308">U</div>
+                <div>
+                    <h4>Upthrust (Buoyancy)</h4>
+                    <p>Upward force on an object in a fluid. Equals the <strong>weight of fluid displaced</strong>. Acts through centre of buoyancy.</p>
+                </div>
+            </div>
+            <div class="force-item">
+                <div class="force-color" style="background:#ec489933;color:#ec4899">S</div>
+                <div>
+                    <h4>Spring / Elastic Force</h4>
+                    <p>Restoring force in a stretched or compressed spring. Acts to return the spring to its natural length. F = kx (Hooke's Law).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TAB 2 — F = ma LAB
+     ============================================================ -->
+<div class="tab-content" id="tab-fma-lab">
+    <div class="content-card">
+        <h2>🔬 F = ma Interactive Lab</h2>
+        <p>Adjust the applied force, mass and friction to see how they affect acceleration. Watch the free body diagram update in real time, and see the block move!</p>
+    </div>
+
+    <div class="sim-container">
+        <canvas id="fmaCanvas" width="800" height="400"></canvas>
+
+        <div class="force-arrow-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div>Applied Force</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div>Friction</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Weight</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Normal Force</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#facc15"></div>Net Force</div>
+        </div>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>Applied Force: <span id="fmaForceVal" class="value-display">20 N</span></label>
+                <input type="range" id="fmaForce" min="0" max="100" value="20" step="1">
+            </div>
+            <div class="sim-control-group">
+                <label>Mass: <span id="fmaMassVal" class="value-display">5 kg</span></label>
+                <input type="range" id="fmaMass" min="1" max="20" value="5" step="0.5">
+            </div>
+            <div class="sim-control-group">
+                <label>Friction μ: <span id="fmaMuVal" class="value-display">0.00</span></label>
+                <input type="range" id="fmaMu" min="0" max="0.8" value="0" step="0.05">
+            </div>
+            <button class="sim-btn sim-btn-play" id="fmaPlay">▶ Play</button>
+            <button class="sim-btn sim-btn-reset" id="fmaReset">↺ Reset</button>
+        </div>
+
+        <div class="calc-display" id="fmaCalc">
+            <span class="calc-label">Calculations will appear here when you adjust controls.</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TAB 3 — FBD EXPLORER
+     ============================================================ -->
+<div class="tab-content" id="tab-fbd">
+    <div class="content-card">
+        <h2>📐 Free Body Diagram Explorer</h2>
+        <p>A <strong>Free Body Diagram (FBD)</strong> shows all forces acting <em>on</em> a single object, drawn as arrows from the object's centre. Choose a scenario below and adjust the parameters to see how forces change.</p>
+
+        <div class="key-concept">
+            <strong>💡 Rules for FBDs:</strong><br>
+            ① Only draw forces acting <strong>ON</strong> the object, not forces the object exerts on others.<br>
+            ② Arrow length represents <strong>magnitude</strong> (longer = larger).<br>
+            ③ Arrow direction represents the <strong>direction</strong> of the force.<br>
+            ④ Label every force clearly.
+        </div>
+    </div>
+
+    <div class="sim-container">
+        <div class="scenario-cards" id="fbdScenarios">
+            <div class="scenario-card active" data-scenario="rest">
+                <div class="sc-icon">📦</div>
+                Block at Rest on Table
+            </div>
+            <div class="scenario-card" data-scenario="pushed">
+                <div class="sc-icon">👉📦</div>
+                Block Pushed on Surface
+            </div>
+            <div class="scenario-card" data-scenario="incline">
+                <div class="sc-icon">📐📦</div>
+                Block on Incline
+            </div>
+            <div class="scenario-card" data-scenario="hanging">
+                <div class="sc-icon">🧵📦</div>
+                Hanging Mass
+            </div>
+            <div class="scenario-card" data-scenario="pulled_angle">
+                <div class="sc-icon">↗️📦</div>
+                Pulled at an Angle
+            </div>
+        </div>
+
+        <canvas id="fbdCanvas" width="800" height="500" class="fbd-canvas"></canvas>
+
+        <div class="sim-controls" id="fbdControls">
+            <div class="sim-control-group">
+                <label>Mass: <span id="fbdMassVal" class="value-display">5 kg</span></label>
+                <input type="range" id="fbdMass" min="1" max="20" value="5" step="0.5">
+            </div>
+            <div class="sim-control-group" id="fbdAngleGroup" style="display:none">
+                <label>Angle: <span id="fbdAngleVal" class="value-display">30°</span></label>
+                <input type="range" id="fbdAngle" min="5" max="60" value="30" step="1">
+            </div>
+            <div class="sim-control-group" id="fbdAppliedGroup" style="display:none">
+                <label>Applied F: <span id="fbdAppliedVal" class="value-display">25 N</span></label>
+                <input type="range" id="fbdApplied" min="0" max="100" value="25" step="1">
+            </div>
+            <div class="sim-control-group" id="fbdMuGroup" style="display:none">
+                <label>Friction μ: <span id="fbdMuVal" class="value-display">0.3</span></label>
+                <input type="range" id="fbdMu" min="0" max="0.8" value="0.3" step="0.05">
+            </div>
+        </div>
+
+        <div class="calc-display" id="fbdCalc"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TAB 4 — CONNECTED OBJECTS
+     ============================================================ -->
+<div class="tab-content" id="tab-connected">
+    <div class="content-card">
+        <h2>🔗 Connected Objects — Same Acceleration!</h2>
+        <p>When two objects are connected by an <strong>inextensible</strong> (inelastic) string, they must have the <strong>same acceleration</strong>. The string also has the <strong>same tension throughout</strong> (if massless).</p>
+
+        <div class="key-concept">
+            <strong>💡 Problem-Solving Strategy:</strong><br>
+            <strong>Step 1:</strong> Treat the <strong>whole system</strong> as one object to find acceleration.<br>
+            <strong>Step 2:</strong> Isolate <strong>one object</strong> and apply F = ma to find tension.
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ Inelastic string</strong> does not mean the string stores energy. It means the string does <strong>not stretch</strong>, so both objects have the same speed and acceleration at all times.
+        </div>
+    </div>
+
+    <div class="sim-container">
+        <canvas id="connCanvas" width="800" height="450" class="connected-canvas"></canvas>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>m₁ (table): <span id="connM1Val" class="value-display">3 kg</span></label>
+                <input type="range" id="connM1" min="1" max="15" value="3" step="0.5">
+            </div>
+            <div class="sim-control-group">
+                <label>m₂ (hanging): <span id="connM2Val" class="value-display">2 kg</span></label>
+                <input type="range" id="connM2" min="1" max="15" value="2" step="0.5">
+            </div>
+            <div class="sim-control-group">
+                <label>Friction μ: <span id="connMuVal" class="value-display">0.00</span></label>
+                <input type="range" id="connMu" min="0" max="0.5" value="0" step="0.05">
+            </div>
+            <button class="sim-btn sim-btn-play" id="connPlay">▶ Play</button>
+            <button class="sim-btn sim-btn-reset" id="connReset">↺ Reset</button>
+        </div>
+
+        <div class="calc-display" id="connCalc"></div>
+    </div>
+
+    <!-- Worked example for connected objects -->
+    <div class="content-card" style="margin-top:1.5rem">
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example — Connected Objects over a Pulley</div>
+            <div class="worked-example-body">
+                <p><strong>Question:</strong> A block of mass 4 kg on a smooth table is connected by a light string over a smooth pulley to a hanging block of mass 6 kg. Find (a) the acceleration and (b) the tension in the string. (g = 10 m/s²)</p>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <p><strong>System approach:</strong> The only unbalanced external force driving the system is the weight of m₂.</p>
+                        <span class="math">F<sub>net</sub> = m₂g = 6 × 10 = 60 N</span><br>
+                        <span class="math">Total mass = m₁ + m₂ = 4 + 6 = 10 kg</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <p><strong>(a) Find acceleration:</strong></p>
+                        <span class="math">a = F<sub>net</sub> / (m₁ + m₂) = 60 / 10 = 6.0 m/s²</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <p><strong>(b) Find tension:</strong> Isolate m₁ on the table. The only horizontal force is T.</p>
+                        <span class="math">T = m₁ × a = 4 × 6 = 24 N</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content">
+                        <p><strong>Check:</strong> Isolate m₂. Net downward force = m₂g − T = 60 − 24 = 36 N.</p>
+                        <span class="math">a = 36 / 6 = 6.0 m/s² ✓ Same acceleration!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TAB 5 — PRACTICE QUIZ
+     ============================================================ -->
+<div class="tab-content" id="tab-quiz">
+    <div class="content-card">
+        <h2>✏️ Practice Questions</h2>
+        <p>Test your understanding of Newton's Laws. Select an answer, then click <strong>Check</strong> to see instant feedback and worked solutions. Aim for 8/10 or above!</p>
+    </div>
+
+    <div class="quiz-container" id="quizContainer">
+
+        <!-- Q1 -->
+        <div class="quiz-question" id="q1">
+            <h4><span class="question-number">1</span> A ball rolls at constant velocity on a smooth, horizontal surface. What is the resultant force acting on the ball?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> A. A force in the direction of motion</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> B. A force opposite to the direction of motion</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> C. Zero</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> D. Equal to the weight of the ball</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q1','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q1-feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question" id="q2">
+            <h4><span class="question-number">2</span> Which property of an object is a measure of its inertia?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> A. Weight</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> B. Volume</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> C. Mass</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> D. Density</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q2','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q2-feedback"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question" id="q3">
+            <h4><span class="question-number">3</span> A resultant force of 24 N acts on a 6 kg object initially at rest. What is the speed of the object after 3 s?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> A. 4 m/s</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> B. 8 m/s</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> C. 12 m/s</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> D. 72 m/s</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q3','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q3-feedback"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="quiz-question" id="q4">
+            <h4><span class="question-number">4</span> A 5 kg block rests on a horizontal table. What is the normal contact force exerted by the table on the block? (g = 10 m/s²)</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> A. 5 N</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> B. 50 N</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> C. 0.5 N</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> D. 500 N</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q4','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q4-feedback"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="quiz-question" id="q5">
+            <h4><span class="question-number">5</span> A person pushes against a wall but the wall does not move. According to Newton's Third Law, the wall pushes back on the person with:</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> A. No force since the wall doesn't move</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> B. A smaller force than the push</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> C. An equal and opposite force</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> D. A force only if the wall moves</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q5','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q5-feedback"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="quiz-question" id="q6">
+            <h4><span class="question-number">6</span> A car accelerates forward on a road. What provides the forward force on the car?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> A. The engine pushing the car forward</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> B. Friction from the road on the tyres</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> C. The exhaust gases pushing the car</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> D. Air pushing the car forward</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q6','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q6-feedback"></div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="quiz-question" id="q7">
+            <h4><span class="question-number">7</span> Which of the following is a correct Newton's Third Law action–reaction pair?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> A. Weight of book on table &amp; normal force on book from table</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> B. Earth pulls book down &amp; book pulls Earth up</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> C. Applied force on object &amp; friction on object</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> D. Tension in string &amp; weight of hanging object</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q7','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q7-feedback"></div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="quiz-question" id="q8">
+            <h4><span class="question-number">8</span> Two blocks of 3 kg and 5 kg are connected by a light string on a smooth surface. A force of 16 N pulls the 3 kg block forward. What is the acceleration of the system?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> A. 1.0 m/s²</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> B. 2.0 m/s²</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> C. 3.2 m/s²</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> D. 5.3 m/s²</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q8','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q8-feedback"></div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="quiz-question" id="q9">
+            <h4><span class="question-number">9</span> Using the same setup as Q8 (3 kg and 5 kg blocks, 16 N applied force, smooth surface), what is the tension in the string between the blocks?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> A. 6 N</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> B. 10 N</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> C. 16 N</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> D. 8 N</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q9','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q9-feedback"></div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="quiz-question" id="q10">
+            <h4><span class="question-number">10</span> A 2 kg block on a smooth table is connected by a string over a frictionless pulley to a 3 kg hanging block. What is the acceleration? (g = 10 m/s²)</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> A. 2 m/s²</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> B. 4 m/s²</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> C. 6 m/s²</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> D. 10 m/s²</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q10','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q10-feedback"></div>
+        </div>
+
+    </div><!-- /quizContainer -->
+
+    <div class="quiz-score" id="quizScore" style="display:none">
+        <div class="score-number" id="scoreNum">0 / 10</div>
+        <p style="margin-top:.5rem;color:var(--text-secondary)" id="scoreMsg"></p>
+        <button class="btn btn-primary" style="margin-top:1rem" onclick="resetQuiz()">Try Again</button>
+    </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+    <p><strong>Physics Lab 6091</strong> — Newton's Laws of Motion</p>
+    <p style="margin-top:.5rem">
+        <a href="../index.html">← Back to Topics</a>
+    </p>
+</footer>
+
+<a href="#" class="back-to-top" id="btt">↑</a>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ===================== UTILITIES =====================
+const G = 10; // m/s²
+
+function drawArrow(ctx, x1, y1, x2, y2, color, lw = 3) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    if (len < 2) return;
+    const angle = Math.atan2(dy, dx);
+    const headLen = Math.min(14, len * 0.35);
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = lw;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI/7), y2 - headLen * Math.sin(angle - Math.PI/7));
+    ctx.lineTo(x2 - headLen * Math.cos(angle + Math.PI/7), y2 - headLen * Math.sin(angle + Math.PI/7));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+}
+
+function drawLabel(ctx, text, x, y, color, align='center', size=13) {
+    ctx.save();
+    ctx.font = `600 ${size}px Inter, sans-serif`;
+    ctx.fillStyle = color;
+    ctx.textAlign = align;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x, y);
+    ctx.restore();
+}
+
+function drawBlock(ctx, x, y, w, h, color, label) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    const r = 6;
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.lineTo(x+w-r, y);
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r);
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h);
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r);
+    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    if (label) {
+        ctx.font = '700 14px Inter, sans-serif';
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, x+w/2, y+h/2);
+    }
+    ctx.restore();
+}
+
+function drawGround(ctx, y, w) {
+    ctx.save();
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < w; x += 18) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - 10, y + 14);
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+function clearCanvas(ctx, canvas) {
+    const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    g.addColorStop(0, '#0f172a');
+    g.addColorStop(1, '#1e293b');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+
+// ===================== TAB SYSTEM =====================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        // Re-draw canvases when tab is shown
+        if (btn.dataset.tab === 'fma-lab') fmaDraw();
+        if (btn.dataset.tab === 'fbd') fbdDraw();
+        if (btn.dataset.tab === 'connected') connDraw();
+    });
+});
+
+// ===================== BACK TO TOP =====================
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => {
+    btt.classList.toggle('visible', window.scrollY > 400);
+});
+
+
+// ============================================================
+//  SIMULATION 1 — F = ma LAB
+// ============================================================
+(() => {
+    const canvas = document.getElementById('fmaCanvas');
+    const ctx = canvas.getContext('2d');
+    const forceSlider = document.getElementById('fmaForce');
+    const massSlider  = document.getElementById('fmaMass');
+    const muSlider    = document.getElementById('fmaMu');
+    const playBtn     = document.getElementById('fmaPlay');
+    const resetBtn    = document.getElementById('fmaReset');
+    const calcDiv     = document.getElementById('fmaCalc');
+
+    let appliedF = 20, mass = 5, mu = 0;
+    let blockX = 100, blockV = 0, running = false, animId = null;
+    const dt = 0.016, blockW = 90, blockH = 60;
+    const groundY = 320;
+
+    function getPhysics() {
+        const weight = mass * G;
+        const normal = weight;
+        const frictionMax = mu * normal;
+        let friction, netF, accel;
+
+        if (blockV === 0 && appliedF <= frictionMax) {
+            friction = appliedF;
+            netF = 0;
+        } else {
+            friction = frictionMax;
+            netF = appliedF - friction;
+        }
+        accel = netF / mass;
+        return { weight, normal, friction, netF, accel, frictionMax };
+    }
+
+    window.fmaDraw = function() {
+        clearCanvas(ctx, canvas);
+        drawGround(ctx, groundY, canvas.width);
+
+        const p = getPhysics();
+        const bx = blockX, by = groundY - blockH;
+        const cx = bx + blockW/2, cy = by + blockH/2;
+
+        // -- speed lines --
+        if (blockV > 0.5) {
+            ctx.save();
+            ctx.strokeStyle = 'rgba(96,165,250,0.2)';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 4; i++) {
+                const lx = bx - 10 - i*12;
+                const ly = by + 10 + i*14;
+                ctx.beginPath();
+                ctx.moveTo(lx, ly);
+                ctx.lineTo(lx - 15 - blockV*2, ly);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        // -- block --
+        drawBlock(ctx, bx, by, blockW, blockH, '#3b82f6', mass + ' kg');
+
+        // -- force arrows (scaled proportionally) --
+        const maxF = Math.max(p.weight, appliedF, p.friction, 1);
+        const scale = 75 / maxF;
+
+        // Weight (down)
+        const wLen = p.weight * scale;
+        drawArrow(ctx, cx, by + blockH, cx, by + blockH + wLen, '#ef4444');
+        drawLabel(ctx, 'W = ' + p.weight.toFixed(0) + ' N', cx + 50, by + blockH + wLen/2, '#ef4444', 'left');
+
+        // Normal (up)
+        drawArrow(ctx, cx, by, cx, by - wLen, '#22c55e');
+        drawLabel(ctx, 'N = ' + p.normal.toFixed(0) + ' N', cx + 50, by - wLen/2, '#22c55e', 'left');
+
+        // Applied (right)
+        if (appliedF > 0) {
+            const fLen = appliedF * scale;
+            drawArrow(ctx, bx + blockW, cy, bx + blockW + fLen, cy, '#60a5fa');
+            drawLabel(ctx, 'F = ' + appliedF.toFixed(0) + ' N', bx + blockW + fLen + 5, cy - 2, '#60a5fa', 'left');
+        }
+
+        // Friction (left)
+        if (p.friction > 0.1) {
+            const frLen = p.friction * scale;
+            drawArrow(ctx, bx, cy, bx - frLen, cy, '#f97316');
+            drawLabel(ctx, 'f = ' + p.friction.toFixed(1) + ' N', bx - frLen - 5, cy - 2, '#f97316', 'right');
+        }
+
+        // Net force indicator (top)
+        if (p.netF > 0.01) {
+            const nLen = p.netF * scale;
+            drawArrow(ctx, cx, by - wLen - 30, cx + nLen, by - wLen - 30, '#facc15', 4);
+            drawLabel(ctx, 'Fnet = ' + p.netF.toFixed(1) + ' N', cx + nLen + 5, by - wLen - 30, '#facc15', 'left', 14);
+        }
+
+        // -- info overlay --
+        ctx.save();
+        ctx.font = '500 14px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#94a3b8';
+        ctx.textAlign = 'left';
+        ctx.fillText('v = ' + blockV.toFixed(2) + ' m/s', 20, 25);
+        ctx.fillText('a = ' + p.accel.toFixed(2) + ' m/s²', 20, 45);
+        ctx.restore();
+
+        // -- calc panel --
+        const status = p.netF < 0.01 ? '⚖️ Equilibrium (a = 0)' : '🚀 Accelerating';
+        calcDiv.innerHTML =
+            `<span class="calc-label">Step 1:</span> Weight = mg = ${mass} × ${G} = <span class="calc-val">${p.weight.toFixed(0)} N</span><br>` +
+            `<span class="calc-label">Step 2:</span> Normal force N = ${p.normal.toFixed(0)} N (vertical equilibrium)<br>` +
+            `<span class="calc-label">Step 3:</span> Friction = μN = ${mu} × ${p.normal.toFixed(0)} = <span class="calc-val">${p.frictionMax.toFixed(1)} N</span><br>` +
+            `<span class="calc-label">Step 4:</span> F<sub>net</sub> = F − f = ${appliedF.toFixed(0)} − ${p.friction.toFixed(1)} = <span class="calc-val">${p.netF.toFixed(1)} N</span><br>` +
+            `<span class="calc-label">Step 5:</span> a = F<sub>net</sub> / m = ${p.netF.toFixed(1)} / ${mass} = <span class="calc-val highlight-row">${p.accel.toFixed(2)} m/s²</span><br>` +
+            `<br><strong>${status}</strong>`;
+    };
+
+    function animate() {
+        if (!running) return;
+        const p = getPhysics();
+        blockV += p.accel * dt;
+        if (blockV < 0) blockV = 0;
+        blockX += blockV * dt * 50;
+        if (blockX > canvas.width + 20) blockX = -blockW - 10;
+        fmaDraw();
+        animId = requestAnimationFrame(animate);
+    }
+
+    forceSlider.addEventListener('input', () => {
+        appliedF = parseFloat(forceSlider.value);
+        document.getElementById('fmaForceVal').textContent = appliedF + ' N';
+        fmaDraw();
+    });
+    massSlider.addEventListener('input', () => {
+        mass = parseFloat(massSlider.value);
+        document.getElementById('fmaMassVal').textContent = mass + ' kg';
+        fmaDraw();
+    });
+    muSlider.addEventListener('input', () => {
+        mu = parseFloat(muSlider.value);
+        document.getElementById('fmaMuVal').textContent = mu.toFixed(2);
+        fmaDraw();
+    });
+
+    playBtn.addEventListener('click', () => {
+        running = !running;
+        playBtn.textContent = running ? '⏸ Pause' : '▶ Play';
+        if (running) animate();
+    });
+    resetBtn.addEventListener('click', () => {
+        running = false;
+        playBtn.textContent = '▶ Play';
+        cancelAnimationFrame(animId);
+        blockX = 100;
+        blockV = 0;
+        fmaDraw();
+    });
+
+    fmaDraw();
+})();
+
+
+// ============================================================
+//  SIMULATION 2 — FBD EXPLORER
+// ============================================================
+(() => {
+    const canvas = document.getElementById('fbdCanvas');
+    const ctx = canvas.getContext('2d');
+    let scenario = 'rest';
+    let fbdMass = 5, fbdAngle = 30, fbdApplied = 25, fbdMu = 0.3;
+
+    const angleGroup   = document.getElementById('fbdAngleGroup');
+    const appliedGroup = document.getElementById('fbdAppliedGroup');
+    const muGroup      = document.getElementById('fbdMuGroup');
+    const calcDiv      = document.getElementById('fbdCalc');
+
+    // Scenario buttons
+    document.querySelectorAll('#fbdScenarios .scenario-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('#fbdScenarios .scenario-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            scenario = card.dataset.scenario;
+            updateControls();
+            fbdDraw();
+        });
+    });
+
+    function updateControls() {
+        angleGroup.style.display   = ['incline','pulled_angle'].includes(scenario) ? '' : 'none';
+        appliedGroup.style.display = ['pushed','pulled_angle'].includes(scenario)  ? '' : 'none';
+        muGroup.style.display      = ['pushed','incline'].includes(scenario)       ? '' : 'none';
+    }
+    updateControls();
+
+    // Sliders
+    document.getElementById('fbdMass').addEventListener('input', e => {
+        fbdMass = parseFloat(e.target.value);
+        document.getElementById('fbdMassVal').textContent = fbdMass + ' kg';
+        fbdDraw();
+    });
+    document.getElementById('fbdAngle').addEventListener('input', e => {
+        fbdAngle = parseFloat(e.target.value);
+        document.getElementById('fbdAngleVal').textContent = fbdAngle + '°';
+        fbdDraw();
+    });
+    document.getElementById('fbdApplied').addEventListener('input', e => {
+        fbdApplied = parseFloat(e.target.value);
+        document.getElementById('fbdAppliedVal').textContent = fbdApplied + ' N';
+        fbdDraw();
+    });
+    document.getElementById('fbdMu').addEventListener('input', e => {
+        fbdMu = parseFloat(e.target.value);
+        document.getElementById('fbdMuVal').textContent = fbdMu.toFixed(2);
+        fbdDraw();
+    });
+
+    window.fbdDraw = function() {
+        clearCanvas(ctx, canvas);
+        const W = canvas.width, H = canvas.height;
+        const leftW = W * 0.48, rightX = W * 0.52;
+
+        // Divider line
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+        ctx.setLineDash([6,6]);
+        ctx.beginPath();
+        ctx.moveTo(W*0.5, 20);
+        ctx.lineTo(W*0.5, H-20);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+
+        // Labels
+        drawLabel(ctx, 'Physical Setup', leftW/2, 22, 'rgba(255,255,255,0.4)', 'center', 12);
+        drawLabel(ctx, 'Free Body Diagram', rightX + (W-rightX)/2, 22, 'rgba(255,255,255,0.4)', 'center', 12);
+
+        const weight = fbdMass * G;
+        const rad = fbdAngle * Math.PI / 180;
+        let forces = {};
+        let calcHTML = '';
+
+        // ---- DRAW SCENE (left) ----
+        const scx = leftW / 2, scy = H * 0.55;
+        const bw = 70, bh = 50;
+
+        if (scenario === 'rest') {
+            // Table and block
+            drawGround(ctx, scy + bh/2, leftW);
+            drawBlock(ctx, scx - bw/2, scy - bh/2, bw, bh, '#3b82f6', fbdMass+'kg');
+            forces = { W: weight, N: weight };
+            calcHTML = `<span class="calc-label">Weight:</span> W = mg = ${fbdMass} × ${G} = <span class="calc-val">${weight.toFixed(0)} N ↓</span><br>` +
+                       `<span class="calc-label">Normal:</span> N = W = <span class="calc-val">${weight.toFixed(0)} N ↑</span><br>` +
+                       `<span class="calc-label">Net Force:</span> <span class="calc-val highlight-row">0 N — Block is in equilibrium</span>`;
+        }
+        else if (scenario === 'pushed') {
+            drawGround(ctx, scy + bh/2, leftW);
+            drawBlock(ctx, scx - bw/2, scy - bh/2, bw, bh, '#3b82f6', fbdMass+'kg');
+            // hand icon
+            drawLabel(ctx, '👉', scx - bw/2 - 25, scy, '#fff', 'center', 24);
+            const normal = weight;
+            const friction = Math.min(fbdMu * normal, fbdApplied);
+            const netF = fbdApplied - friction;
+            const accel = netF / fbdMass;
+            forces = { W: weight, N: normal, F: fbdApplied, f: friction };
+            calcHTML = `<span class="calc-label">Weight:</span> W = ${weight.toFixed(0)} N ↓<br>` +
+                       `<span class="calc-label">Normal:</span> N = ${normal.toFixed(0)} N ↑<br>` +
+                       `<span class="calc-label">Applied:</span> F = ${fbdApplied.toFixed(0)} N →<br>` +
+                       `<span class="calc-label">Friction:</span> f = μN = ${fbdMu}×${normal.toFixed(0)} = <span class="calc-val">${(fbdMu*normal).toFixed(1)} N ←</span><br>` +
+                       `<span class="calc-label">Net:</span> F<sub>net</sub> = ${fbdApplied.toFixed(0)} − ${friction.toFixed(1)} = <span class="calc-val">${netF.toFixed(1)} N</span><br>` +
+                       `<span class="calc-label">Accel:</span> a = ${netF.toFixed(1)} / ${fbdMass} = <span class="calc-val highlight-row">${accel.toFixed(2)} m/s²</span>`;
+        }
+        else if (scenario === 'incline') {
+            // Draw incline
+            const incW = 220, incH = incW * Math.tan(rad);
+            const ix = scx - incW/2, iy = scy + bh;
+            ctx.save();
+            ctx.fillStyle = '#334155';
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(ix, iy);
+            ctx.lineTo(ix + incW, iy);
+            ctx.lineTo(ix, iy - incH);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            // Angle arc
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(ix + incW, iy, 30, Math.PI, Math.PI + rad, true);
+            ctx.stroke();
+            drawLabel(ctx, fbdAngle + '°', ix + incW - 42, iy - 12, '#94a3b8', 'center', 12);
+            ctx.restore();
+
+            // Block on slope
+            const slopeMidX = ix + incW*0.45;
+            const slopeMidY = iy - incW*0.45 * Math.tan(rad);
+            ctx.save();
+            ctx.translate(slopeMidX, slopeMidY);
+            ctx.rotate(-rad);
+            drawBlock(ctx, -bw/2, -bh, bw, bh, '#3b82f6', fbdMass+'kg');
+            ctx.restore();
+
+            const wPar = weight * Math.sin(rad);
+            const wPerp = weight * Math.cos(rad);
+            const normal = wPerp;
+            const friction = fbdMu * normal;
+            const netF = wPar - friction;
+            const accel = Math.max(0, netF / fbdMass);
+            forces = { W: weight, N: normal, wPar, wPerp, f: friction };
+            calcHTML = `<span class="calc-label">Weight:</span> W = ${weight.toFixed(0)} N (vertically down)<br>` +
+                       `<span class="calc-label">W parallel:</span> mg sin${fbdAngle}° = ${weight.toFixed(0)} × ${Math.sin(rad).toFixed(3)} = <span class="calc-val">${wPar.toFixed(1)} N</span> (down slope)<br>` +
+                       `<span class="calc-label">W perpendicular:</span> mg cos${fbdAngle}° = ${weight.toFixed(0)} × ${Math.cos(rad).toFixed(3)} = <span class="calc-val">${wPerp.toFixed(1)} N</span> (into slope)<br>` +
+                       `<span class="calc-label">Normal:</span> N = mg cos${fbdAngle}° = <span class="calc-val">${normal.toFixed(1)} N</span><br>` +
+                       `<span class="calc-label">Friction:</span> f = μN = ${fbdMu}×${normal.toFixed(1)} = <span class="calc-val">${friction.toFixed(1)} N</span> (up slope)<br>` +
+                       `<span class="calc-label">Net:</span> F<sub>net</sub> = ${wPar.toFixed(1)} − ${friction.toFixed(1)} = <span class="calc-val highlight-row">${netF.toFixed(1)} N</span><br>` +
+                       `<span class="calc-label">Accel:</span> a = <span class="calc-val">${accel.toFixed(2)} m/s²</span> ${netF<=0 ? '(stationary — friction ≥ component)' : '(down slope)'}`;
+        }
+        else if (scenario === 'hanging') {
+            // String and block
+            ctx.save();
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(scx, 50);
+            ctx.lineTo(scx, scy - bh/2);
+            ctx.stroke();
+            // Support
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(scx - 30, 40, 60, 12);
+            ctx.restore();
+            drawBlock(ctx, scx - bw/2, scy - bh/2, bw, bh, '#3b82f6', fbdMass+'kg');
+            const tension = weight;
+            forces = { W: weight, T: tension };
+            calcHTML = `<span class="calc-label">Weight:</span> W = mg = <span class="calc-val">${weight.toFixed(0)} N ↓</span><br>` +
+                       `<span class="calc-label">Tension:</span> T = W = <span class="calc-val">${tension.toFixed(0)} N ↑</span><br>` +
+                       `<span class="calc-label">Net Force:</span> <span class="calc-val highlight-row">0 N — Equilibrium</span>`;
+        }
+        else if (scenario === 'pulled_angle') {
+            drawGround(ctx, scy + bh/2, leftW);
+            drawBlock(ctx, scx - bw/2, scy - bh/2, bw, bh, '#3b82f6', fbdMass+'kg');
+            // Pull arrow indicator
+            const pullEndX = scx + bw/2 + 40 * Math.cos(rad);
+            const pullEndY = scy - 40 * Math.sin(rad);
+            drawArrow(ctx, scx + bw/2, scy, pullEndX, pullEndY, 'rgba(96,165,250,0.5)', 2);
+
+            const Fx = fbdApplied * Math.cos(rad);
+            const Fy = fbdApplied * Math.sin(rad);
+            const normal = Math.max(0, weight - Fy);
+            const friction = fbdMu * normal;
+            const netH = Fx - friction;
+            const accel = Math.max(0, netH / fbdMass);
+            forces = { W: weight, N: normal, F: fbdApplied, f: friction, Fx, Fy };
+            calcHTML = `<span class="calc-label">Applied (horiz):</span> F cos${fbdAngle}° = ${fbdApplied}×${Math.cos(rad).toFixed(3)} = <span class="calc-val">${Fx.toFixed(1)} N →</span><br>` +
+                       `<span class="calc-label">Applied (vert):</span> F sin${fbdAngle}° = ${fbdApplied}×${Math.sin(rad).toFixed(3)} = <span class="calc-val">${Fy.toFixed(1)} N ↑</span><br>` +
+                       `<span class="calc-label">Weight:</span> W = <span class="calc-val">${weight.toFixed(0)} N ↓</span><br>` +
+                       `<span class="calc-label">Normal:</span> N = W − F sin${fbdAngle}° = ${weight.toFixed(0)} − ${Fy.toFixed(1)} = <span class="calc-val">${normal.toFixed(1)} N ↑</span><br>` +
+                       `<span class="calc-label">Friction:</span> f = μN = ${fbdMu}×${normal.toFixed(1)} = <span class="calc-val">${friction.toFixed(1)} N ←</span><br>` +
+                       `<span class="calc-label">Net horiz:</span> ${Fx.toFixed(1)} − ${friction.toFixed(1)} = <span class="calc-val highlight-row">${netH.toFixed(1)} N</span><br>` +
+                       `<span class="calc-label">Accel:</span> a = <span class="calc-val">${accel.toFixed(2)} m/s²</span>`;
+        }
+
+        // ---- DRAW FBD (right side) ----
+        const fbdCx = rightX + (W - rightX) / 2;
+        const fbdCy = H * 0.48;
+
+        // Dot
+        ctx.save();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(fbdCx, fbdCy, 6, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+
+        // Calculate scale
+        let allForces = Object.values(forces).filter(v => v > 0);
+        const maxF = Math.max(...allForces, 1);
+        const arrowScale = 100 / maxF;
+
+        if (scenario === 'rest') {
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx, fbdCy + forces.W*arrowScale, '#ef4444');
+            drawLabel(ctx, `W = ${forces.W.toFixed(0)} N`, fbdCx + 60, fbdCy + forces.W*arrowScale/2, '#ef4444');
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx, fbdCy - forces.N*arrowScale, '#22c55e');
+            drawLabel(ctx, `N = ${forces.N.toFixed(0)} N`, fbdCx + 60, fbdCy - forces.N*arrowScale/2, '#22c55e');
+        }
+        else if (scenario === 'pushed') {
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx, fbdCy + forces.W*arrowScale, '#ef4444');
+            drawLabel(ctx, `W = ${forces.W.toFixed(0)} N`, fbdCx + 65, fbdCy + forces.W*arrowScale*0.5, '#ef4444');
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx, fbdCy - forces.N*arrowScale, '#22c55e');
+            drawLabel(ctx, `N = ${forces.N.toFixed(0)} N`, fbdCx + 65, fbdCy - forces.N*arrowScale*0.5, '#22c55e');
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx + forces.F*arrowScale, fbdCy, '#60a5fa');
+            drawLabel(ctx, `F = ${forces.F.toFixed(0)} N`, fbdCx + forces.F*arrowScale*0.5, fbdCy - 18, '#60a5fa');
+            if (forces.f > 0.1) {
+                drawArrow(ctx, fbdCx, fbdCy, fbdCx - forces.f*arrowScale, fbdCy, '#f97316');
+                drawLabel(ctx, `f = ${forces.f.toFixed(1)} N`, fbdCx - forces.f*arrowScale*0.5, fbdCy - 18, '#f97316');
+            }
+        }
+        else if (scenario === 'incline') {
+            // Weight straight down
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx, fbdCy + forces.W*arrowScale, '#ef4444');
+            drawLabel(ctx, `W = ${forces.W.toFixed(0)} N`, fbdCx - 70, fbdCy + forces.W*arrowScale*0.7, '#ef4444');
+            // Normal (perpendicular to slope = at angle from vertical)
+            const nAngle = -Math.PI/2 + rad;
+            drawArrow(ctx, fbdCx, fbdCy,
+                fbdCx + Math.cos(nAngle)*forces.N*arrowScale,
+                fbdCy + Math.sin(nAngle)*forces.N*arrowScale, '#22c55e');
+            drawLabel(ctx, `N = ${forces.N.toFixed(1)} N`,
+                fbdCx + Math.cos(nAngle)*forces.N*arrowScale + 15,
+                fbdCy + Math.sin(nAngle)*forces.N*arrowScale, '#22c55e', 'left');
+            // Friction up slope
+            if (forces.f > 0.1) {
+                const fAngle = Math.PI - rad;
+                drawArrow(ctx, fbdCx, fbdCy,
+                    fbdCx + Math.cos(fAngle)*forces.f*arrowScale,
+                    fbdCy + Math.sin(fAngle)*forces.f*arrowScale, '#f97316');
+                drawLabel(ctx, `f = ${forces.f.toFixed(1)} N`,
+                    fbdCx + Math.cos(fAngle)*forces.f*arrowScale - 10,
+                    fbdCy + Math.sin(fAngle)*forces.f*arrowScale - 10, '#f97316', 'right');
+            }
+            // Component arrows (dashed)
+            ctx.save();
+            ctx.setLineDash([5,5]);
+            // mg sinθ down slope
+            const pAngle = -rad;
+            drawArrow(ctx, fbdCx, fbdCy,
+                fbdCx + Math.cos(pAngle)*forces.wPar*arrowScale,
+                fbdCy - Math.sin(pAngle)*forces.wPar*arrowScale, '#fca5a5', 2);
+            drawLabel(ctx, `mg sinθ = ${forces.wPar.toFixed(1)}`, fbdCx + 80, fbdCy + 65, '#fca5a5', 'center', 11);
+            ctx.restore();
+        }
+        else if (scenario === 'hanging') {
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx, fbdCy + forces.W*arrowScale, '#ef4444');
+            drawLabel(ctx, `W = ${forces.W.toFixed(0)} N`, fbdCx + 60, fbdCy + forces.W*arrowScale*0.5, '#ef4444');
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx, fbdCy - forces.T*arrowScale, '#a855f7');
+            drawLabel(ctx, `T = ${forces.T.toFixed(0)} N`, fbdCx + 60, fbdCy - forces.T*arrowScale*0.5, '#a855f7');
+        }
+        else if (scenario === 'pulled_angle') {
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx, fbdCy + forces.W*arrowScale, '#ef4444');
+            drawLabel(ctx, `W = ${forces.W.toFixed(0)} N`, fbdCx - 60, fbdCy + forces.W*arrowScale*0.5, '#ef4444', 'right');
+            drawArrow(ctx, fbdCx, fbdCy, fbdCx, fbdCy - forces.N*arrowScale, '#22c55e');
+            drawLabel(ctx, `N = ${forces.N.toFixed(1)} N`, fbdCx - 60, fbdCy - forces.N*arrowScale*0.5, '#22c55e', 'right');
+            // Applied at angle
+            drawArrow(ctx, fbdCx, fbdCy,
+                fbdCx + Math.cos(rad)*forces.F*arrowScale,
+                fbdCy - Math.sin(rad)*forces.F*arrowScale, '#60a5fa');
+            drawLabel(ctx, `F = ${forces.F.toFixed(0)} N`,
+                fbdCx + Math.cos(rad)*forces.F*arrowScale + 10,
+                fbdCy - Math.sin(rad)*forces.F*arrowScale - 5, '#60a5fa', 'left');
+            // Friction
+            if (forces.f > 0.1) {
+                drawArrow(ctx, fbdCx, fbdCy, fbdCx - forces.f*arrowScale, fbdCy, '#f97316');
+                drawLabel(ctx, `f = ${forces.f.toFixed(1)} N`, fbdCx - forces.f*arrowScale*0.5, fbdCy + 20, '#f97316');
+            }
+            // Angle arc
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(fbdCx, fbdCy, 28, -rad, 0);
+            ctx.stroke();
+            drawLabel(ctx, fbdAngle + '°', fbdCx + 36, fbdCy - 10, 'rgba(255,255,255,0.5)', 'left', 11);
+            ctx.restore();
+        }
+
+        calcDiv.innerHTML = calcHTML;
+    };
+
+    fbdDraw();
+})();
+
+
+// ============================================================
+//  SIMULATION 3 — CONNECTED OBJECTS
+// ============================================================
+(() => {
+    const canvas = document.getElementById('connCanvas');
+    const ctx = canvas.getContext('2d');
+    const m1Slider = document.getElementById('connM1');
+    const m2Slider = document.getElementById('connM2');
+    const muSlider = document.getElementById('connMu');
+    const playBtn  = document.getElementById('connPlay');
+    const resetBtn = document.getElementById('connReset');
+    const calcDiv  = document.getElementById('connCalc');
+
+    let m1 = 3, m2 = 2, mu = 0;
+    let offset = 0, velocity = 0, running = false, animId = null;
+    const dt = 0.016;
+
+    function getPhysics() {
+        const friction = mu * m1 * G;
+        const driving  = m2 * G;
+        const netF = driving - friction;
+        const totalM = m1 + m2;
+        const accel = Math.max(0, netF / totalM);
+        const tension = m1 * (accel + mu * G);  // T = m1*a + friction on m1
+        return { friction, driving, netF, totalM, accel, tension: Math.max(0, tension) };
+    }
+
+    window.connDraw = function() {
+        clearCanvas(ctx, canvas);
+        const W = canvas.width, H = canvas.height;
+        const p = getPhysics();
+
+        // Table
+        const tableY = 200;
+        const tableLeft = 40;
+        const tableRight = W * 0.62;
+        ctx.save();
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(tableLeft, tableY, tableRight - tableLeft, 180);
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(tableLeft, tableY);
+        ctx.lineTo(tableRight, tableY);
+        ctx.stroke();
+        // Table edge
+        ctx.beginPath();
+        ctx.moveTo(tableRight, tableY);
+        ctx.lineTo(tableRight, tableY + 180);
+        ctx.stroke();
+        ctx.restore();
+
+        // Pulley
+        const pulleyX = tableRight + 10;
+        const pulleyY = tableY - 5;
+        const pulleyR = 18;
+        ctx.save();
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(pulleyX, pulleyY, pulleyR, 0, Math.PI*2);
+        ctx.stroke();
+        ctx.fillStyle = '#334155';
+        ctx.fill();
+        ctx.fillStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.arc(pulleyX, pulleyY, 4, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+
+        // Blocks
+        const bw = 70, bh = 50;
+        const maxTravel = 180;
+        const disp = Math.min(offset * 50, maxTravel);
+
+        // m1 on table
+        const m1x = tableLeft + 60 + disp;
+        const m1y = tableY - bh;
+        drawBlock(ctx, m1x, m1y, bw, bh, '#3b82f6', m1 + ' kg');
+        drawLabel(ctx, 'm₁', m1x + bw/2, m1y - 14, '#60a5fa', 'center', 13);
+
+        // m2 hanging
+        const m2x = pulleyX + pulleyR + 5;
+        const m2y = pulleyY + pulleyR + 20 + disp;
+        drawBlock(ctx, m2x - bw/2, m2y, bw, bh, '#ef4444', m2 + ' kg');
+        drawLabel(ctx, 'm₂', m2x, m2y - 14, '#fca5a5', 'center', 13);
+
+        // String
+        ctx.save();
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        // m1 to pulley top
+        ctx.beginPath();
+        ctx.moveTo(m1x + bw, m1y + bh/2);
+        ctx.lineTo(pulleyX - 2, pulleyY - pulleyR + 2);
+        ctx.stroke();
+        // pulley to m2
+        ctx.beginPath();
+        ctx.moveTo(pulleyX + pulleyR, pulleyY + 2);
+        ctx.lineTo(m2x, m2y);
+        ctx.stroke();
+        ctx.restore();
+
+        // FBD arrows on m1
+        const scale = 55 / Math.max(m1*G, m2*G, p.tension, 1);
+        // Tension on m1 (right)
+        if (p.tension > 0.1) {
+            drawArrow(ctx, m1x + bw, m1y + bh/2, m1x + bw + p.tension*scale, m1y + bh/2, '#a855f7', 2);
+            drawLabel(ctx, 'T', m1x + bw + p.tension*scale + 8, m1y + bh/2, '#a855f7', 'left', 12);
+        }
+        // Friction on m1 (left)
+        if (p.friction > 0.1) {
+            drawArrow(ctx, m1x, m1y + bh/2, m1x - p.friction*scale, m1y + bh/2, '#f97316', 2);
+            drawLabel(ctx, 'f', m1x - p.friction*scale - 8, m1y + bh/2, '#f97316', 'right', 12);
+        }
+
+        // FBD arrows on m2
+        // Weight (down)
+        const w2 = m2 * G;
+        drawArrow(ctx, m2x, m2y + bh, m2x, m2y + bh + w2*scale, '#ef4444', 2);
+        drawLabel(ctx, 'W₂', m2x - 20, m2y + bh + w2*scale/2, '#ef4444', 'right', 12);
+        // Tension (up)
+        if (p.tension > 0.1) {
+            drawArrow(ctx, m2x, m2y, m2x, m2y - p.tension*scale, '#a855f7', 2);
+            drawLabel(ctx, 'T', m2x - 20, m2y - p.tension*scale/2, '#a855f7', 'right', 12);
+        }
+
+        // Velocity/accel display
+        ctx.save();
+        ctx.font = '500 14px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#94a3b8';
+        ctx.textAlign = 'left';
+        ctx.fillText('v = ' + velocity.toFixed(2) + ' m/s', 20, 25);
+        ctx.fillText('a = ' + p.accel.toFixed(2) + ' m/s²', 20, 45);
+        // "Same acceleration" badge
+        ctx.fillStyle = '#22c55e';
+        ctx.font = '700 13px Inter, sans-serif';
+        ctx.fillText('✓ Both blocks: a = ' + p.accel.toFixed(2) + ' m/s²', 20, 70);
+        ctx.restore();
+
+        // Calc panel
+        const canMove = p.netF > 0;
+        calcDiv.innerHTML =
+            `<span class="calc-label">System approach (treat as one body):</span><br>` +
+            `Driving force = m₂g = ${m2} × ${G} = <span class="calc-val">${(m2*G).toFixed(0)} N</span><br>` +
+            `Friction on m₁ = μm₁g = ${mu} × ${m1} × ${G} = <span class="calc-val">${p.friction.toFixed(1)} N</span><br>` +
+            `Net force = ${(m2*G).toFixed(0)} − ${p.friction.toFixed(1)} = <span class="calc-val">${p.netF.toFixed(1)} N</span><br>` +
+            `Total mass = ${m1} + ${m2} = <span class="calc-val">${p.totalM.toFixed(1)} kg</span><br>` +
+            `<span class="calc-label highlight-row">a = F<sub>net</sub> / (m₁+m₂) = ${p.netF.toFixed(1)} / ${p.totalM.toFixed(1)} = <span class="calc-val">${p.accel.toFixed(2)} m/s²</span></span><br><br>` +
+            `<span class="calc-label">Isolate m₁ to find Tension:</span><br>` +
+            `T − f = m₁a → T = m₁a + f = ${m1}×${p.accel.toFixed(2)} + ${p.friction.toFixed(1)} = <span class="calc-val highlight-row">${p.tension.toFixed(1)} N</span><br><br>` +
+            `<span class="calc-label">Check with m₂:</span> m₂g − T = m₂a → ${(m2*G).toFixed(0)} − ${p.tension.toFixed(1)} = ${(m2*p.accel).toFixed(1)} → a = <span class="calc-val">${((m2*G - p.tension)/m2).toFixed(2)} m/s² ✓</span>` +
+            (canMove ? '' : '<br><br>⚠️ Friction is too large — system does not move!');
+    };
+
+    function animate() {
+        if (!running) return;
+        const p = getPhysics();
+        if (p.accel > 0) {
+            velocity += p.accel * dt;
+            offset += velocity * dt;
+            if (offset > 4.5) {
+                running = false;
+                playBtn.textContent = '▶ Play';
+            }
+        }
+        connDraw();
+        if (running) animId = requestAnimationFrame(animate);
+    }
+
+    m1Slider.addEventListener('input', e => {
+        m1 = parseFloat(e.target.value);
+        document.getElementById('connM1Val').textContent = m1 + ' kg';
+        connDraw();
+    });
+    m2Slider.addEventListener('input', e => {
+        m2 = parseFloat(e.target.value);
+        document.getElementById('connM2Val').textContent = m2 + ' kg';
+        connDraw();
+    });
+    muSlider.addEventListener('input', e => {
+        mu = parseFloat(e.target.value);
+        document.getElementById('connMuVal').textContent = mu.toFixed(2);
+        connDraw();
+    });
+
+    playBtn.addEventListener('click', () => {
+        running = !running;
+        playBtn.textContent = running ? '⏸ Pause' : '▶ Play';
+        if (running) animate();
+    });
+    resetBtn.addEventListener('click', () => {
+        running = false;
+        playBtn.textContent = '▶ Play';
+        cancelAnimationFrame(animId);
+        offset = 0; velocity = 0;
+        connDraw();
+    });
+
+    connDraw();
+})();
+
+
+// ============================================================
+//  QUIZ SYSTEM
+// ============================================================
+const quizExplanations = {
+    q1: {
+        correct: '✅ Correct! By Newton\'s First Law, an object moving at constant velocity has zero resultant force. No net force is needed to maintain constant velocity — only to change it.',
+        incorrect: '❌ By Newton\'s First Law, constant velocity means zero resultant force. An object does not need a force to keep moving — only to change its motion (speed or direction).'
+    },
+    q2: {
+        correct: '✅ Correct! Mass is the measure of inertia. A more massive object is harder to accelerate or decelerate.',
+        incorrect: '❌ Mass (not weight, volume or density) is the measure of inertia. Inertia is the resistance to change in motion, and it depends solely on mass.'
+    },
+    q3: {
+        correct: '✅ Correct! a = F/m = 24/6 = 4 m/s². Then v = u + at = 0 + 4×3 = 12 m/s.',
+        incorrect: '❌ First find a = F/m = 24/6 = 4 m/s². Then use v = u + at = 0 + 4×3 = 12 m/s.'
+    },
+    q4: {
+        correct: '✅ Correct! The block is in vertical equilibrium, so N = W = mg = 5 × 10 = 50 N.',
+        incorrect: '❌ For a block at rest on a horizontal table, N = W = mg = 5 × 10 = 50 N. Remember to use g = 10 m/s².'
+    },
+    q5: {
+        correct: '✅ Correct! Newton\'s Third Law always applies — the wall pushes back with an equal and opposite force regardless of whether anything moves.',
+        incorrect: '❌ Newton\'s Third Law states the wall pushes back with an equal and opposite force. This is always true, whether or not the wall moves.'
+    },
+    q6: {
+        correct: '✅ Correct! The tyres push backward on the road (action), and by Newton\'s Third Law, the road pushes forward on the tyres (reaction). This friction force propels the car.',
+        incorrect: '❌ The engine creates torque in the wheels, making them push backward on the road. By Newton\'s Third Law, the road pushes the car forward. This forward friction force is what accelerates the car.'
+    },
+    q7: {
+        correct: '✅ Correct! "Earth pulls book down" (gravitational) and "book pulls Earth up" (gravitational) — same type of force, same magnitude, opposite directions, on different bodies. This is a true N3L pair!',
+        incorrect: '❌ Option A (weight & normal) are balanced forces on the same body, NOT an N3L pair. The correct pair: Earth pulls book down ↔ book pulls Earth up. Both are gravitational forces acting on different bodies.'
+    },
+    q8: {
+        correct: '✅ Correct! Total mass = 3 + 5 = 8 kg. a = F/(m₁+m₂) = 16/8 = 2.0 m/s².',
+        incorrect: '❌ Treat the whole system as one body. Total mass = 3 + 5 = 8 kg. Net force = 16 N. So a = 16/8 = 2.0 m/s².'
+    },
+    q9: {
+        correct: '✅ Correct! Isolate the 5 kg block — the only horizontal force on it is T. So T = m₂ × a = 5 × 2 = 10 N.',
+        incorrect: '❌ From Q8, a = 2 m/s². Isolate the 5 kg block: the only force pulling it is T. So T = 5 × 2 = 10 N. (Or: from the 3 kg block, F − T = m₁a → 16 − T = 3×2 → T = 10 N.)'
+    },
+    q10: {
+        correct: '✅ Correct! a = m₂g/(m₁+m₂) = (3×10)/(2+3) = 30/5 = 6.0 m/s².',
+        incorrect: '❌ The driving force is weight of m₂ = 3×10 = 30 N. Total mass = 2+3 = 5 kg. So a = 30/5 = 6.0 m/s².'
+    }
+};
+
+let answered = 0, score = 0;
+
+function checkAnswer(qId, correctVal) {
+    const q = document.getElementById(qId);
+    if (q.classList.contains('correct') || q.classList.contains('incorrect')) return;
+
+    const selected = q.querySelector(`input[name="${qId}"]:checked`);
+    if (!selected) return;
+
+    const isCorrect = selected.value === correctVal;
+    answered++;
+    if (isCorrect) score++;
+
+    // Style the question
+    q.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+    // Style options
+    q.querySelectorAll('.quiz-option').forEach(opt => {
+        const inp = opt.querySelector('input');
+        if (inp.value === correctVal) opt.classList.add('correct-answer');
+        else if (inp.checked && !isCorrect) opt.classList.add('wrong-answer');
+        inp.disabled = true;
+    });
+
+    // Show feedback
+    const fb = document.getElementById(qId + '-feedback');
+    const expl = quizExplanations[qId];
+    fb.textContent = isCorrect ? expl.correct : expl.incorrect;
+    fb.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+
+    // Disable button
+    q.querySelector('.check-btn').disabled = true;
+
+    // Show score when all answered
+    if (answered >= 10) {
+        const scoreDiv = document.getElementById('quizScore');
+        scoreDiv.style.display = 'block';
+        document.getElementById('scoreNum').textContent = score + ' / 10';
+        const msg = document.getElementById('scoreMsg');
+        if (score === 10) msg.textContent = '🏆 Perfect score! Outstanding mastery of Newton\'s Laws!';
+        else if (score >= 8) msg.textContent = '🌟 Excellent! You have a strong understanding.';
+        else if (score >= 6) msg.textContent = '👍 Good effort! Review the explanations for the ones you missed.';
+        else msg.textContent = '📖 Keep practising! Re-read the theory tab and try again.';
+        scoreDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function resetQuiz() {
+    answered = 0; score = 0;
+    document.querySelectorAll('.quiz-question').forEach(q => {
+        q.classList.remove('correct', 'incorrect');
+        q.querySelectorAll('.quiz-option').forEach(o => {
+            o.classList.remove('correct-answer', 'wrong-answer', 'selected');
+            o.querySelector('input').disabled = false;
+            o.querySelector('input').checked = false;
+        });
+        q.querySelector('.check-btn').disabled = false;
+        const fb = q.querySelector('.quiz-feedback');
+        fb.classList.remove('show', 'correct', 'incorrect');
+        fb.textContent = '';
+    });
+    document.getElementById('quizScore').style.display = 'none';
+    document.getElementById('quizContainer').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Highlight selected option
+document.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+        const name = opt.querySelector('input').name;
+        document.querySelectorAll(`input[name="${name}"]`).forEach(i => {
+            i.closest('.quiz-option').classList.remove('selected');
+        });
+        opt.classList.add('selected');
+        opt.querySelector('input').checked = true;
+    });
+});
+</script>
+
+</body>
+</html>

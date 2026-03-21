@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conservation of Energy | Physics Lab 6091</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .sim-container canvas { aspect-ratio: 2; }
+        .coaster-canvas { aspect-ratio: 16/9 !important; }
+        .pendulum-canvas { aspect-ratio: 4/3 !important; }
+        .efficiency-canvas { aspect-ratio: 5/3 !important; }
+
+        .store-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1rem; margin:1rem 0; }
+        .store-card {
+            background:#fff; border:1px solid var(--border); border-radius:var(--radius-sm);
+            padding:1.1rem; display:flex; gap:.8rem; align-items:flex-start; transition:var(--transition);
+        }
+        .store-card:hover { box-shadow:var(--shadow); transform:translateY(-2px); }
+        .store-icon {
+            width:44px; height:44px; border-radius:var(--radius-sm);
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.3rem; flex-shrink:0;
+        }
+        .store-card h4 { font-size:.93rem; margin-bottom:.2rem; }
+        .store-card p  { font-size:.82rem; color:var(--text-light); line-height:1.5; }
+
+        .transfer-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; margin:1rem 0; }
+        .transfer-card {
+            background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius-sm);
+            padding:1.1rem; text-align:center;
+        }
+        .transfer-card .transfer-arrow { font-size:1.6rem; margin:.3rem 0; color:var(--primary); }
+        .transfer-card .store-tag {
+            display:inline-block; padding:.2rem .7rem; border-radius:20px; font-size:.78rem; font-weight:600;
+        }
+
+        .energy-bar-legend { display:flex; flex-wrap:wrap; gap:.8rem; margin-top:.8rem; }
+        .legend-item { display:flex; align-items:center; gap:.35rem; font-size:.82rem; color:rgba(255,255,255,.7); }
+        .legend-dot { width:14px; height:14px; border-radius:3px; }
+
+        .calc-display { background:rgba(0,0,0,.3); border-radius:8px; padding:1rem; margin-top:1rem; font-family:var(--font-mono); font-size:.88rem; color:rgba(255,255,255,.85); line-height:1.8; }
+        .calc-display .calc-label { color:var(--primary-light); font-weight:600; }
+        .calc-display .calc-val { color:#34d399; }
+        .highlight-row { background:rgba(74,158,255,.15); padding:.2rem .5rem; border-radius:4px; display:inline-block; margin:.1rem 0; }
+
+        .comparison-table { margin:1rem 0; }
+        .comparison-table th { background:#fef3c7; color:#92400e; }
+        .comparison-table .old { color:var(--danger); text-decoration:line-through; opacity:.6; }
+        .comparison-table .new { color:var(--secondary); font-weight:600; }
+
+        .scenario-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:.7rem; margin:1rem 0; }
+        .scenario-card { padding:.8rem; background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.1); border-radius:8px; cursor:pointer; transition:all .2s; text-align:center; color:rgba(255,255,255,.7); font-size:.82rem; }
+        .scenario-card:hover, .scenario-card.active { border-color:#f97316; background:rgba(249,115,22,.1); color:#fff; }
+        .scenario-card .sc-icon { font-size:1.6rem; margin-bottom:.3rem; }
+
+        .sankey-container { position:relative; margin:1rem 0; }
+    </style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="topic-header">
+    <nav class="navbar">
+        <a href="../index.html" class="logo" style="text-decoration:none">⚛️ Physics Lab 6091</a>
+        <div class="nav-links">
+            <a href="../index.html">← All Topics</a>
+        </div>
+    </nav>
+    <div class="topic-hero">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a><span>›</span> Conservation of Energy
+        </div>
+        <h1>⚡ Conservation of Energy</h1>
+        <p>Energy stores, GPE ↔ KE, conservation principle, energy transfers &amp; efficiency</p>
+    </div>
+</header>
+
+<!-- ============ TAB NAV ============ -->
+<div class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="theory"><span class="tab-emoji">📖</span> Theory</button>
+    <button class="tab-btn" data-tab="coaster"><span class="tab-emoji">🎢</span> Roller Coaster</button>
+    <button class="tab-btn" data-tab="pendulum"><span class="tab-emoji">🕰️</span> Pendulum</button>
+    <button class="tab-btn" data-tab="efficiency"><span class="tab-emoji">⚙️</span> Efficiency Lab</button>
+    <button class="tab-btn" data-tab="quiz"><span class="tab-emoji">✏️</span> Practice</button>
+</div>
+
+<!-- ============================================================
+     TAB 1 — THEORY
+     ============================================================ -->
+<div class="tab-content active" id="tab-theory">
+
+    <!-- ENERGY STORES (NEW FRAMEWORK) -->
+    <div class="content-card">
+        <h2>🔋 Energy Stores — The New Framework</h2>
+
+        <div class="key-concept">
+            <strong>💡 Important Update (Syllabus 6091):</strong> The latest syllabus uses the language of <strong>energy stores</strong> instead of "forms/types of energy". Energy is described as being <strong>stored</strong> in various ways, and <strong>transferred</strong> between stores by specific pathways (mechanical work, heating, radiation, electrical work). This is a more accurate description of what energy actually <em>does</em>.
+        </div>
+
+        <h3>Old Language vs New Language</h3>
+        <div class="table-wrap comparison-table">
+            <table>
+                <thead><tr><th>❌ Old Language (Avoid)</th><th>✅ New Language (Use)</th></tr></thead>
+                <tbody>
+                    <tr><td class="old">"Kinetic energy"</td><td class="new">Kinetic energy store</td></tr>
+                    <tr><td class="old">"Potential energy"</td><td class="new">Gravitational potential energy store</td></tr>
+                    <tr><td class="old">"Sound energy"</td><td class="new">Energy transferred by sound waves (not a store)</td></tr>
+                    <tr><td class="old">"Light energy"</td><td class="new">Energy transferred by light/radiation (not a store)</td></tr>
+                    <tr><td class="old">"Heat energy"</td><td class="new">Internal (thermal) energy store</td></tr>
+                    <tr><td class="old">"Energy is converted from one form to another"</td><td class="new">"Energy is transferred from one store to another"</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ Key Distinction:</strong> <strong>Sound</strong> and <strong>light</strong> are <em>not</em> energy stores — they are <strong>transfer pathways</strong>. Energy is transferred <em>by</em> sound waves or light/electromagnetic radiation from one store to another. You cannot "store" sound.
+        </div>
+
+        <h3>The 8 Energy Stores</h3>
+        <div class="store-grid">
+            <div class="store-card">
+                <div class="store-icon" style="background:#3b82f633;color:#3b82f6">🏃</div>
+                <div>
+                    <h4>Kinetic Energy Store</h4>
+                    <p>Energy stored in a <strong>moving</strong> object. Depends on mass and speed. KE = ½mv².</p>
+                </div>
+            </div>
+            <div class="store-card">
+                <div class="store-icon" style="background:#22c55e33;color:#22c55e">⬆️</div>
+                <div>
+                    <h4>Gravitational Potential Energy Store</h4>
+                    <p>Energy stored due to an object's <strong>height</strong> in a gravitational field. GPE = mgh.</p>
+                </div>
+            </div>
+            <div class="store-card">
+                <div class="store-icon" style="background:#a855f733;color:#a855f7">🔥</div>
+                <div>
+                    <h4>Internal (Thermal) Energy Store</h4>
+                    <p>Total KE and PE of all particles in an object. Increases when temperature rises or state changes.</p>
+                </div>
+            </div>
+            <div class="store-card">
+                <div class="store-icon" style="background:#f9731633;color:#f97316">🧲</div>
+                <div>
+                    <h4>Elastic Potential Energy Store</h4>
+                    <p>Energy stored in a <strong>stretched or compressed</strong> object (spring, rubber band). E = ½kx².</p>
+                </div>
+            </div>
+            <div class="store-card">
+                <div class="store-icon" style="background:#ef444433;color:#ef4444">⚗️</div>
+                <div>
+                    <h4>Chemical Energy Store</h4>
+                    <p>Energy stored in <strong>chemical bonds</strong> (food, fuels, batteries). Released in chemical reactions.</p>
+                </div>
+            </div>
+            <div class="store-card">
+                <div class="store-icon" style="background:#eab30833;color:#eab308">☢️</div>
+                <div>
+                    <h4>Nuclear Energy Store</h4>
+                    <p>Energy stored in the <strong>nucleus</strong> of atoms. Released in fission or fusion reactions.</p>
+                </div>
+            </div>
+            <div class="store-card">
+                <div class="store-icon" style="background:#06b6d433;color:#06b6d4">🧲</div>
+                <div>
+                    <h4>Magnetic Energy Store</h4>
+                    <p>Energy stored when <strong>magnets</strong> attract or repel. Two repelling magnets pushed together store magnetic energy.</p>
+                </div>
+            </div>
+            <div class="store-card">
+                <div class="store-icon" style="background:#ec489933;color:#ec4899">⚡</div>
+                <div>
+                    <h4>Electrostatic Energy Store</h4>
+                    <p>Energy stored in <strong>electric fields</strong> between charged objects. E.g., energy stored in a capacitor.</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Energy Transfer Pathways</h3>
+        <p>Energy moves between stores through four main pathways:</p>
+        <div class="transfer-grid">
+            <div class="transfer-card">
+                <span class="store-tag" style="background:#3b82f633;color:#3b82f6">Any Store</span>
+                <div class="transfer-arrow">⬇️ Mechanical Work (Force)</div>
+                <span class="store-tag" style="background:#22c55e33;color:#22c55e">Another Store</span>
+                <p style="font-size:.82rem;color:var(--text-light);margin-top:.5rem">A force moves an object — e.g., lifting transfers energy to GPE store</p>
+            </div>
+            <div class="transfer-card">
+                <span class="store-tag" style="background:#a855f733;color:#a855f7">Hot Object</span>
+                <div class="transfer-arrow">⬇️ Heating</div>
+                <span class="store-tag" style="background:#ef444433;color:#ef4444">Cool Object</span>
+                <p style="font-size:.82rem;color:var(--text-light);margin-top:.5rem">Energy transferred by conduction, convection or radiation due to temperature difference</p>
+            </div>
+            <div class="transfer-card">
+                <span class="store-tag" style="background:#eab30833;color:#eab308">Source</span>
+                <div class="transfer-arrow">⬇️ Radiation (EM Waves)</div>
+                <span class="store-tag" style="background:#ec489933;color:#ec4899">Absorber</span>
+                <p style="font-size:.82rem;color:var(--text-light);margin-top:.5rem">Light, infrared, radio waves etc. carry energy across space</p>
+            </div>
+            <div class="transfer-card">
+                <span class="store-tag" style="background:#ef444433;color:#ef4444">Source</span>
+                <div class="transfer-arrow">⬇️ Electrical Work</div>
+                <span class="store-tag" style="background:#06b6d433;color:#06b6d4">Device</span>
+                <p style="font-size:.82rem;color:var(--text-light);margin-top:.5rem">Current flowing through a circuit transfers energy to devices</p>
+            </div>
+        </div>
+
+        <div class="example-box">
+            <h4>💡 Example: Dropping a Ball (Using Stores Language)</h4>
+            <p><strong>Old:</strong> "GPE is converted to KE as the ball falls."</p>
+            <p><strong>New:</strong> "Energy is <em>transferred</em> from the gravitational potential energy <em>store</em> to the kinetic energy <em>store</em> by the mechanism of <em>gravitational force doing work</em>."</p>
+        </div>
+    </div>
+
+    <!-- KE AND GPE FORMULAS -->
+    <div class="content-card">
+        <h2>📐 Key Formulas — KE and GPE</h2>
+
+        <div class="two-col">
+            <div class="formula-box">
+                <span class="formula-label">Kinetic Energy Store</span>
+                <span class="formula">KE = ½mv²</span>
+            </div>
+            <div class="formula-box" style="border-left-color:var(--secondary)">
+                <span class="formula-label">Gravitational Potential Energy Store</span>
+                <span class="formula">GPE = mgh</span>
+            </div>
+        </div>
+
+        <div class="table-wrap" style="margin-top:1rem">
+            <table>
+                <thead><tr><th>Quantity</th><th>Symbol</th><th>SI Unit</th></tr></thead>
+                <tbody>
+                    <tr><td>Kinetic energy / GPE</td><td>KE, GPE</td><td>Joule (J)</td></tr>
+                    <tr><td>Mass</td><td>m</td><td>kg</td></tr>
+                    <tr><td>Speed / velocity</td><td>v</td><td>m/s</td></tr>
+                    <tr><td>Height</td><td>h</td><td>m</td></tr>
+                    <tr><td>Gravitational field strength</td><td>g</td><td>N/kg (10 N/kg for O-Level)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="key-concept">
+            <strong>💡 KE depends on v²:</strong> If you double the speed, the kinetic energy <strong>quadruples</strong> (× 4). This is why high-speed collisions are so much more destructive, and why braking distance increases dramatically with speed.
+        </div>
+    </div>
+
+    <!-- CONSERVATION PRINCIPLE -->
+    <div class="content-card">
+        <h2>⚖️ Principle of Conservation of Energy</h2>
+
+        <div class="formula-box">
+            <span class="formula-label">Conservation of Energy</span>
+            <span class="formula">Energy cannot be created or destroyed. It can only be transferred from one store to another.</span>
+        </div>
+
+        <p>The <strong>total energy</strong> of a closed system remains <strong>constant</strong>. When energy seems to "disappear" (e.g. a rolling ball slowing down), it has actually been transferred to the <strong>internal (thermal) energy store</strong> of the surroundings via friction (heating).</p>
+
+        <h3>GPE ↔ KE Conversion (No Energy Losses)</h3>
+        <p>In an ideal system with no friction or air resistance:</p>
+        <div class="formula-box">
+            <span class="formula-label">Conservation: GPE → KE</span>
+            <span class="formula">mgh = ½mv² &nbsp;&nbsp;→&nbsp;&nbsp; v = √(2gh)</span>
+        </div>
+
+        <div class="key-concept">
+            <strong>💡 Notice:</strong> In the equation v = √(2gh), the speed at the bottom does <strong>not depend on mass!</strong> A heavy ball and a light ball dropped from the same height reach the same speed (in the absence of air resistance). This is consistent with Galileo's famous experiment.
+        </div>
+
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example 1 — Object Falling from Height</div>
+            <div class="worked-example-body">
+                <p><strong>Question:</strong> A 2 kg ball is dropped from a height of 5 m. Calculate its speed just before hitting the ground. Assume no air resistance. (g = 10 m/s²)</p>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <p>Identify energy transfer: GPE store → KE store</p>
+                        <p>At the top: all GPE, no KE (v = 0)</p>
+                        <p>At the bottom: all KE, no GPE (h = 0)</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <p>Apply conservation:</p>
+                        <span class="math">GPE lost = KE gained</span><br>
+                        <span class="math">mgh = ½mv²</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <p>Mass cancels (or substitute):</p>
+                        <span class="math">v² = 2gh = 2 × 10 × 5 = 100</span><br>
+                        <span class="math">v = √100 = 10 m/s</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example 2 — Roller Coaster with Energy Loss</div>
+            <div class="worked-example-body">
+                <p><strong>Question:</strong> A 500 kg roller coaster car starts from rest at a height of 40 m. At the bottom, its speed is 25 m/s. Calculate the energy transferred to the internal (thermal) energy store of the surroundings. (g = 10 m/s²)</p>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <span class="math">GPE at top = mgh = 500 × 10 × 40 = 200 000 J</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <span class="math">KE at bottom = ½mv² = ½ × 500 × 25² = 156 250 J</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <p>Energy transferred to internal (thermal) store:</p>
+                        <span class="math">E_thermal = GPE − KE = 200 000 − 156 250 = 43 750 J</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EFFICIENCY -->
+    <div class="content-card">
+        <h2>📊 Efficiency</h2>
+
+        <div class="formula-box">
+            <span class="formula-label">Efficiency</span>
+            <span class="formula">Efficiency = (Useful energy output / Total energy input) × 100%</span>
+        </div>
+
+        <div class="formula-box" style="margin-top:.5rem;border-left-color:var(--secondary)">
+            <span class="formula-label">Also expressed as</span>
+            <span class="formula">Efficiency = (Useful power output / Total power input) × 100%</span>
+        </div>
+
+        <ul>
+            <li>Efficiency is a <strong>ratio</strong> — it has <strong>no units</strong> (or expressed as a percentage).</li>
+            <li>Efficiency is always <strong>less than 100%</strong> in real systems because some energy is always transferred to the internal (thermal) energy store of the surroundings ("wasted" as heat due to friction, air resistance, etc.).</li>
+            <li>A machine does <strong>not create energy</strong> — it only transfers it. A more efficient machine wastes less energy.</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>⚠️ Common Mistake:</strong> Efficiency can never exceed 100%. If your calculation gives more than 100%, check your working — you may have swapped input and output!
+        </div>
+
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example — Efficiency of a Motor</div>
+            <div class="worked-example-body">
+                <p><strong>Question:</strong> An electric motor uses 800 J of electrical energy to lift a 5 kg mass through 12 m. Calculate the efficiency. (g = 10 m/s²)</p>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <p>Useful energy output = GPE gained = mgh = 5 × 10 × 12 = 600 J</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <span class="math">Efficiency = (600 / 800) × 100% = 75%</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <p>The remaining 200 J (25%) was transferred to the internal (thermal) energy store of the motor and surroundings due to friction and electrical resistance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TAB 2 — ROLLER COASTER SIMULATION
+     ============================================================ -->
+<div class="tab-content" id="tab-coaster">
+    <div class="content-card">
+        <h2>🎢 Roller Coaster Energy Simulator</h2>
+        <p>Watch a car ride a track with hills. Energy bars show how GPE and KE change in real-time. The total energy stays constant (or decreases with friction). Adjust mass, starting height, and friction to explore energy conservation.</p>
+    </div>
+
+    <div class="sim-container">
+        <canvas id="coasterCanvas" width="800" height="480" class="coaster-canvas"></canvas>
+
+        <div class="energy-bar-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>GPE Store</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>KE Store</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Internal (Thermal) Store</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,.2)"></div>Total Energy</div>
+        </div>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>Mass: <span id="coasterMassVal" class="value-display">2 kg</span></label>
+                <input type="range" id="coasterMass" min="0.5" max="10" value="2" step="0.5">
+            </div>
+            <div class="sim-control-group">
+                <label>Start height: <span id="coasterH0Val" class="value-display">10 m</span></label>
+                <input type="range" id="coasterH0" min="2" max="20" value="10" step="0.5">
+            </div>
+            <div class="sim-control-group">
+                <label>Friction: <span id="coasterFricVal" class="value-display">0%</span></label>
+                <input type="range" id="coasterFric" min="0" max="30" value="0" step="1">
+            </div>
+            <button class="sim-btn sim-btn-play" id="coasterPlay">▶ Play</button>
+            <button class="sim-btn sim-btn-reset" id="coasterReset">↺ Reset</button>
+        </div>
+
+        <div class="calc-display" id="coasterCalc"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TAB 3 — PENDULUM SIMULATION
+     ============================================================ -->
+<div class="tab-content" id="tab-pendulum">
+    <div class="content-card">
+        <h2>🕰️ Pendulum — GPE ↔ KE Exchange</h2>
+        <p>A pendulum is a beautiful demonstration of continuous energy transfer between the GPE store and KE store. At the highest points, energy is entirely in the GPE store; at the lowest point, it is entirely in the KE store.</p>
+    </div>
+
+    <div class="sim-container">
+        <canvas id="pendulumCanvas" width="800" height="550" class="pendulum-canvas"></canvas>
+
+        <div class="energy-bar-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>GPE Store</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>KE Store</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Thermal (friction)</div>
+        </div>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>String length: <span id="pendLenVal" class="value-display">3 m</span></label>
+                <input type="range" id="pendLen" min="1" max="5" value="3" step="0.1">
+            </div>
+            <div class="sim-control-group">
+                <label>Bob mass: <span id="pendMassVal" class="value-display">1 kg</span></label>
+                <input type="range" id="pendMass" min="0.5" max="5" value="1" step="0.5">
+            </div>
+            <div class="sim-control-group">
+                <label>Release angle: <span id="pendAngleVal" class="value-display">45°</span></label>
+                <input type="range" id="pendAngle" min="10" max="80" value="45" step="1">
+            </div>
+            <div class="sim-control-group">
+                <label>Damping: <span id="pendDampVal" class="value-display">0%</span></label>
+                <input type="range" id="pendDamp" min="0" max="20" value="0" step="1">
+            </div>
+            <button class="sim-btn sim-btn-play" id="pendPlay">▶ Play</button>
+            <button class="sim-btn sim-btn-reset" id="pendReset">↺ Reset</button>
+        </div>
+
+        <div class="calc-display" id="pendCalc"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TAB 4 — EFFICIENCY LAB
+     ============================================================ -->
+<div class="tab-content" id="tab-efficiency">
+    <div class="content-card">
+        <h2>⚙️ Efficiency Calculator &amp; Sankey Diagrams</h2>
+        <p>Choose a scenario and adjust the parameters to explore efficiency. Watch the Sankey diagram update to show how energy splits between useful and wasted stores.</p>
+    </div>
+
+    <div class="sim-container">
+        <div class="scenario-cards" id="effScenarios">
+            <div class="scenario-card active" data-scenario="motor">
+                <div class="sc-icon">🔌</div>
+                Electric Motor
+            </div>
+            <div class="scenario-card" data-scenario="bulb">
+                <div class="sc-icon">💡</div>
+                Light Bulb
+            </div>
+            <div class="scenario-card" data-scenario="car">
+                <div class="sc-icon">🚗</div>
+                Car Engine
+            </div>
+            <div class="scenario-card" data-scenario="custom">
+                <div class="sc-icon">🎛️</div>
+                Custom
+            </div>
+        </div>
+
+        <canvas id="effCanvas" width="800" height="480" class="efficiency-canvas"></canvas>
+
+        <div class="sim-controls" id="effControls">
+            <div class="sim-control-group">
+                <label>Input energy (J): <span id="effInputVal" class="value-display">1000 J</span></label>
+                <input type="range" id="effInput" min="100" max="10000" value="1000" step="50">
+            </div>
+            <div class="sim-control-group">
+                <label>Efficiency (%): <span id="effPctVal" class="value-display">75%</span></label>
+                <input type="range" id="effPct" min="1" max="99" value="75" step="1">
+            </div>
+        </div>
+
+        <div class="calc-display" id="effCalc"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TAB 5 — PRACTICE QUIZ
+     ============================================================ -->
+<div class="tab-content" id="tab-quiz">
+    <div class="content-card">
+        <h2>✏️ Practice Questions — Energy</h2>
+        <p>10 exam-style questions testing energy stores, GPE/KE calculations, conservation and efficiency.</p>
+    </div>
+
+    <div class="quiz-container" id="quizContainer">
+
+        <div class="quiz-question" id="q1">
+            <h4><span class="question-number">1</span> According to the energy stores model, which of the following is NOT an energy store?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q1" value="a"> A. Kinetic energy store</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="b"> B. Sound energy store</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="c"> C. Chemical energy store</label>
+                <label class="quiz-option"><input type="radio" name="q1" value="d"> D. Elastic potential energy store</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q1','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q1-feedback"></div>
+        </div>
+
+        <div class="quiz-question" id="q2">
+            <h4><span class="question-number">2</span> A 3 kg object moves at 4 m/s. What is its kinetic energy?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q2" value="a"> A. 12 J</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="b"> B. 24 J</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="c"> C. 48 J</label>
+                <label class="quiz-option"><input type="radio" name="q2" value="d"> D. 6 J</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q2','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q2-feedback"></div>
+        </div>
+
+        <div class="quiz-question" id="q3">
+            <h4><span class="question-number">3</span> A stone of mass 0.5 kg is at a height of 8 m above the ground. What is its GPE? (g = 10 m/s²)</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q3" value="a"> A. 4 J</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="b"> B. 40 J</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="c"> C. 80 J</label>
+                <label class="quiz-option"><input type="radio" name="q3" value="d"> D. 400 J</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q3','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q3-feedback"></div>
+        </div>
+
+        <div class="quiz-question" id="q4">
+            <h4><span class="question-number">4</span> A ball is dropped from 20 m. What is its speed just before hitting the ground? (g = 10 m/s², no air resistance)</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q4" value="a"> A. 10 m/s</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="b"> B. 14 m/s</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="c"> C. 20 m/s</label>
+                <label class="quiz-option"><input type="radio" name="q4" value="d"> D. 200 m/s</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q4','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q4-feedback"></div>
+        </div>
+
+        <div class="quiz-question" id="q5">
+            <h4><span class="question-number">5</span> If the speed of a car doubles, its kinetic energy:</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q5" value="a"> A. Doubles</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="b"> B. Triples</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="c"> C. Quadruples (×4)</label>
+                <label class="quiz-option"><input type="radio" name="q5" value="d"> D. Halves</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q5','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q5-feedback"></div>
+        </div>
+
+        <div class="quiz-question" id="q6">
+            <h4><span class="question-number">6</span> The principle of conservation of energy states that energy:</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q6" value="a"> A. Is always lost to heat</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="b"> B. Can be created by efficient machines</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="c"> C. Cannot be created or destroyed, only transferred between stores</label>
+                <label class="quiz-option"><input type="radio" name="q6" value="d"> D. Increases over time in a closed system</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q6','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q6-feedback"></div>
+        </div>
+
+        <div class="quiz-question" id="q7">
+            <h4><span class="question-number">7</span> A motor uses 500 J of energy to lift a load, and 400 J is transferred to the GPE store. What is the efficiency?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q7" value="a"> A. 20%</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="b"> B. 80%</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="c"> C. 125%</label>
+                <label class="quiz-option"><input type="radio" name="q7" value="d"> D. 90%</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q7','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q7-feedback"></div>
+        </div>
+
+        <div class="quiz-question" id="q8">
+            <h4><span class="question-number">8</span> When a ball bounces and rises to a lower height than it was dropped from, the "missing" energy has been transferred to:</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q8" value="a"> A. The gravitational potential energy store</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="b"> B. The kinetic energy store</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="c"> C. The internal (thermal) energy store of the ball and ground</label>
+                <label class="quiz-option"><input type="radio" name="q8" value="d"> D. Nowhere — the energy has been destroyed</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q8','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q8-feedback"></div>
+        </div>
+
+        <div class="quiz-question" id="q9">
+            <h4><span class="question-number">9</span> A pendulum swings from its highest point. At which position is the energy in the kinetic energy store at a maximum?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q9" value="a"> A. At the highest point on either side</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="b"> B. At the lowest point (centre)</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="c"> C. Halfway between highest and lowest</label>
+                <label class="quiz-option"><input type="radio" name="q9" value="d"> D. KE is constant throughout the swing</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q9','b')">Check Answer</button>
+            <div class="quiz-feedback" id="q9-feedback"></div>
+        </div>
+
+        <div class="quiz-question" id="q10">
+            <h4><span class="question-number">10</span> Two objects, A (1 kg) and B (2 kg), are dropped from the same height of 5 m. Assuming no air resistance, which statement is correct?</h4>
+            <div class="quiz-options">
+                <label class="quiz-option"><input type="radio" name="q10" value="a"> A. A reaches the ground with a higher speed than B</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="b"> B. B reaches the ground with a higher speed than A</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="c"> C. Both reach the ground with the same speed</label>
+                <label class="quiz-option"><input type="radio" name="q10" value="d"> D. Both reach the ground with the same KE</label>
+            </div>
+            <button class="check-btn" onclick="checkAnswer('q10','c')">Check Answer</button>
+            <div class="quiz-feedback" id="q10-feedback"></div>
+        </div>
+
+    </div>
+
+    <div class="quiz-score" id="quizScore" style="display:none">
+        <div class="score-number" id="scoreNum">0 / 10</div>
+        <p style="margin-top:.5rem;color:var(--text-secondary)" id="scoreMsg"></p>
+        <button class="btn btn-primary" style="margin-top:1rem" onclick="resetQuiz()">Try Again</button>
+    </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+    <p><strong>Physics Lab 6091</strong> — Conservation of Energy</p>
+    <p style="margin-top:.5rem"><a href="../index.html">← Back to Topics</a></p>
+</footer>
+
+<a href="#" class="back-to-top" id="btt">↑</a>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+const G = 10;
+
+// ===================== UTILITIES =====================
+function drawArrow(ctx,x1,y1,x2,y2,color,lw=3){
+    const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+    if(len<2)return;const a=Math.atan2(dy,dx),hl=Math.min(14,len*.35);
+    ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-hl*Math.cos(a-Math.PI/7),y2-hl*Math.sin(a-Math.PI/7));
+    ctx.lineTo(x2-hl*Math.cos(a+Math.PI/7),y2-hl*Math.sin(a+Math.PI/7));
+    ctx.closePath();ctx.fill();ctx.restore();
+}
+function drawLabel(ctx,text,x,y,color,align='center',size=13){
+    ctx.save();ctx.font=`600 ${size}px Inter,sans-serif`;ctx.fillStyle=color;
+    ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(text,x,y);ctx.restore();
+}
+function clearCanvas(ctx,c){
+    const g=ctx.createLinearGradient(0,0,0,c.height);
+    g.addColorStop(0,'#0f172a');g.addColorStop(1,'#1e293b');
+    ctx.fillStyle=g;ctx.fillRect(0,0,c.width,c.height);
+}
+function drawEnergyBars(ctx, gpe, ke, thermal, total, x, y, w, h){
+    const barW = w;
+    // Background
+    ctx.save();
+    ctx.fillStyle='rgba(255,255,255,.08)';
+    ctx.fillRect(x, y, barW, h);
+    // Stacked bars
+    const gpeFrac = total>0 ? gpe/total : 0;
+    const keFrac = total>0 ? ke/total : 0;
+    const thFrac = total>0 ? thermal/total : 0;
+    let cx = x;
+    ctx.fillStyle='#22c55e';
+    ctx.fillRect(cx, y, barW*gpeFrac, h);
+    cx += barW*gpeFrac;
+    ctx.fillStyle='#3b82f6';
+    ctx.fillRect(cx, y, barW*keFrac, h);
+    cx += barW*keFrac;
+    ctx.fillStyle='#ef4444';
+    ctx.fillRect(cx, y, barW*thFrac, h);
+    // Border
+    ctx.strokeStyle='rgba(255,255,255,.15)';
+    ctx.lineWidth=1;
+    ctx.strokeRect(x, y, barW, h);
+    ctx.restore();
+}
+
+// ===================== TAB SYSTEM =====================
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+        if(btn.dataset.tab==='coaster') coasterDraw();
+        if(btn.dataset.tab==='pendulum') pendDraw();
+        if(btn.dataset.tab==='efficiency') effDraw();
+    });
+});
+const btt=document.getElementById('btt');
+window.addEventListener('scroll',()=>btt.classList.toggle('visible',window.scrollY>400));
+
+
+// ============================================================
+//  SIMULATION 1 — ROLLER COASTER
+// ============================================================
+(()=>{
+    const canvas=document.getElementById('coasterCanvas');
+    const ctx=canvas.getContext('2d');
+    const calcDiv=document.getElementById('coasterCalc');
+
+    let mass=2, h0=10, fricPct=0;
+    let running=false, animId=null;
+    let t=0; // parameter along track
+
+    // Track profile: x in [0,1], returns height fraction
+    function trackH(x){
+        // Start high, dip, second hill (lower), dip, small hill, flat end
+        if(x<0.05) return 1; // start platform
+        if(x<0.20) return 1 - ((x-0.05)/0.15) * 1; // down to 0
+        if(x<0.30) return 0 + ((x-0.20)/0.10) * 0.65; // up to 0.65
+        if(x<0.45) return 0.65 - ((x-0.30)/0.15) * 0.65; // down to 0
+        if(x<0.55) return 0 + ((x-0.45)/0.10) * 0.35; // up to 0.35
+        if(x<0.70) return 0.35 - ((x-0.55)/0.15) * 0.35; // down to 0
+        if(x<0.80) return 0 + ((x-0.70)/0.10) * 0.15; // small bump
+        if(x<0.90) return 0.15 - ((x-0.80)/0.10) * 0.15; // down
+        return 0; // flat end
+    }
+
+    // Convert track position to pixel coords
+    const trackLeft=60, trackRight=740, trackBottom=360, trackTop=60;
+    function trackToPixel(x){
+        const px = trackLeft + x * (trackRight - trackLeft);
+        const hFrac = trackH(x);
+        const py = trackBottom - hFrac * (trackBottom - trackTop);
+        return {x:px, y:py};
+    }
+
+    function reset(){
+        running=false; t=0;
+        document.getElementById('coasterPlay').textContent='▶ Play';
+        cancelAnimationFrame(animId);
+        coasterDraw();
+    }
+
+    document.getElementById('coasterMass').addEventListener('input',e=>{
+        mass=parseFloat(e.target.value);
+        document.getElementById('coasterMassVal').textContent=mass+' kg';
+        reset();
+    });
+    document.getElementById('coasterH0').addEventListener('input',e=>{
+        h0=parseFloat(e.target.value);
+        document.getElementById('coasterH0Val').textContent=h0+' m';
+        reset();
+    });
+    document.getElementById('coasterFric').addEventListener('input',e=>{
+        fricPct=parseFloat(e.target.value);
+        document.getElementById('coasterFricVal').textContent=fricPct+'%';
+        reset();
+    });
+    document.getElementById('coasterPlay').addEventListener('click',()=>{
+        running=!running;
+        document.getElementById('coasterPlay').textContent=running?'⏸ Pause':'▶ Play';
+        if(running) animateCoaster();
+    });
+    document.getElementById('coasterReset').addEventListener('click',reset);
+
+    let totalEnergyLost = 0;
+
+    function animateCoaster(){
+        if(!running) return;
+
+        const hCurrent = trackH(t) * h0;
+        const totalE = mass * G * h0;
+        const gpe = mass * G * hCurrent;
+        // KE = total - gpe - thermal lost so far
+        const ke = Math.max(0, totalE - gpe - totalEnergyLost);
+        const v = Math.sqrt(2 * ke / mass);
+
+        // Advance position based on speed
+        const dt = 0.002 + v * 0.00008;
+        const oldT = t;
+        t += dt;
+
+        // Energy lost in this step (friction)
+        if(fricPct > 0){
+            const dh = Math.abs(trackH(t) - trackH(oldT)) * h0;
+            totalEnergyLost += fricPct/100 * mass * G * dt * 30;
+        }
+
+        if(t >= 0.98 || ke < 0.01){
+            t = Math.min(t, 0.98);
+            running = false;
+            document.getElementById('coasterPlay').textContent='▶ Play';
+        }
+
+        coasterDraw();
+        if(running) animId = requestAnimationFrame(animateCoaster);
+    }
+
+    window.coasterDraw = function(){
+        clearCanvas(ctx, canvas);
+        const W=canvas.width, H=canvas.height;
+
+        // Draw track
+        ctx.save();
+        ctx.strokeStyle='#64748b'; ctx.lineWidth=3; ctx.lineCap='round';
+        ctx.beginPath();
+        for(let i=0; i<=200; i++){
+            const x = i/200;
+            const p = trackToPixel(x);
+            if(i===0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+        }
+        ctx.stroke();
+        // Track supports
+        ctx.strokeStyle='rgba(100,116,139,.3)'; ctx.lineWidth=1;
+        for(let i=0; i<=20; i++){
+            const x = i/20;
+            const p = trackToPixel(x);
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, trackBottom+5); ctx.stroke();
+        }
+        // Ground
+        ctx.strokeStyle='#475569'; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(trackLeft-20,trackBottom+5); ctx.lineTo(trackRight+20,trackBottom+5); ctx.stroke();
+        ctx.restore();
+
+        // Height labels
+        drawLabel(ctx, h0+'m', trackLeft-25, trackTop, 'rgba(255,255,255,.4)', 'right', 11);
+        drawLabel(ctx, '0 m', trackLeft-25, trackBottom, 'rgba(255,255,255,.4)', 'right', 11);
+
+        // Car
+        const carPos = trackToPixel(t);
+        ctx.save();
+        ctx.fillStyle='#f97316';
+        ctx.shadowColor='rgba(249,115,22,.5)'; ctx.shadowBlur=12;
+        ctx.beginPath();
+        ctx.arc(carPos.x, carPos.y-10, 12, 0, Math.PI*2);
+        ctx.fill();
+        ctx.shadowBlur=0;
+        ctx.font='700 10px Inter'; ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText('m', carPos.x, carPos.y-10);
+        // Wheels
+        ctx.fillStyle='#94a3b8';
+        ctx.beginPath(); ctx.arc(carPos.x-8, carPos.y, 4, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(carPos.x+8, carPos.y, 4, 0, Math.PI*2); ctx.fill();
+        ctx.restore();
+
+        // Calculate energies
+        const hCurrent = trackH(t) * h0;
+        const totalE = mass * G * h0;
+        const gpe = mass * G * hCurrent;
+        const thermal = Math.min(totalEnergyLost, totalE - gpe);
+        const ke = Math.max(0, totalE - gpe - thermal);
+        const v = Math.sqrt(Math.max(0, 2*ke/mass));
+
+        // Energy bars (bottom of canvas)
+        const barY = trackBottom + 30;
+        const barH = 22;
+        const barW = trackRight - trackLeft;
+        drawEnergyBars(ctx, gpe, ke, thermal, totalE, trackLeft, barY, barW, barH);
+
+        // Bar labels
+        const gpeFrac = totalE>0 ? gpe/totalE : 0;
+        const keFrac = totalE>0 ? ke/totalE : 0;
+        const thFrac = totalE>0 ? thermal/totalE : 0;
+        if(gpeFrac > 0.08) drawLabel(ctx, 'GPE', trackLeft + barW*gpeFrac/2, barY+barH/2, '#fff', 'center', 10);
+        if(keFrac > 0.08) drawLabel(ctx, 'KE', trackLeft + barW*gpeFrac + barW*keFrac/2, barY+barH/2, '#fff', 'center', 10);
+        if(thFrac > 0.08) drawLabel(ctx, 'Thermal', trackLeft + barW*(gpeFrac+keFrac) + barW*thFrac/2, barY+barH/2, '#fff', 'center', 10);
+
+        // Readouts
+        ctx.save();
+        ctx.font='600 13px "JetBrains Mono",monospace'; ctx.textAlign='left';
+        ctx.fillStyle='#22c55e'; ctx.fillText('GPE = '+gpe.toFixed(1)+' J', trackLeft, barY+barH+20);
+        ctx.fillStyle='#3b82f6'; ctx.fillText('KE  = '+ke.toFixed(1)+' J', trackLeft+180, barY+barH+20);
+        ctx.fillStyle='#ef4444'; ctx.fillText('Th  = '+thermal.toFixed(1)+' J', trackLeft+360, barY+barH+20);
+        ctx.fillStyle='rgba(255,255,255,.5)'; ctx.fillText('Total = '+totalE.toFixed(1)+' J', trackLeft+520, barY+barH+20);
+        ctx.restore();
+
+        // Velocity
+        ctx.save();
+        ctx.font='700 15px "JetBrains Mono",monospace'; ctx.fillStyle='#fff'; ctx.textAlign='right';
+        ctx.fillText('v = '+v.toFixed(1)+' m/s', W-20, 25);
+        ctx.font='500 12px Inter'; ctx.fillStyle='rgba(255,255,255,.4)';
+        ctx.fillText('h = '+hCurrent.toFixed(1)+' m', W-20, 45);
+        ctx.restore();
+
+        // Height indicator line from car
+        ctx.save();
+        ctx.strokeStyle='rgba(34,197,94,.3)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+        ctx.beginPath(); ctx.moveTo(carPos.x, carPos.y); ctx.lineTo(carPos.x, trackBottom+5); ctx.stroke();
+        ctx.setLineDash([]); ctx.restore();
+
+        calcDiv.innerHTML =
+            `<span class="calc-label">At current position (h = ${hCurrent.toFixed(1)} m):</span><br>` +
+            `GPE = mgh = ${mass} × ${G} × ${hCurrent.toFixed(1)} = <span class="calc-val">${gpe.toFixed(1)} J</span><br>` +
+            `KE = ½mv² = ½ × ${mass} × ${v.toFixed(1)}² = <span class="calc-val">${ke.toFixed(1)} J</span><br>` +
+            (thermal>0.1 ? `Internal (thermal) = <span style="color:#ef4444">${thermal.toFixed(1)} J</span> (${(thermal/totalE*100).toFixed(0)}% lost to friction)<br>` : '') +
+            `<span class="calc-val highlight-row">Total = ${(gpe+ke+thermal).toFixed(1)} J ${Math.abs(gpe+ke+thermal - totalE)<0.5 ? '✓ Conserved!' : ''}</span><br><br>` +
+            `<span class="calc-label">Speed from energy conservation:</span><br>` +
+            `v = √(2 × KE / m) = √(2 × ${ke.toFixed(1)} / ${mass}) = <span class="calc-val">${v.toFixed(2)} m/s</span>` +
+            (fricPct===0 ? `<br><br><span class="calc-label">💡 With zero friction:</span> v = √(2gh) = √(2 × ${G} × ${(h0-hCurrent).toFixed(1)}) = <span class="calc-val">${Math.sqrt(2*G*Math.max(0,h0-hCurrent)).toFixed(2)} m/s</span>` : '');
+    };
+
+    // Reset thermal on param change
+    const origReset = reset;
+    function fullReset(){ totalEnergyLost=0; origReset(); }
+    document.getElementById('coasterReset').removeEventListener('click', reset);
+    document.getElementById('coasterReset').addEventListener('click', fullReset);
+
+    coasterDraw();
+})();
+
+
+// ============================================================
+//  SIMULATION 2 — PENDULUM
+// ============================================================
+(()=>{
+    const canvas=document.getElementById('pendulumCanvas');
+    const ctx=canvas.getContext('2d');
+    const calcDiv=document.getElementById('pendCalc');
+
+    let length=3, bobMass=1, releaseAngle=45, dampPct=0;
+    let angle, omega, running=false, animId=null, totalLost=0;
+
+    function initPend(){ angle=releaseAngle*Math.PI/180; omega=0; totalLost=0; }
+    initPend();
+
+    document.getElementById('pendLen').addEventListener('input',e=>{
+        length=parseFloat(e.target.value);
+        document.getElementById('pendLenVal').textContent=length.toFixed(1)+' m';
+        initPend(); pendDraw();
+    });
+    document.getElementById('pendMass').addEventListener('input',e=>{
+        bobMass=parseFloat(e.target.value);
+        document.getElementById('pendMassVal').textContent=bobMass+' kg';
+        initPend(); pendDraw();
+    });
+    document.getElementById('pendAngle').addEventListener('input',e=>{
+        releaseAngle=parseFloat(e.target.value);
+        document.getElementById('pendAngleVal').textContent=releaseAngle+'°';
+        initPend(); pendDraw();
+    });
+    document.getElementById('pendDamp').addEventListener('input',e=>{
+        dampPct=parseFloat(e.target.value);
+        document.getElementById('pendDampVal').textContent=dampPct+'%';
+    });
+
+    document.getElementById('pendPlay').addEventListener('click',()=>{
+        running=!running;
+        document.getElementById('pendPlay').textContent=running?'⏸ Pause':'▶ Play';
+        if(running) animatePend();
+    });
+    document.getElementById('pendReset').addEventListener('click',()=>{
+        running=false;
+        document.getElementById('pendPlay').textContent='▶ Play';
+        cancelAnimationFrame(animId);
+        initPend(); pendDraw();
+    });
+
+    function animatePend(){
+        if(!running) return;
+        const dt = 0.03;
+        // Physics: angular acceleration = -(g/L)*sin(theta)
+        const alpha = -(G / length) * Math.sin(angle);
+        omega += alpha * dt;
+        // Damping
+        if(dampPct > 0){
+            const dampFactor = 1 - dampPct * 0.002;
+            const energyBefore = 0.5 * bobMass * Math.pow(omega * length, 2);
+            omega *= dampFactor;
+            const energyAfter = 0.5 * bobMass * Math.pow(omega * length, 2);
+            totalLost += Math.max(0, energyBefore - energyAfter);
+        }
+        angle += omega * dt;
+        pendDraw();
+        animId = requestAnimationFrame(animatePend);
+    }
+
+    window.pendDraw = function(){
+        clearCanvas(ctx, canvas);
+        const W=canvas.width, H=canvas.height;
+
+        const pivotX = W/2, pivotY = 60;
+        const scale = Math.min(180, (H-150) / (length+0.3));
+        const bobR = Math.min(22, Math.max(12, bobMass*5));
+
+        // Height reference: lowest point of bob
+        const lowestY = pivotY + length * scale;
+        const bobX = pivotX + Math.sin(angle) * length * scale;
+        const bobY = pivotY + Math.cos(angle) * length * scale;
+        const h = (lowestY - bobY) / scale; // height above lowest point in metres
+
+        // Draw support
+        ctx.save();
+        ctx.fillStyle='#475569'; ctx.fillRect(pivotX-40, pivotY-8, 80, 12);
+        ctx.strokeStyle='#64748b'; ctx.lineWidth=2;
+        ctx.strokeRect(pivotX-40, pivotY-8, 80, 12);
+        ctx.restore();
+
+        // String
+        ctx.save();
+        ctx.strokeStyle='#94a3b8'; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(pivotX, pivotY); ctx.lineTo(bobX, bobY); ctx.stroke();
+        ctx.restore();
+
+        // Ghost positions (trajectory arc)
+        ctx.save();
+        ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
+        ctx.beginPath();
+        ctx.arc(pivotX, pivotY, length*scale, Math.PI/2 - releaseAngle*Math.PI/180, Math.PI/2 + releaseAngle*Math.PI/180);
+        ctx.stroke();
+        // End markers
+        const lAngle = releaseAngle*Math.PI/180;
+        ctx.fillStyle='rgba(255,255,255,.1)';
+        ctx.beginPath(); ctx.arc(pivotX - Math.sin(lAngle)*length*scale, pivotY + Math.cos(lAngle)*length*scale, 5, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(pivotX + Math.sin(lAngle)*length*scale, pivotY + Math.cos(lAngle)*length*scale, 5, 0, Math.PI*2); ctx.fill();
+        ctx.restore();
+
+        // Bob
+        ctx.save();
+        const bobGrad = ctx.createRadialGradient(bobX-3, bobY-3, 0, bobX, bobY, bobR);
+        bobGrad.addColorStop(0, '#60a5fa');
+        bobGrad.addColorStop(1, '#1d4ed8');
+        ctx.fillStyle = bobGrad;
+        ctx.shadowColor='rgba(59,130,246,.5)'; ctx.shadowBlur=15;
+        ctx.beginPath(); ctx.arc(bobX, bobY, bobR, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur=0;
+        ctx.font='700 10px Inter'; ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(bobMass+'kg', bobX, bobY);
+        ctx.restore();
+
+        // Lowest point indicator
+        ctx.save();
+        ctx.strokeStyle='rgba(255,255,255,.1)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+        ctx.beginPath(); ctx.moveTo(pivotX-150, lowestY); ctx.lineTo(pivotX+150, lowestY); ctx.stroke();
+        ctx.setLineDash([]);
+        drawLabel(ctx, 'h = 0 (reference)', pivotX+160, lowestY, 'rgba(255,255,255,.25)', 'left', 10);
+        ctx.restore();
+
+        // Height line from bob to lowest
+        if(h > 0.01){
+            ctx.save();
+            ctx.strokeStyle='rgba(34,197,94,.4)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+            ctx.beginPath(); ctx.moveTo(bobX, bobY); ctx.lineTo(bobX, lowestY); ctx.stroke();
+            ctx.setLineDash([]);
+            drawLabel(ctx, 'h='+h.toFixed(2)+'m', bobX+15, (bobY+lowestY)/2, '#22c55e', 'left', 11);
+            ctx.restore();
+        }
+
+        // Energy calculations
+        const maxH = length * (1 - Math.cos(releaseAngle*Math.PI/180));
+        const totalE = bobMass * G * maxH;
+        const gpe = bobMass * G * h;
+        const v = Math.abs(omega) * length;
+        const ke = 0.5 * bobMass * v * v;
+        const thermal = Math.min(totalLost, totalE);
+
+        // Energy bars (right side, vertical)
+        const barX = W - 100, barY = 80, barH = 280, barW = 35;
+
+        // Background bar
+        ctx.save();
+        ctx.fillStyle='rgba(255,255,255,.05)';
+        ctx.fillRect(barX, barY, barW, barH);
+
+        // Stacked vertical bars (bottom up: GPE, KE, Thermal)
+        const displayTotal = Math.max(totalE, 0.01);
+        const gpeFrac = gpe / displayTotal;
+        const keFrac = ke / displayTotal;
+        const thFrac = thermal / displayTotal;
+
+        // GPE (from bottom)
+        ctx.fillStyle='#22c55e';
+        ctx.fillRect(barX, barY + barH*(1-gpeFrac), barW, barH*gpeFrac);
+        // KE (above GPE)
+        ctx.fillStyle='#3b82f6';
+        ctx.fillRect(barX, barY + barH*(1-gpeFrac-keFrac), barW, barH*keFrac);
+        // Thermal (above KE)
+        if(thermal > 0.01){
+            ctx.fillStyle='#ef4444';
+            ctx.fillRect(barX, barY + barH*(1-gpeFrac-keFrac-thFrac), barW, barH*thFrac);
+        }
+
+        ctx.strokeStyle='rgba(255,255,255,.15)'; ctx.lineWidth=1;
+        ctx.strokeRect(barX, barY, barW, barH);
+        ctx.restore();
+
+        // Bar labels
+        drawLabel(ctx, 'GPE', barX + barW + 15, barY + barH - 12, '#22c55e', 'left', 10);
+        drawLabel(ctx, gpe.toFixed(1)+'J', barX + barW + 15, barY + barH - 0, '#22c55e', 'left', 10);
+        drawLabel(ctx, 'KE', barX + barW + 15, barY + 30, '#3b82f6', 'left', 10);
+        drawLabel(ctx, ke.toFixed(1)+'J', barX + barW + 15, barY + 42, '#3b82f6', 'left', 10);
+        if(thermal > 0.1){
+            drawLabel(ctx, 'Th '+thermal.toFixed(1)+'J', barX + barW + 15, barY + 70, '#ef4444', 'left', 10);
+        }
+        drawLabel(ctx, 'Energy', barX + barW/2, barY - 12, 'rgba(255,255,255,.4)', 'center', 11);
+
+        // Velocity vector
+        if(v > 0.1){
+            const vDir = omega > 0 ? 1 : -1;
+            const vLen = Math.min(60, v*15);
+            drawArrow(ctx, bobX, bobY-bobR-5, bobX + vDir*vLen, bobY-bobR-5, '#facc15', 2);
+            drawLabel(ctx, v.toFixed(1)+' m/s', bobX + vDir*(vLen+20), bobY-bobR-5, '#facc15', 'center', 11);
+        }
+
+        // Current angle
+        drawLabel(ctx, 'θ = '+(angle*180/Math.PI).toFixed(1)+'°', pivotX, pivotY + 25, 'rgba(255,255,255,.3)', 'center', 11);
+
+        calcDiv.innerHTML =
+            `<span class="calc-label">Maximum height (from geometry):</span><br>` +
+            `h_max = L(1 − cosθ₀) = ${length} × (1 − cos${releaseAngle}°) = <span class="calc-val">${maxH.toFixed(3)} m</span><br><br>` +
+            `<span class="calc-label">Total initial energy:</span><br>` +
+            `E = mgh_max = ${bobMass} × ${G} × ${maxH.toFixed(3)} = <span class="calc-val">${totalE.toFixed(2)} J</span><br><br>` +
+            `<span class="calc-label">Current state (h = ${h.toFixed(3)} m):</span><br>` +
+            `GPE = mgh = ${bobMass} × ${G} × ${h.toFixed(3)} = <span class="calc-val">${gpe.toFixed(2)} J</span><br>` +
+            `KE = ½mv² = ½ × ${bobMass} × ${v.toFixed(2)}² = <span class="calc-val">${ke.toFixed(2)} J</span><br>` +
+            (thermal>0.01 ? `Thermal = <span style="color:#ef4444">${thermal.toFixed(2)} J</span><br>` : '') +
+            `<span class="calc-val highlight-row">GPE + KE ${thermal>0.01?'+ Thermal ':''} = ${(gpe+ke+thermal).toFixed(2)} J ≈ ${totalE.toFixed(2)} J ✓</span><br><br>` +
+            `<span class="calc-label">💡 At lowest point:</span> All energy → KE store → max speed = √(2gL(1−cosθ₀)) = <span class="calc-val">${Math.sqrt(2*G*maxH).toFixed(2)} m/s</span>`;
+    };
+    pendDraw();
+})();
+
+
+// ============================================================
+//  SIMULATION 3 — EFFICIENCY LAB + SANKEY
+// ============================================================
+(()=>{
+    const canvas=document.getElementById('effCanvas');
+    const ctx=canvas.getContext('2d');
+    const calcDiv=document.getElementById('effCalc');
+
+    let inputE=1000, effPct=75, scenario='motor';
+
+    const presets = {
+        motor:  {eff:75,  input:1000, useful:'GPE/KE store', usefulColor:'#22c55e', waste:'Internal (thermal)', wasteColor:'#ef4444', icon:'🔌', label:'Electric Motor'},
+        bulb:   {eff:5,   input:60,   useful:'Light (radiation)', usefulColor:'#facc15', waste:'Internal (thermal)', wasteColor:'#ef4444', icon:'💡', label:'Filament Bulb'},
+        car:    {eff:25,  input:5000, useful:'KE store', usefulColor:'#3b82f6', waste:'Internal (thermal) + sound', wasteColor:'#ef4444', icon:'🚗', label:'Car Engine'},
+        custom: {eff:75,  input:1000, useful:'Useful output', usefulColor:'#a855f7', waste:'Wasted', wasteColor:'#ef4444', icon:'🎛️', label:'Custom Device'},
+    };
+
+    document.querySelectorAll('#effScenarios .scenario-card').forEach(card=>{
+        card.addEventListener('click',()=>{
+            document.querySelectorAll('#effScenarios .scenario-card').forEach(c=>c.classList.remove('active'));
+            card.classList.add('active');
+            scenario=card.dataset.scenario;
+            const p = presets[scenario];
+            effPct=p.eff; inputE=p.input;
+            document.getElementById('effPct').value=effPct;
+            document.getElementById('effInput').value=inputE;
+            document.getElementById('effPctVal').textContent=effPct+'%';
+            document.getElementById('effInputVal').textContent=inputE+' J';
+            effDraw();
+        });
+    });
+
+    document.getElementById('effInput').addEventListener('input',e=>{
+        inputE=parseFloat(e.target.value);
+        document.getElementById('effInputVal').textContent=inputE+' J';
+        effDraw();
+    });
+    document.getElementById('effPct').addEventListener('input',e=>{
+        effPct=parseFloat(e.target.value);
+        document.getElementById('effPctVal').textContent=effPct+'%';
+        effDraw();
+    });
+
+    window.effDraw = function(){
+        clearCanvas(ctx, canvas);
+        const W=canvas.width, H=canvas.height;
+        const p = presets[scenario];
+
+        const useful = inputE * effPct / 100;
+        const wasted = inputE - useful;
+
+        // ===== SANKEY DIAGRAM =====
+        const sankeyLeft = 100, sankeyMid = W/2, sankeyRight = W-80;
+        const inputH = 100; // height of input band
+        const usefulH = inputH * effPct/100;
+        const wastedH = inputH - usefulH;
+        const centerY = H/2 - 30;
+
+        // Input band (left → centre)
+        ctx.save();
+        ctx.fillStyle = 'rgba(251,191,36,.3)';
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(sankeyLeft, centerY - inputH/2);
+        ctx.bezierCurveTo(sankeyMid-80, centerY - inputH/2, sankeyMid-80, centerY - inputH/2, sankeyMid, centerY - inputH/2);
+        ctx.lineTo(sankeyMid, centerY + inputH/2);
+        ctx.bezierCurveTo(sankeyMid-80, centerY + inputH/2, sankeyMid-80, centerY + inputH/2, sankeyLeft, centerY + inputH/2);
+        ctx.closePath();
+        ctx.fill(); ctx.stroke();
+        ctx.restore();
+
+        // Useful band (centre → top-right)
+        const usefulTopY = centerY - inputH/2;
+        const usefulEndY = centerY - inputH/2 - 30;
+        ctx.save();
+        ctx.fillStyle = p.usefulColor + '44';
+        ctx.strokeStyle = p.usefulColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(sankeyMid, centerY - inputH/2);
+        ctx.bezierCurveTo(sankeyMid+60, centerY - inputH/2, sankeyRight-60, usefulEndY, sankeyRight, usefulEndY);
+        ctx.lineTo(sankeyRight, usefulEndY + usefulH);
+        ctx.bezierCurveTo(sankeyRight-60, usefulEndY+usefulH, sankeyMid+60, centerY - inputH/2 + usefulH, sankeyMid, centerY - inputH/2 + usefulH);
+        ctx.closePath();
+        ctx.fill(); ctx.stroke();
+        ctx.restore();
+
+        // Wasted band (centre → bottom-right)
+        const wastedTopStart = centerY - inputH/2 + usefulH;
+        const wastedEndY = centerY + inputH/2 + 30;
+        ctx.save();
+        ctx.fillStyle = p.wasteColor + '33';
+        ctx.strokeStyle = p.wasteColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(sankeyMid, wastedTopStart);
+        ctx.bezierCurveTo(sankeyMid+60, wastedTopStart, sankeyRight-60, wastedEndY - wastedH, sankeyRight, wastedEndY - wastedH);
+        ctx.lineTo(sankeyRight, wastedEndY);
+        ctx.bezierCurveTo(sankeyRight-60, wastedEndY, sankeyMid+60, centerY + inputH/2, sankeyMid, centerY + inputH/2);
+        ctx.closePath();
+        ctx.fill(); ctx.stroke();
+        ctx.restore();
+
+        // Labels
+        // Input
+        drawLabel(ctx, 'INPUT', sankeyLeft-5, centerY-inputH/2-15, '#fbbf24', 'center', 12);
+        drawLabel(ctx, inputE+' J', sankeyLeft-5, centerY, '#fbbf24', 'center', 16);
+        drawLabel(ctx, p.label, sankeyLeft-5, centerY+20, 'rgba(255,255,255,.4)', 'center', 11);
+
+        // Device box in centre
+        ctx.save();
+        ctx.fillStyle='rgba(255,255,255,.07)'; ctx.strokeStyle='rgba(255,255,255,.2)'; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.roundRect(sankeyMid-35, centerY-35, 70, 70, 10); ctx.fill(); ctx.stroke();
+        ctx.font='28px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(p.icon, sankeyMid, centerY-5);
+        ctx.font='600 10px Inter'; ctx.fillStyle='rgba(255,255,255,.5)';
+        ctx.fillText(p.label, sankeyMid, centerY+22);
+        ctx.restore();
+
+        // Useful output label
+        drawLabel(ctx, '✓ Useful', sankeyRight+5, usefulEndY+usefulH/2-12, p.usefulColor, 'left', 12);
+        drawLabel(ctx, useful.toFixed(0)+' J', sankeyRight+5, usefulEndY+usefulH/2+5, p.usefulColor, 'left', 14);
+        drawLabel(ctx, p.useful, sankeyRight+5, usefulEndY+usefulH/2+22, 'rgba(255,255,255,.4)', 'left', 10);
+
+        // Wasted output label
+        drawLabel(ctx, '✗ Wasted', sankeyRight+5, wastedEndY-wastedH/2-12, p.wasteColor, 'left', 12);
+        drawLabel(ctx, wasted.toFixed(0)+' J', sankeyRight+5, wastedEndY-wastedH/2+5, p.wasteColor, 'left', 14);
+        drawLabel(ctx, p.waste, sankeyRight+5, wastedEndY-wastedH/2+22, 'rgba(255,255,255,.4)', 'left', 10);
+
+        // Efficiency display
+        ctx.save();
+        ctx.font='800 36px "JetBrains Mono",monospace'; ctx.textAlign='center';
+        const effColor = effPct >= 70 ? '#22c55e' : effPct >= 40 ? '#facc15' : '#ef4444';
+        ctx.fillStyle = effColor;
+        ctx.fillText(effPct+'%', W/2, 35);
+        ctx.font='500 13px Inter'; ctx.fillStyle='rgba(255,255,255,.4)';
+        ctx.fillText('Efficiency', W/2, 55);
+        ctx.restore();
+
+        // Efficiency meter (arc at top)
+        const arcCx=W/2, arcCy=H-40, arcR=50;
+        ctx.save();
+        ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.lineWidth=10; ctx.lineCap='round';
+        ctx.beginPath(); ctx.arc(arcCx, arcCy, arcR, Math.PI, 0); ctx.stroke();
+        const effAngle = Math.PI + (effPct/100) * Math.PI;
+        const meterGrad = ctx.createLinearGradient(arcCx-arcR,0,arcCx+arcR,0);
+        meterGrad.addColorStop(0,'#ef4444'); meterGrad.addColorStop(0.5,'#facc15'); meterGrad.addColorStop(1,'#22c55e');
+        ctx.strokeStyle=meterGrad;
+        ctx.beginPath(); ctx.arc(arcCx, arcCy, arcR, Math.PI, effAngle); ctx.stroke();
+        // Needle
+        const needleAngle = Math.PI + (effPct/100)*Math.PI;
+        ctx.strokeStyle='#fff'; ctx.lineWidth=2;
+        ctx.beginPath();
+        ctx.moveTo(arcCx, arcCy);
+        ctx.lineTo(arcCx + Math.cos(needleAngle)*(arcR-5), arcCy + Math.sin(needleAngle)*(arcR-5));
+        ctx.stroke();
+        ctx.restore();
+        drawLabel(ctx, '0%', arcCx-arcR-15, arcCy, 'rgba(255,255,255,.3)', 'center', 10);
+        drawLabel(ctx, '100%', arcCx+arcR+18, arcCy, 'rgba(255,255,255,.3)', 'center', 10);
+
+        calcDiv.innerHTML =
+            `<span class="calc-label">${p.label} — Efficiency Calculation:</span><br><br>` +
+            `Input energy = <span class="calc-val">${inputE} J</span><br>` +
+            `Useful output = ${inputE} × ${effPct}/100 = <span class="calc-val">${useful.toFixed(1)} J</span> → ${p.useful}<br>` +
+            `Wasted = ${inputE} − ${useful.toFixed(1)} = <span style="color:#ef4444">${wasted.toFixed(1)} J</span> → ${p.waste}<br><br>` +
+            `<span class="calc-label highlight-row">Efficiency = (${useful.toFixed(1)} / ${inputE}) × 100% = ${effPct}%</span><br><br>` +
+            `<span class="calc-label">💡 Remember:</span> The "wasted" energy hasn't disappeared — it has been transferred to the internal (thermal) energy store of the device and surroundings. Energy is <strong>always conserved</strong>.`;
+    };
+    effDraw();
+})();
+
+
+// ============================================================
+//  QUIZ SYSTEM
+// ============================================================
+const quizExplanations = {
+    q1:  { correct:'✅ Correct! Sound is NOT an energy store — it is a transfer pathway. Energy is transferred BY sound waves from one store to another.',
+           incorrect:'❌ Sound is a transfer pathway, not an energy store. You cannot "store" sound. Energy is transferred BY sound waves.' },
+    q2:  { correct:'✅ Correct! KE = ½mv² = ½ × 3 × 4² = ½ × 3 × 16 = 24 J.',
+           incorrect:'❌ KE = ½mv² = ½ × 3 × 4² = ½ × 3 × 16 = 24 J. Remember to square the speed first!' },
+    q3:  { correct:'✅ Correct! GPE = mgh = 0.5 × 10 × 8 = 40 J.',
+           incorrect:'❌ GPE = mgh = 0.5 × 10 × 8 = 40 J.' },
+    q4:  { correct:'✅ Correct! mgh = ½mv² → v = √(2gh) = √(2×10×20) = √400 = 20 m/s.',
+           incorrect:'❌ Using conservation: mgh = ½mv² → v² = 2gh = 2×10×20 = 400 → v = 20 m/s.' },
+    q5:  { correct:'✅ Correct! KE = ½mv². Since KE depends on v², doubling speed gives 2² = 4 times the KE.',
+           incorrect:'❌ KE = ½mv². Doubling v: KE_new = ½m(2v)² = ½m × 4v² = 4 × ½mv². KE quadruples!' },
+    q6:  { correct:'✅ Correct! The principle of conservation of energy states energy cannot be created or destroyed — only transferred between stores.',
+           incorrect:'❌ Conservation of energy: energy cannot be created or destroyed. It can only be transferred from one store to another. The total energy of a closed system remains constant.' },
+    q7:  { correct:'✅ Correct! Efficiency = useful/total × 100% = 400/500 × 100% = 80%.',
+           incorrect:'❌ Efficiency = (useful output / total input) × 100% = (400/500) × 100% = 80%.' },
+    q8:  { correct:'✅ Correct! The "missing" energy has been transferred to the internal (thermal) energy store of the ball, the ground, and the surrounding air — through heating and sound during the bounce.',
+           incorrect:'❌ Energy cannot be destroyed! The "missing" energy is transferred to the internal (thermal) energy store of the ball and ground during the deformation and recovery of the bounce. Some is also transferred by sound.' },
+    q9:  { correct:'✅ Correct! At the lowest point, all GPE has been transferred to the KE store (h = 0, v = max). KE is maximum at the bottom of the swing.',
+           incorrect:'❌ At the lowest point (centre), h = 0 so GPE = 0, meaning ALL energy is in the KE store. This is where the pendulum moves fastest.' },
+    q10: { correct:'✅ Correct! v = √(2gh) — speed does not depend on mass! Both reach the same speed. However, B (heavier) has more KE because KE = ½mv².',
+           incorrect:'❌ From mgh = ½mv², mass cancels: v = √(2gh). Both objects reach the same speed regardless of mass. (But B has more KE since KE = ½mv² and m_B > m_A.)' }
+};
+
+let answered=0, score=0;
+function checkAnswer(qId,correctVal){
+    const q=document.getElementById(qId);
+    if(q.classList.contains('correct')||q.classList.contains('incorrect')) return;
+    const sel=q.querySelector(`input[name="${qId}"]:checked`);
+    if(!sel) return;
+    const ok=sel.value===correctVal;
+    answered++; if(ok) score++;
+    q.classList.add(ok?'correct':'incorrect');
+    q.querySelectorAll('.quiz-option').forEach(opt=>{
+        const inp=opt.querySelector('input');
+        if(inp.value===correctVal) opt.classList.add('correct-answer');
+        else if(inp.checked&&!ok) opt.classList.add('wrong-answer');
+        inp.disabled=true;
+    });
+    const fb=document.getElementById(qId+'-feedback');
+    fb.textContent=ok?quizExplanations[qId].correct:quizExplanations[qId].incorrect;
+    fb.classList.add('show',ok?'correct':'incorrect');
+    q.querySelector('.check-btn').disabled=true;
+    if(answered>=10){
+        const sd=document.getElementById('quizScore'); sd.style.display='block';
+        document.getElementById('scoreNum').textContent=score+' / 10';
+        const m=document.getElementById('scoreMsg');
+        if(score===10) m.textContent='🏆 Perfect! Outstanding mastery of energy concepts!';
+        else if(score>=8) m.textContent='🌟 Excellent! Strong understanding of energy stores and conservation.';
+        else if(score>=6) m.textContent='👍 Good effort! Review the energy stores framework.';
+        else m.textContent='📖 Keep practising! Re-read the theory on energy stores vs transfer pathways.';
+        sd.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+}
+function resetQuiz(){
+    answered=0;score=0;
+    document.querySelectorAll('.quiz-question').forEach(q=>{
+        q.classList.remove('correct','incorrect');
+        q.querySelectorAll('.quiz-option').forEach(o=>{
+            o.classList.remove('correct-answer','wrong-answer','selected');
+            o.querySelector('input').disabled=false; o.querySelector('input').checked=false;
+        });
+        q.querySelector('.check-btn').disabled=false;
+        const fb=q.querySelector('.quiz-feedback');
+        fb.classList.remove('show','correct','incorrect'); fb.textContent='';
+    });
+    document.getElementById('quizScore').style.display='none';
+    document.getElementById('quizContainer').scrollIntoView({behavior:'smooth'});
+}
+document.querySelectorAll('.quiz-option').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+        const n=opt.querySelector('input').name;
+        document.querySelectorAll(`input[name="${n}"]`).forEach(i=>i.closest('.quiz-option').classList.remove('selected'));
+        opt.classList.add('selected');
+        opt.querySelector('input').checked=true;
+    });
+});
+</script>
+
+</body>
+</html>
