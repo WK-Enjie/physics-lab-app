@@ -131,60 +131,29 @@
 </div>
 
 <!-- ============================================================
-     TAB: ROTATING OBJECTS — FORCE AT AN ANGLE
+     NEW TAB: ROTATING OBJECTS
      ============================================================ -->
 <div class="tab-content" id="tab-rotate">
     <div class="content-card">
-        <h2>🔧 Force at an Angle — Perpendicular Distance</h2>
-        <p>This is one of the <strong>most commonly misunderstood concepts</strong> in O-Level Physics. When a force acts at an angle to a lever, only the <strong>perpendicular component</strong> creates a moment — or equivalently, we use the <strong>perpendicular distance</strong> from the pivot to the <strong>line of action</strong> of the force.</p>
-
-        <div class="formula-box">
-            <span class="formula-label">Moment with Force at Angle θ</span>
-            <span class="formula">τ = F × d⊥ = F × L × sin θ</span>
-        </div>
-
+        <h2>🔧 Rotating Objects — Applied Moments</h2>
+        <p>Explore how forces create rotation in real-world objects. Change the applied force, its angle, and the distance from the pivot. See how only the <strong>perpendicular component</strong> of the force contributes to the moment!</p>
         <div class="key-concept">
-            <strong>💡 Two equivalent methods to find the moment:</strong><br><br>
-            <strong>Method 1 — Use perpendicular distance:</strong><br>
-            Extend the <strong>line of action</strong> of F. Drop a perpendicular from the pivot to this line. This distance is d⊥ = L sin θ.<br>
-            τ = F × d⊥<br><br>
-            <strong>Method 2 — Use perpendicular component of force:</strong><br>
-            Resolve F into components: F⊥ = F sin θ (perpendicular to lever) and F∥ = F cos θ (along lever).<br>
-            τ = F⊥ × L = (F sin θ) × L<br><br>
-            <strong>Both give the same answer!</strong> τ = F × L × sin θ
-        </div>
-
-        <div class="warning-box">
-            <strong>⚠️ Common Exam Mistake:</strong> Students often multiply F × L without considering the angle. If F is not perpendicular to the lever, you <strong>must</strong> include sin θ. When θ = 90°, sin θ = 1 and the formula simplifies to τ = F × L.
+            <strong>💡 Key Formula for Force at an Angle:</strong><br>
+            When a force F is applied at angle θ to the lever arm of length L:<br>
+            <strong>τ = F × L × sin θ</strong><br>
+            Maximum moment occurs when θ = 90° (force is perpendicular to lever).
         </div>
     </div>
 
-    <!-- MAIN SIMULATION -->
     <div class="sim-container">
         <div class="rotate-scenarios" id="rotateScenarios">
-            <div class="rotate-scenario active" data-scenario="lever">
-                <div class="rs-icon">📐</div>
-                Force on Lever<br>(Perp. distance)
-            </div>
-            <div class="rotate-scenario" data-scenario="spanner">
-                <div class="rs-icon">🔧</div>
-                Spanner on Bolt
-            </div>
-            <div class="rotate-scenario" data-scenario="trapdoor">
-                <div class="rs-icon">🪟</div>
-                Rope on Trapdoor
-            </div>
-            <div class="rotate-scenario" data-scenario="steering">
-                <div class="rs-icon">🚗</div>
-                Steering (Couple)
-            </div>
-            <div class="rotate-scenario" data-scenario="propeller">
-                <div class="rs-icon">✈️</div>
-                Propeller
-            </div>
+            <div class="rotate-scenario active" data-scenario="spanner"><div class="rs-icon">🔧</div>Spanner on Bolt</div>
+            <div class="rotate-scenario" data-scenario="door"><div class="rs-icon">🚪</div>Opening a Door</div>
+            <div class="rotate-scenario" data-scenario="steering"><div class="rs-icon">🚗</div>Steering Wheel</div>
+            <div class="rotate-scenario" data-scenario="propeller"><div class="rs-icon">✈️</div>Propeller / Fan</div>
         </div>
 
-        <canvas id="rotateCanvas" width="800" height="600" class="rotate-canvas"></canvas>
+        <canvas id="rotateCanvas" width="800" height="550" class="rotate-canvas"></canvas>
 
         <div class="sim-controls" id="rotateControls">
             <div class="sim-control-group">
@@ -192,81 +161,20 @@
                 <input type="range" id="rotForce" min="5" max="100" value="40" step="1">
             </div>
             <div class="sim-control-group" id="rotAngleGroup">
-                <label>Angle θ: <span id="rotAngleVal" class="value-display">60°</span></label>
-                <input type="range" id="rotAngle" min="0" max="180" value="60" step="1">
+                <label>Angle θ: <span id="rotAngleVal" class="value-display">90°</span></label>
+                <input type="range" id="rotAngle" min="0" max="180" value="90" step="1">
             </div>
             <div class="sim-control-group" id="rotLengthGroup">
-                <label>Lever length L: <span id="rotLenVal" class="value-display">0.40 m</span></label>
-                <input type="range" id="rotLen" min="0.10" max="0.60" value="0.40" step="0.02">
+                <label>Arm length: <span id="rotLenVal" class="value-display">0.30 m</span></label>
+                <input type="range" id="rotLen" min="0.1" max="0.6" value="0.3" step="0.02">
             </div>
-            <div class="sim-control-group">
-                <label>
-                    <input type="checkbox" id="rotShowComponents" checked style="accent-color:var(--primary-light)">
-                    Show force components
-                </label>
-            </div>
-            <div class="sim-control-group">
-                <label>
-                    <input type="checkbox" id="rotShowPerpDist" checked style="accent-color:#22c55e">
-                    Show perpendicular distance
-                </label>
-            </div>
-            <button class="sim-btn sim-btn-play" id="rotAnimate">▶ Animate Rotation</button>
-            <button class="sim-btn sim-btn-reset" id="rotStop">⏸ Stop</button>
+            <button class="sim-btn sim-btn-play" id="rotAnimate">▶ Show Rotation</button>
         </div>
 
         <div class="calc-display" id="rotateCalc"></div>
     </div>
-
-    <!-- COMPARISON TABLE -->
-    <div class="content-card" style="margin-top:1.5rem">
-        <h3>📊 How Angle Affects Moment</h3>
-        <p>This table shows how the moment changes as the angle varies — notice how sin θ peaks at 90°.</p>
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>θ</th><th>sin θ</th><th>d⊥ = L sin θ</th><th>Moment = F × d⊥</th><th>Effectiveness</th></tr></thead>
-                <tbody id="angleTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- WORKED EXAMPLES -->
-    <div class="content-card" style="margin-top:1rem">
-        <div class="worked-example">
-            <div class="worked-example-header">📝 Worked Example — Force at an Angle on a Spanner</div>
-            <div class="worked-example-body">
-                <p><strong>Q:</strong> A force of 60 N is applied at 30° to the end of a 0.25 m spanner. Calculate the moment about the bolt.</p>
-                <div class="step"><div class="step-number">1</div><div class="step-content">
-                    <p>Identify: F = 60 N, L = 0.25 m, θ = 30°</p>
-                </div></div>
-                <div class="step"><div class="step-number">2</div><div class="step-content">
-                    <p><strong>Method 1 (perpendicular distance):</strong></p>
-                    <span class="math">d⊥ = L sin θ = 0.25 × sin 30° = 0.25 × 0.5 = 0.125 m</span><br>
-                    <span class="math">τ = F × d⊥ = 60 × 0.125 = 7.5 N m</span>
-                </div></div>
-                <div class="step"><div class="step-number">3</div><div class="step-content">
-                    <p><strong>Method 2 (perpendicular component):</strong></p>
-                    <span class="math">F⊥ = F sin θ = 60 × sin 30° = 60 × 0.5 = 30 N</span><br>
-                    <span class="math">τ = F⊥ × L = 30 × 0.25 = 7.5 N m ✓ Same answer!</span>
-                </div></div>
-            </div>
-        </div>
-
-        <div class="worked-example">
-            <div class="worked-example-header">📝 Worked Example — Rope on a Trapdoor</div>
-            <div class="worked-example-body">
-                <p><strong>Q:</strong> A rope is attached to the end of a 1.2 m trapdoor, pulling with 80 N at 45° to the door. Find the moment about the hinge.</p>
-                <div class="step"><div class="step-number">1</div><div class="step-content">
-                    <span class="math">τ = F × L × sin θ = 80 × 1.2 × sin 45°</span><br>
-                    <span class="math">= 80 × 1.2 × 0.707 = 67.9 N m</span>
-                </div></div>
-                <div class="step"><div class="step-number">2</div><div class="step-content">
-                    <p><strong>Compare:</strong> If the rope pulled at 90°, τ = 80 × 1.2 × 1 = 96 N m — that's <strong>41% more effective!</strong></p>
-                </div></div>
-            </div>
-        </div>
-    </div>
 </div>
+
 <!-- ===== TAB: CENTRE OF GRAVITY ===== -->
 <div class="tab-content" id="tab-cog">
     <div class="content-card">
@@ -357,143 +265,303 @@ for(var i=0;i<wts.length;i++){var w=wts[i],wx=(w.pos-pp)*ppm(),sel=i===si;ctx.sa
 ctx.restore();drawLabel(ctx,'▲ Pivot',px,py+66,'#94a3b8','center',11);ctx.save();ctx.font='700 18px Inter';ctx.textAlign='center';if(bal){ctx.fillStyle='#22c55e';ctx.fillText('✓ BALANCED!',W/2,32);}else{ctx.fillStyle=net>0?'#f97316':'#60a5fa';ctx.fillText(net>0?'↻ Tilting CW':'↺ Tilting ACW',W/2,32);}ctx.restore();
 var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span><br><br>';var ad=md.filter(function(x){return x.d==='ACW';}),cd=md.filter(function(x){return x.d==='CW';});h+='<span class="moment-color-acw">↺ ACW:</span><br>';if(!ad.length)h+='&nbsp;(none)<br>';ad.forEach(function(d){h+='&nbsp;'+d.l+' = <span class="calc-val">'+d.v.toFixed(1)+' Nm</span><br>';});h+='&nbsp;<strong>Total='+acw.toFixed(1)+' Nm</strong><br><br>';h+='<span class="moment-color-cw">↻ CW:</span><br>';if(!cd.length)h+='&nbsp;(none)<br>';cd.forEach(function(d){h+='&nbsp;'+d.l+' = <span class="calc-val">'+d.v.toFixed(1)+' Nm</span><br>';});h+='&nbsp;<strong>Total='+cw.toFixed(1)+' Nm</strong><br><br>';h+=bal?'<span class="calc-val highlight-row">✓ Balanced!</span>':'<span class="highlight-row">Net='+net.toFixed(1)+' Nm ('+(net>0?'CW':'ACW')+')</span>';calcDiv.innerHTML=h;};rb();usu();beamDraw();})();
 
-<!-- ============================================================
-     TAB: ROTATING OBJECTS — FORCE AT AN ANGLE
-     ============================================================ -->
-<div class="tab-content" id="tab-rotate">
-    <div class="content-card">
-        <h2>🔧 Force at an Angle — Perpendicular Distance</h2>
-        <p>This is one of the <strong>most commonly misunderstood concepts</strong> in O-Level Physics. When a force acts at an angle to a lever, only the <strong>perpendicular component</strong> creates a moment — or equivalently, we use the <strong>perpendicular distance</strong> from the pivot to the <strong>line of action</strong> of the force.</p>
+// ============================================================
+// NEW: ROTATING OBJECTS SIMULATION
+// ============================================================
+(function(){
+    var canvas=document.getElementById('rotateCanvas');
+    var ctx=canvas.getContext('2d');
+    var calcDiv=document.getElementById('rotateCalc');
 
-        <div class="formula-box">
-            <span class="formula-label">Moment with Force at Angle θ</span>
-            <span class="formula">τ = F × d⊥ = F × L × sin θ</span>
-        </div>
+    var scenario='spanner', force=40, angle=90, armLen=0.3;
+    var rotAngle=0, animating=false, animId=null;
 
-        <div class="key-concept">
-            <strong>💡 Two equivalent methods to find the moment:</strong><br><br>
-            <strong>Method 1 — Use perpendicular distance:</strong><br>
-            Extend the <strong>line of action</strong> of F. Drop a perpendicular from the pivot to this line. This distance is d⊥ = L sin θ.<br>
-            τ = F × d⊥<br><br>
-            <strong>Method 2 — Use perpendicular component of force:</strong><br>
-            Resolve F into components: F⊥ = F sin θ (perpendicular to lever) and F∥ = F cos θ (along lever).<br>
-            τ = F⊥ × L = (F sin θ) × L<br><br>
-            <strong>Both give the same answer!</strong> τ = F × L × sin θ
-        </div>
+    document.querySelectorAll('#rotateScenarios .rotate-scenario').forEach(function(card){
+        card.addEventListener('click',function(){
+            document.querySelectorAll('#rotateScenarios .rotate-scenario').forEach(function(c){c.classList.remove('active');});
+            card.classList.add('active');
+            scenario=card.dataset.scenario;
+            rotAngle=0;
+            // Show/hide controls based on scenario
+            document.getElementById('rotAngleGroup').style.display=(scenario==='steering'||scenario==='propeller')?'none':'';
+            document.getElementById('rotLengthGroup').style.display=(scenario==='propeller')?'none':'';
+            if(scenario==='steering'){angle=90;document.getElementById('rotAngle').value=90;document.getElementById('rotAngleVal').textContent='90°';}
+            rotateDraw();
+        });
+    });
 
-        <div class="warning-box">
-            <strong>⚠️ Common Exam Mistake:</strong> Students often multiply F × L without considering the angle. If F is not perpendicular to the lever, you <strong>must</strong> include sin θ. When θ = 90°, sin θ = 1 and the formula simplifies to τ = F × L.
-        </div>
-    </div>
+    document.getElementById('rotForce').addEventListener('input',function(e){force=parseInt(e.target.value);document.getElementById('rotForceVal').textContent=force+' N';rotateDraw();});
+    document.getElementById('rotAngle').addEventListener('input',function(e){angle=parseInt(e.target.value);document.getElementById('rotAngleVal').textContent=angle+'°';rotateDraw();});
+    document.getElementById('rotLen').addEventListener('input',function(e){armLen=parseFloat(e.target.value);document.getElementById('rotLenVal').textContent=armLen.toFixed(2)+' m';rotateDraw();});
 
-    <!-- MAIN SIMULATION -->
-    <div class="sim-container">
-        <div class="rotate-scenarios" id="rotateScenarios">
-            <div class="rotate-scenario active" data-scenario="lever">
-                <div class="rs-icon">📐</div>
-                Force on Lever<br>(Perp. distance)
-            </div>
-            <div class="rotate-scenario" data-scenario="spanner">
-                <div class="rs-icon">🔧</div>
-                Spanner on Bolt
-            </div>
-            <div class="rotate-scenario" data-scenario="trapdoor">
-                <div class="rs-icon">🪟</div>
-                Rope on Trapdoor
-            </div>
-            <div class="rotate-scenario" data-scenario="steering">
-                <div class="rs-icon">🚗</div>
-                Steering (Couple)
-            </div>
-            <div class="rotate-scenario" data-scenario="propeller">
-                <div class="rs-icon">✈️</div>
-                Propeller
-            </div>
-        </div>
+    document.getElementById('rotAnimate').addEventListener('click',function(){
+        if(animating){animating=false;cancelAnimationFrame(animId);this.textContent='▶ Show Rotation';return;}
+        animating=true;this.textContent='⏸ Stop';
+        function anim(){
+            if(!animating)return;
+            var moment=force*armLen*Math.sin(angle*PI/180);
+            rotAngle+=(moment*0.0003);
+            rotateDraw();
+            animId=requestAnimationFrame(anim);
+        }
+        anim();
+    });
 
-        <canvas id="rotateCanvas" width="800" height="600" class="rotate-canvas"></canvas>
+    window.rotateDraw=function(){
+        clearCanvas(ctx,canvas);
+        var W=canvas.width,H=canvas.height;
+        var rad=angle*PI/180;
+        var moment=force*armLen*Math.sin(rad);
+        var Fperp=force*Math.sin(rad);
+        var Fpar=force*Math.cos(rad);
 
-        <div class="sim-controls" id="rotateControls">
-            <div class="sim-control-group">
-                <label>Force F: <span id="rotForceVal" class="value-display">40 N</span></label>
-                <input type="range" id="rotForce" min="5" max="100" value="40" step="1">
-            </div>
-            <div class="sim-control-group" id="rotAngleGroup">
-                <label>Angle θ: <span id="rotAngleVal" class="value-display">60°</span></label>
-                <input type="range" id="rotAngle" min="0" max="180" value="60" step="1">
-            </div>
-            <div class="sim-control-group" id="rotLengthGroup">
-                <label>Lever length L: <span id="rotLenVal" class="value-display">0.40 m</span></label>
-                <input type="range" id="rotLen" min="0.10" max="0.60" value="0.40" step="0.02">
-            </div>
-            <div class="sim-control-group">
-                <label>
-                    <input type="checkbox" id="rotShowComponents" checked style="accent-color:var(--primary-light)">
-                    Show force components
-                </label>
-            </div>
-            <div class="sim-control-group">
-                <label>
-                    <input type="checkbox" id="rotShowPerpDist" checked style="accent-color:#22c55e">
-                    Show perpendicular distance
-                </label>
-            </div>
-            <button class="sim-btn sim-btn-play" id="rotAnimate">▶ Animate Rotation</button>
-            <button class="sim-btn sim-btn-reset" id="rotStop">⏸ Stop</button>
-        </div>
+        if(scenario==='spanner'){
+            var cx=W*0.4,cy=H*0.45;
+            var armPx=armLen*500;
 
-        <div class="calc-display" id="rotateCalc"></div>
-    </div>
+            // Bolt (pivot)
+            ctx.save();
+            ctx.fillStyle='#64748b';ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;
+            ctx.beginPath();ctx.arc(cx,cy,18,0,PI*2);ctx.fill();ctx.stroke();
+            // Hex pattern
+            ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;
+            for(var i=0;i<6;i++){var a=i*PI/3+rotAngle;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+12*Math.cos(a),cy+12*Math.sin(a));ctx.stroke();}
+            ctx.fillStyle='#475569';ctx.beginPath();ctx.arc(cx,cy,6,0,PI*2);ctx.fill();
+            ctx.restore();
 
-    <!-- COMPARISON TABLE -->
-    <div class="content-card" style="margin-top:1.5rem">
-        <h3>📊 How Angle Affects Moment</h3>
-        <p>This table shows how the moment changes as the angle varies — notice how sin θ peaks at 90°.</p>
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>θ</th><th>sin θ</th><th>d⊥ = L sin θ</th><th>Moment = F × d⊥</th><th>Effectiveness</th></tr></thead>
-                <tbody id="angleTableBody"></tbody>
-            </table>
-        </div>
-    </div>
+            // Spanner (rotated)
+            ctx.save();ctx.translate(cx,cy);ctx.rotate(rotAngle);
 
-    <!-- WORKED EXAMPLES -->
-    <div class="content-card" style="margin-top:1rem">
-        <div class="worked-example">
-            <div class="worked-example-header">📝 Worked Example — Force at an Angle on a Spanner</div>
-            <div class="worked-example-body">
-                <p><strong>Q:</strong> A force of 60 N is applied at 30° to the end of a 0.25 m spanner. Calculate the moment about the bolt.</p>
-                <div class="step"><div class="step-number">1</div><div class="step-content">
-                    <p>Identify: F = 60 N, L = 0.25 m, θ = 30°</p>
-                </div></div>
-                <div class="step"><div class="step-number">2</div><div class="step-content">
-                    <p><strong>Method 1 (perpendicular distance):</strong></p>
-                    <span class="math">d⊥ = L sin θ = 0.25 × sin 30° = 0.25 × 0.5 = 0.125 m</span><br>
-                    <span class="math">τ = F × d⊥ = 60 × 0.125 = 7.5 N m</span>
-                </div></div>
-                <div class="step"><div class="step-number">3</div><div class="step-content">
-                    <p><strong>Method 2 (perpendicular component):</strong></p>
-                    <span class="math">F⊥ = F sin θ = 60 × sin 30° = 60 × 0.5 = 30 N</span><br>
-                    <span class="math">τ = F⊥ × L = 30 × 0.25 = 7.5 N m ✓ Same answer!</span>
-                </div></div>
-            </div>
-        </div>
+            // Spanner body
+            ctx.fillStyle='#94a3b8';ctx.strokeStyle='#cbd5e1';ctx.lineWidth=2;
+            roundedRect(ctx,0,-10,armPx,20,4);ctx.fill();ctx.stroke();
 
-        <div class="worked-example">
-            <div class="worked-example-header">📝 Worked Example — Rope on a Trapdoor</div>
-            <div class="worked-example-body">
-                <p><strong>Q:</strong> A rope is attached to the end of a 1.2 m trapdoor, pulling with 80 N at 45° to the door. Find the moment about the hinge.</p>
-                <div class="step"><div class="step-number">1</div><div class="step-content">
-                    <span class="math">τ = F × L × sin θ = 80 × 1.2 × sin 45°</span><br>
-                    <span class="math">= 80 × 1.2 × 0.707 = 67.9 N m</span>
-                </div></div>
-                <div class="step"><div class="step-number">2</div><div class="step-content">
-                    <p><strong>Compare:</strong> If the rope pulled at 90°, τ = 80 × 1.2 × 1 = 96 N m — that's <strong>41% more effective!</strong></p>
-                </div></div>
-            </div>
-        </div>
-    </div>
-</div>
+            // Jaw at bolt end
+            ctx.fillStyle='#64748b';
+            ctx.fillRect(-15,-16,30,32);
+
+            // Length dimension
+            ctx.save();ctx.strokeStyle='rgba(250,204,21,.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+            ctx.beginPath();ctx.moveTo(0,25);ctx.lineTo(armPx,25);ctx.stroke();ctx.setLineDash([]);
+            drawLabel(ctx,'L = '+armLen.toFixed(2)+' m',armPx/2,40,'#facc15','center',11);
+            ctx.restore();
+
+            // Force arrow at end (at angle θ to spanner)
+            var fLen=Math.min(80,force*1.5);
+            var fEndX=armPx+fLen*Math.cos(PI-rad);
+            var fEndY=0+fLen*Math.sin(PI-rad);
+            drawArrow(ctx,armPx,0,armPx+fLen*Math.cos(PI/2+rad-PI/2),fLen*Math.sin(PI/2+rad-PI/2)*-1,'#3b82f6',3);
+
+            // Actually let me draw force more clearly
+            // Force is at angle θ measured from the spanner arm direction
+            var forceAngle=PI-rad; // direction of force relative to spanner direction
+            var fex=armPx+fLen*Math.cos(forceAngle);
+            var fey=fLen*Math.sin(forceAngle);
+
+            ctx.restore(); // back to world coords
+
+            // Re-draw force in world coordinates (clearer)
+            ctx.save();ctx.translate(cx,cy);ctx.rotate(rotAngle);
+            // Force at the end of spanner, at angle θ to spanner
+            var fx1=armPx,fy1=0;
+            var fAngle=PI-rad; // angle from positive x (spanner direction)
+            var fx2=fx1+fLen*Math.cos(fAngle);
+            var fy2=fy1+fLen*Math.sin(fAngle);
+            drawArrow(ctx,fx1,fy1,fx2,fy2,'#3b82f6',3);
+            drawLabel(ctx,'F='+force+'N',fx2+(fx2>fx1?10:-10),fy2-15,'#3b82f6',fx2>fx1?'left':'right',12);
+
+            // Perpendicular component (useful)
+            if(angle!==90 && angle!==0 && angle!==180){
+                var perpLen=fLen*Math.sin(rad)/1;
+                drawArrow(ctx,fx1,fy1,fx1,fy1-perpLen,'#22c55e',2);
+                drawLabel(ctx,'F⊥='+Fperp.toFixed(1)+'N',fx1+30,fy1-perpLen/2,'#22c55e','left',10);
+                // Parallel component (wasted)
+                var parLen=fLen*Math.cos(rad)/1;
+                ctx.save();ctx.setLineDash([4,4]);
+                drawArrow(ctx,fx1,fy1,fx1-parLen,fy1,'rgba(239,68,68,.5)',1.5);
+                ctx.restore();
+                drawLabel(ctx,'F∥='+Math.abs(Fpar).toFixed(1)+'N (wasted)',fx1-parLen/2-20,fy1+18,'rgba(239,68,68,.5)','center',9);
+            }
+
+            // Angle arc
+            if(angle!==90){
+                ctx.save();ctx.strokeStyle='rgba(255,255,255,.4)';ctx.lineWidth=1;
+                ctx.beginPath();
+                ctx.arc(armPx,0,25,PI,PI-rad,rad>0);
+                ctx.stroke();
+                drawLabel(ctx,'θ='+angle+'°',armPx-35,-20,'rgba(255,255,255,.5)','center',10);
+                ctx.restore();
+            }
+
+            // Perpendicular distance line
+            ctx.save();ctx.strokeStyle='rgba(34,197,94,.3)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+            var perpDist=armLen*Math.sin(rad);
+            // Line from pivot perpendicular to force direction... simplified: show d⊥
+            ctx.restore();
+
+            ctx.restore();
+
+            // Rotation direction indicator
+            if(moment>0.1){
+                ctx.save();ctx.strokeStyle='rgba(249,115,22,.4)';ctx.lineWidth=3;
+                ctx.beginPath();ctx.arc(cx,cy,armPx+25,rotAngle-0.5,rotAngle+0.8);ctx.stroke();
+                // Arrowhead at end
+                var aEnd=rotAngle+0.8;
+                drawArrow(ctx,cx+(armPx+25)*Math.cos(aEnd-0.1),cy+(armPx+25)*Math.sin(aEnd-0.1),cx+(armPx+25)*Math.cos(aEnd),cy+(armPx+25)*Math.sin(aEnd),'rgba(249,115,22,.6)',2);
+                ctx.restore();
+            }
+
+            drawLabel(ctx,'Pivot (bolt)',cx,cy+35,'rgba(255,255,255,.4)','center',10);
+
+        } else if(scenario==='door'){
+            var cx=120,cy=H*0.5;
+            var doorLen=armLen*500;
+
+            // Hinge
+            ctx.save();ctx.fillStyle='#64748b';
+            ctx.fillRect(cx-8,cy-80,16,160);
+            ctx.fillStyle='#94a3b8';
+            ctx.beginPath();ctx.arc(cx,cy,8,0,PI*2);ctx.fill();
+            ctx.restore();
+            drawLabel(ctx,'Hinge (pivot)',cx,cy+100,'rgba(255,255,255,.4)','center',10);
+
+            // Door (rotated)
+            ctx.save();ctx.translate(cx,cy);ctx.rotate(rotAngle);
+            ctx.fillStyle='rgba(139,92,42,.4)';ctx.strokeStyle='#a0785a';ctx.lineWidth=2;
+            ctx.fillRect(0,-60,doorLen,120);ctx.strokeRect(0,-60,doorLen,120);
+            // Handle
+            ctx.fillStyle='#facc15';
+            ctx.beginPath();ctx.arc(doorLen-20,0,6,0,PI*2);ctx.fill();
+
+            // Force arrow at handle position
+            var fLen=Math.min(70,force*1.2);
+            var fAngle=PI-rad;
+            drawArrow(ctx,doorLen,0,doorLen+fLen*Math.cos(fAngle),fLen*Math.sin(fAngle),'#3b82f6',3);
+            drawLabel(ctx,'F='+force+'N',doorLen+fLen*Math.cos(fAngle)+10,fLen*Math.sin(fAngle)-10,'#3b82f6','left',12);
+
+            // Length label
+            drawLabel(ctx,armLen.toFixed(2)+'m',doorLen/2,70,'#facc15','center',11);
+
+            ctx.restore();
+
+        } else if(scenario==='steering'){
+            var cx=W*0.45,cy=H*0.48,wheelR=armLen*300;
+
+            // Steering column
+            ctx.save();ctx.fillStyle='#475569';
+            ctx.fillRect(cx-8,cy+wheelR+5,16,80);ctx.restore();
+
+            // Wheel
+            ctx.save();ctx.translate(cx,cy);ctx.rotate(rotAngle);
+            ctx.strokeStyle='#94a3b8';ctx.lineWidth=8;
+            ctx.beginPath();ctx.arc(0,0,wheelR,0,PI*2);ctx.stroke();
+            // Spokes
+            ctx.lineWidth=3;
+            for(var i=0;i<3;i++){var a=i*PI*2/3;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(wheelR*Math.cos(a),wheelR*Math.sin(a));ctx.stroke();}
+            // Centre hub
+            ctx.fillStyle='#64748b';ctx.beginPath();ctx.arc(0,0,12,0,PI*2);ctx.fill();
+
+            // Two equal opposite forces (couple)
+            var fLen=Math.min(60,force);
+            // Left hand pushes up, right hand pushes down (or vice versa)
+            drawArrow(ctx,-wheelR,0,-wheelR,-fLen,'#3b82f6',3);
+            drawLabel(ctx,'F='+force+'N',-wheelR-15,-fLen/2,'#3b82f6','right',11);
+            drawArrow(ctx,wheelR,0,wheelR,fLen,'#ef4444',3);
+            drawLabel(ctx,'F='+force+'N',wheelR+15,fLen/2,'#ef4444','left',11);
+
+            // d label
+            ctx.save();ctx.strokeStyle='rgba(250,204,21,.3)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+            ctx.beginPath();ctx.moveTo(-wheelR,10);ctx.lineTo(wheelR,10);ctx.stroke();ctx.setLineDash([]);
+            drawLabel(ctx,'d = '+(armLen*2).toFixed(2)+' m',0,25,'#facc15','center',11);
+            ctx.restore();
+
+            ctx.restore();
+
+            // Couple calculation is different
+            moment=force*(armLen*2); // F × d for couple
+            Fperp=force;
+
+        } else if(scenario==='propeller'){
+            var cx=W*0.45,cy=H*0.48,bladeR=120;
+
+            // Hub
+            ctx.save();ctx.translate(cx,cy);ctx.rotate(rotAngle);
+            ctx.fillStyle='#475569';ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;
+            ctx.beginPath();ctx.arc(0,0,15,0,PI*2);ctx.fill();ctx.stroke();
+
+            // 3 blades
+            for(var i=0;i<3;i++){
+                var a=i*PI*2/3;
+                ctx.save();ctx.rotate(a);
+                ctx.fillStyle='rgba(96,165,250,.3)';ctx.strokeStyle='#60a5fa';ctx.lineWidth=2;
+                ctx.beginPath();
+                ctx.moveTo(15,0);
+                ctx.quadraticCurveTo(bladeR*0.4,-20,bladeR,-5);
+                ctx.lineTo(bladeR,5);
+                ctx.quadraticCurveTo(bladeR*0.4,15,15,0);
+                ctx.fill();ctx.stroke();
+
+                // Force on each blade tip
+                drawArrow(ctx,bladeR,0,bladeR,-(force*0.4),'#22c55e',2);
+                ctx.restore();
+            }
+
+            // Rotation arc
+            ctx.save();ctx.strokeStyle='rgba(249,115,22,.5)';ctx.lineWidth=3;
+            ctx.beginPath();ctx.arc(0,0,bladeR+20,0,PI*1.3);ctx.stroke();ctx.restore();
+
+            ctx.restore();
+
+            // For propeller, moment = sum of F×r on all blades
+            armLen=0.25; // fixed
+            moment=3*force*armLen; // 3 blades
+            Fperp=force;
+        }
+
+        // Big moment readout
+        ctx.save();ctx.font='800 22px "JetBrains Mono"';ctx.fillStyle='#fff';ctx.textAlign='right';
+        ctx.fillText('τ = '+moment.toFixed(1)+' N m',W-20,35);
+        ctx.font='500 12px Inter';ctx.fillStyle='rgba(255,255,255,.4)';
+        ctx.fillText('Moment (torque)',W-20,55);
+        ctx.restore();
+
+        // Moment direction
+        if(moment>0.1){
+            drawLabel(ctx,'↻ Clockwise rotation',W-120,80,'#f97316','center',12);
+        }
+
+        // Calculations
+        var html='';
+        if(scenario==='spanner'||scenario==='door'){
+            html='<span class="calc-label">Moment = F × L × sinθ</span><br>'+
+                '= '+force+' × '+armLen.toFixed(2)+' × sin'+angle+'°<br>'+
+                '= '+force+' × '+armLen.toFixed(2)+' × '+(Math.sin(rad)).toFixed(4)+'<br>'+
+                '<span class="calc-val highlight-row">τ = '+moment.toFixed(2)+' N m</span><br><br>';
+            if(angle===90) html+='<span class="calc-label">💡</span> At 90°, sinθ = 1 → <strong>maximum moment</strong>. All of F is perpendicular to the lever.<br>';
+            else if(angle===0||angle===180) html+='<span style="color:#ef4444">⚠ At 0°/180°, sinθ = 0 → moment = 0! Force is along the lever — no turning effect.</span><br>';
+            else html+='<span class="calc-label">F⊥ =</span> F sinθ = '+force+' × sin'+angle+'° = <span class="calc-val">'+Fperp.toFixed(1)+' N</span> (effective)<br>'+
+                '<span class="calc-label">F∥ =</span> F cosθ = '+force+' × cos'+angle+'° = <span style="color:#ef4444">'+Math.abs(Fpar).toFixed(1)+' N</span> (wasted — pushes into pivot)<br><br>'+
+                '<span class="calc-label">💡</span> Only the perpendicular component F⊥ creates a turning effect!<br>';
+        } else if(scenario==='steering'){
+            html='<span class="calc-label">Couple: Two equal opposite forces</span><br>'+
+                'Each force = '+force+' N<br>'+
+                'Distance between forces (diameter) = '+(armLen*2).toFixed(2)+' m<br>'+
+                '<span class="calc-label">Torque of couple = F × d</span><br>'+
+                '= '+force+' × '+(armLen*2).toFixed(2)+'<br>'+
+                '<span class="calc-val highlight-row">τ = '+moment.toFixed(1)+' N m</span><br><br>'+
+                '<span class="calc-label">💡</span> A couple produces <strong>pure rotation</strong> — no translation (ΣF = 0 since forces are equal and opposite).<br>'+
+                'The steering wheel turns without the steering column translating sideways.';
+        } else if(scenario==='propeller'){
+            html='<span class="calc-label">Propeller: 3 blades, each with F = '+force+' N at r = 0.25 m</span><br>'+
+                'Total torque = 3 × F × r = 3 × '+force+' × 0.25<br>'+
+                '<span class="calc-val highlight-row">τ = '+moment.toFixed(1)+' N m</span><br><br>'+
+                '<span class="calc-label">💡</span> Engine provides this torque to spin the propeller. The rotating blades push air backward → reaction force pushes aircraft forward (Newton\'s 3rd Law).<br>'+
+                'A fan works the same way — blades push air toward you.';
+        }
+        calcDiv.innerHTML=html;
+    };
+    rotateDraw();
+})();
 
 // ============================================================
 // COG SIMULATION (fixed)
