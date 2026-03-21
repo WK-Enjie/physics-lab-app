@@ -51,13 +51,13 @@
 
         <a href="topics/turning-effects.html" class="topic-card" style="--card-accent:#34a853">
             <div class="topic-icon">⚖️</div>
-            <div class="topic-badge">4 interactive sims</div>
+            <div class="topic-badge">5 interactive sims</div>
             <h3>Turning Effects of Forces</h3>
-            <p>Moments, principle of moments, conditions for equilibrium, centre of gravity and classic problems.</p>
+            <p>Moments, principle of moments, equilibrium, centre of gravity, rotating objects and classic problems.</p>
             <div class="topic-tags">
                 <span class="tag">Moments</span>
                 <span class="tag">Equilibrium</span>
-                <span class="tag">Torque</span>
+                <span class="tag">Rotation</span>
             </div>
             <div class="card-arrow">→</div>
         </a>
@@ -84,6 +84,32 @@
                 <span class="tag">Energy Stores</span>
                 <span class="tag">Conservation</span>
                 <span class="tag">KE &amp; GPE</span>
+            </div>
+            <div class="card-arrow">→</div>
+        </a>
+
+        <a href="topics/experiments.html" class="topic-card" style="--card-accent:#8b5cf6">
+            <div class="topic-icon">🔬</div>
+            <div class="topic-badge">4 virtual labs</div>
+            <h3>Virtual Lab Experiments</h3>
+            <p>Interactive practicals — Hooke's Law, density, moments verification and ticker tape motion analysis.</p>
+            <div class="topic-tags">
+                <span class="tag">Practical</span>
+                <span class="tag">Data Collection</span>
+                <span class="tag">Graphing</span>
+            </div>
+            <div class="card-arrow">→</div>
+        </a>
+
+        <a href="topics/experiments-2.html" class="topic-card" style="--card-accent:#ec4899">
+            <div class="topic-icon">🧪</div>
+            <div class="topic-badge">4 virtual labs</div>
+            <h3>More Lab Experiments</h3>
+            <p>Pendulum timing, spring-mass oscillations, spring balance calibration &amp; comprehensive error analysis guide.</p>
+            <div class="topic-tags">
+                <span class="tag">Oscillations</span>
+                <span class="tag">Calibration</span>
+                <span class="tag">Error Analysis</span>
             </div>
             <div class="card-arrow">→</div>
         </a>
@@ -142,45 +168,46 @@
 
 <!-- ============ HERO ANIMATION ============ -->
 <script>
-(() => {
-    const canvas = document.getElementById('heroCanvas');
-    const ctx = canvas.getContext('2d');
-
-    function resize() {
+(function(){
+    var canvas = document.getElementById('heroCanvas');
+    var ctx = canvas.getContext('2d');
+    function resize(){
         canvas.width = canvas.parentElement.offsetWidth;
         canvas.height = canvas.parentElement.offsetHeight;
     }
     resize();
     window.addEventListener('resize', resize);
 
-    const symbols = [
-        'F = ma', 'ΣF = 0', 'p = mv', 'W = Fd', 'P = F/A',
+    var symbols = [
+        'F = ma', 'p = mv', 'W = Fd', 'P = F/A',
         'τ = Fd', 'KE = ½mv²', 'GPE = mgh', 'P = hρg',
-        'a = Δv/Δt', 'F₁d₁ = F₂d₂', 'η = useful/total'
+        'a = Δv/Δt', 'F₁d₁ = F₂d₂', 'η = useful/total',
+        'T = 2π√(L/g)', 'F = ke', 'ρ = m/V'
     ];
-
-    const particles = Array.from({length: 18}, () => ({
-        x: Math.random() * (canvas.width || 800),
-        y: Math.random() * (canvas.height || 600),
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.3,
-        text: symbols[Math.floor(Math.random() * symbols.length)],
-        opacity: Math.random() * 0.18 + 0.04,
-        size: Math.random() * 10 + 13
-    }));
-
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (const p of particles) {
-            p.x += p.vx;
-            p.y += p.vy;
-            if (p.x < -100) p.x = canvas.width + 50;
-            if (p.x > canvas.width + 100) p.x = -50;
-            if (p.y < -30) p.y = canvas.height + 20;
-            if (p.y > canvas.height + 30) p.y = -20;
-            ctx.font = `${p.size}px 'JetBrains Mono', monospace`;
-            ctx.fillStyle = `rgba(180, 210, 255, ${p.opacity})`;
-            ctx.fillText(p.text, p.x, p.y);
+    var particles = [];
+    for(var i=0; i<18; i++){
+        particles.push({
+            x: Math.random()*(canvas.width||800),
+            y: Math.random()*(canvas.height||600),
+            vx: (Math.random()-0.5)*0.4,
+            vy: (Math.random()-0.5)*0.3,
+            text: symbols[Math.floor(Math.random()*symbols.length)],
+            opacity: Math.random()*0.18+0.04,
+            size: Math.random()*10+13
+        });
+    }
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        for(var i=0;i<particles.length;i++){
+            var p=particles[i];
+            p.x+=p.vx; p.y+=p.vy;
+            if(p.x<-100) p.x=canvas.width+50;
+            if(p.x>canvas.width+100) p.x=-50;
+            if(p.y<-30) p.y=canvas.height+20;
+            if(p.y>canvas.height+30) p.y=-20;
+            ctx.font=p.size+'px "JetBrains Mono",monospace';
+            ctx.fillStyle='rgba(180,210,255,'+p.opacity+')';
+            ctx.fillText(p.text,p.x,p.y);
         }
         requestAnimationFrame(draw);
     }
