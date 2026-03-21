@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More Lab Experiments | Physics Lab 6091</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .sim-container canvas { aspect-ratio: 2; }
+        .pend-canvas   { aspect-ratio: 4/3 !important; }
+        .spring-osc-canvas { aspect-ratio: 4/3 !important; }
+        .balance-canvas { aspect-ratio: 3/2 !important; }
+        .error-canvas  { aspect-ratio: 5/3 !important; }
+
+        .lab-header { display:flex; align-items:center; gap:.8rem; margin-bottom:.5rem; }
+        .lab-number {
+            background:var(--primary); color:#fff; width:36px; height:36px;
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            font-weight:800; font-size:1rem; flex-shrink:0;
+        }
+        .lab-aim {
+            background:linear-gradient(135deg,#e0f2fe,#f0f4ff);
+            border-left:4px solid var(--primary);
+            padding:1rem 1.3rem; border-radius:0 8px 8px 0; margin:1rem 0;
+        }
+        .lab-aim strong { color:var(--primary-dark); }
+        .lab-apparatus { display:flex; flex-wrap:wrap; gap:.5rem; margin:.8rem 0; }
+        .apparatus-tag {
+            padding:.3rem .7rem; background:#f0fdf4; border:1px solid #86efac;
+            border-radius:20px; font-size:.8rem; color:#166534; font-weight:500;
+        }
+        .procedure-steps { counter-reset:step; margin:1rem 0; }
+        .proc-step { display:flex; gap:.8rem; margin-bottom:.8rem; align-items:flex-start; }
+        .proc-step-num {
+            background:var(--primary); color:#fff; width:28px; height:28px;
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            font-size:.82rem; font-weight:700; flex-shrink:0; margin-top:.1rem;
+        }
+        .proc-step-text { flex:1; font-size:.92rem; color:var(--text-secondary); line-height:1.6; }
+
+        .data-table-wrap { overflow-x:auto; margin:1rem 0; }
+        .data-table { width:100%; border-collapse:collapse; font-size:.88rem; }
+        .data-table th {
+            background:#1e3a5f; color:#fff; padding:.65rem .8rem;
+            text-align:center; font-weight:600; white-space:nowrap;
+        }
+        .data-table td {
+            padding:.55rem .8rem; text-align:center; border:1px solid #e2e8f0;
+            font-family:var(--font-mono); font-size:.85rem;
+        }
+        .data-table tr:nth-child(even) td { background:#f8fafc; }
+
+        .graph-container {
+            background:#0f172a; border-radius:8px; padding:1rem; margin:1rem 0;
+        }
+        .graph-container canvas { width:100%; border-radius:6px; }
+
+        .result-box {
+            background:linear-gradient(135deg,#dcfce7,#f0fdf4);
+            border:2px solid #22c55e; border-radius:8px;
+            padding:1.2rem; margin:1rem 0; text-align:center;
+        }
+        .result-box .result-value {
+            font-size:1.8rem; font-weight:800; color:#166534;
+            font-family:var(--font-mono);
+        }
+        .result-box .result-label {
+            font-size:.9rem; color:#15803d; margin-top:.3rem;
+        }
+
+        .error-box {
+            background:#fefce8; border-left:4px solid #eab308;
+            padding:1rem 1.3rem; border-radius:0 8px 8px 0; margin:1rem 0;
+        }
+        .error-box h4 { color:#854d0e; margin-bottom:.4rem; }
+        .error-box ul { padding-left:1.2rem; }
+        .error-box li { font-size:.88rem; color:#713f12; margin-bottom:.3rem; line-height:1.6; }
+
+        .precaution-box {
+            background:#eff6ff; border-left:4px solid #3b82f6;
+            padding:1rem 1.3rem; border-radius:0 8px 8px 0; margin:1rem 0;
+        }
+        .precaution-box h4 { color:#1e40af; margin-bottom:.4rem; }
+        .precaution-box ul { padding-left:1.2rem; }
+        .precaution-box li { font-size:.88rem; color:#1e3a5f; margin-bottom:.3rem; line-height:1.6; }
+
+        .challenge-box {
+            background:linear-gradient(135deg,#ede9fe,#f5f3ff);
+            border:2px solid #8b5cf6; border-radius:8px; padding:1.2rem; margin:1rem 0;
+        }
+        .challenge-box h4 { color:#6d28d9; margin-bottom:.5rem; }
+        .challenge-box p, .challenge-box li { font-size:.9rem; color:#5b21b6; line-height:1.6; }
+
+        .sim-readout {
+            display:inline-flex; align-items:center; gap:.4rem;
+            background:rgba(0,0,0,.4); padding:.4rem .9rem; border-radius:6px;
+            font-family:var(--font-mono); font-size:.95rem; color:#22c55e;
+            margin:.3rem .3rem 0 0;
+        }
+        .sim-readout .readout-label { color:rgba(255,255,255,.5); font-size:.78rem; }
+
+        .calc-display { background:rgba(0,0,0,.3); border-radius:8px; padding:1rem; margin-top:1rem; font-family:var(--font-mono); font-size:.88rem; color:rgba(255,255,255,.85); line-height:1.8; }
+        .calc-display .calc-label { color:var(--primary-light); font-weight:600; }
+        .calc-display .calc-val { color:#34d399; }
+        .highlight-row { background:rgba(74,158,255,.15); padding:.2rem .5rem; border-radius:4px; display:inline-block; margin:.1rem 0; }
+
+        .error-type-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1rem; margin:1rem 0; }
+        .error-type-card {
+            background:#fff; border:1px solid var(--border); border-radius:var(--radius-sm);
+            padding:1.2rem; transition:var(--transition);
+        }
+        .error-type-card:hover { box-shadow:var(--shadow); }
+        .error-type-card h4 { font-size:1rem; margin-bottom:.4rem; display:flex; align-items:center; gap:.4rem; }
+        .error-type-card p { font-size:.85rem; color:var(--text-secondary); line-height:1.6; }
+        .error-type-card ul { padding-left:1.2rem; margin-top:.4rem; }
+        .error-type-card li { font-size:.83rem; color:var(--text-light); margin-bottom:.25rem; }
+
+        .accuracy-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; margin:1rem 0; }
+        .accuracy-card { text-align:center; padding:1.5rem; background:#fff; border:1px solid var(--border); border-radius:var(--radius-sm); }
+        .accuracy-card .target { font-size:3rem; }
+        .accuracy-card h4 { margin:.5rem 0 .3rem; }
+        .accuracy-card p { font-size:.82rem; color:var(--text-light); }
+
+        .timing-tip {
+            background:rgba(34,197,94,.1); border:1px solid rgba(34,197,94,.3);
+            padding:.8rem 1rem; border-radius:8px; margin:.5rem 0;
+            font-size:.88rem; color:#166534;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="topic-header">
+    <nav class="navbar">
+        <a href="../index.html" class="logo" style="text-decoration:none">⚛️ Physics Lab 6091</a>
+        <div class="nav-links">
+            <a href="../index.html">← All Topics</a>
+            <a href="experiments.html">Lab Set 1</a>
+        </div>
+    </nav>
+    <div class="topic-hero">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a><span>›</span> More Lab Experiments
+        </div>
+        <h1>🔬 More Virtual Lab Experiments</h1>
+        <p>Pendulum timing, spring-mass oscillations, spring balance calibration &amp; comprehensive error analysis</p>
+    </div>
+</header>
+
+<!-- ============ TAB NAV ============ -->
+<div class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="pendulum-exp"><span class="tab-emoji">🕰️</span> Pendulum</button>
+    <button class="tab-btn" data-tab="spring-osc"><span class="tab-emoji">🔩</span> Spring Oscillations</button>
+    <button class="tab-btn" data-tab="balance"><span class="tab-emoji">⚖️</span> Spring Balance</button>
+    <button class="tab-btn" data-tab="errors"><span class="tab-emoji">📊</span> Error Analysis Guide</button>
+</div>
+
+<!-- ============================================================
+     EXPERIMENT 1 — SIMPLE PENDULUM
+     ============================================================ -->
+<div class="tab-content active" id="tab-pendulum-exp">
+    <div class="content-card">
+        <div class="lab-header">
+            <div class="lab-number">5</div>
+            <h2>Simple Pendulum — Determine <em>g</em></h2>
+        </div>
+
+        <div class="lab-aim">
+            <strong>Aim:</strong> To investigate how the period of a simple pendulum varies with its length, and to determine the acceleration due to gravity <em>g</em> from a T² vs L graph.
+        </div>
+
+        <h3>Apparatus</h3>
+        <div class="lab-apparatus">
+            <span class="apparatus-tag">Retort stand + clamp</span>
+            <span class="apparatus-tag">String (≈ 1 m)</span>
+            <span class="apparatus-tag">Small dense bob (metal)</span>
+            <span class="apparatus-tag">Metre rule</span>
+            <span class="apparatus-tag">Stopwatch (±0.01 s)</span>
+            <span class="apparatus-tag">Protractor</span>
+            <span class="apparatus-tag">Set square / fiducial marker</span>
+        </div>
+
+        <h3>Theory</h3>
+        <div class="formula-box">
+            <span class="formula-label">Period of a Simple Pendulum</span>
+            <span class="formula">T = 2π √(L / g)</span>
+        </div>
+        <p>Squaring both sides:</p>
+        <div class="formula-box" style="margin-top:.5rem;border-left-color:var(--secondary)">
+            <span class="formula-label">Linearised Form</span>
+            <span class="formula">T² = (4π² / g) × L</span>
+        </div>
+        <p>Plotting <strong>T²</strong> (y-axis) against <strong>L</strong> (x-axis) gives a straight line through the origin. The gradient = <strong>4π²/g</strong>, so:</p>
+        <div class="formula-box" style="margin-top:.5rem;border-left-color:var(--danger)">
+            <span class="formula-label">Determining g</span>
+            <span class="formula">g = 4π² / gradient</span>
+        </div>
+
+        <div class="key-concept">
+            <strong>💡 Key Requirements:</strong><br>
+            • Angle of swing must be <strong>small (< 10°)</strong> for the formula to be valid.<br>
+            • Measure length from <strong>pivot to centre of bob</strong> (not bottom of bob).<br>
+            • Time <strong>at least 20 complete oscillations</strong> and divide by 20 to reduce timing error.
+        </div>
+
+        <h3>Procedure</h3>
+        <div class="procedure-steps">
+            <div class="proc-step"><div class="proc-step-num">1</div><div class="proc-step-text">Set up the pendulum. Measure length L from the <strong>clamp to the centre of the bob</strong> using the metre rule.</div></div>
+            <div class="proc-step"><div class="proc-step-num">2</div><div class="proc-step-text">Displace the bob to a <strong>small angle (< 10°)</strong> and release it <strong>without pushing</strong>.</div></div>
+            <div class="proc-step"><div class="proc-step-num">3</div><div class="proc-step-text">Use a <strong>fiducial marker</strong> at the rest position. Start timing as the bob passes the marker. Count <strong>20 complete oscillations</strong>.</div></div>
+            <div class="proc-step"><div class="proc-step-num">4</div><div class="proc-step-text">Record time for 20 oscillations (t₂₀). Calculate period: <strong>T = t₂₀ / 20</strong>.</div></div>
+            <div class="proc-step"><div class="proc-step-num">5</div><div class="proc-step-text">Repeat for at least <strong>6 different lengths</strong> (e.g. 30, 40, 50, 60, 70, 80 cm).</div></div>
+            <div class="proc-step"><div class="proc-step-num">6</div><div class="proc-step-text">Plot <strong>T² vs L</strong>. Draw a best-fit line. Calculate gradient → find g.</div></div>
+        </div>
+
+        <div class="timing-tip">
+            💡 <strong>Why 20 oscillations?</strong> Human reaction time is about ±0.2 s. If T ≈ 1.5 s, the error in one period = 0.2/1.5 ≈ 13%. Over 20 oscillations: error = 0.2/30 ≈ 0.7%. Much better!
+        </div>
+    </div>
+
+    <!-- INTERACTIVE SIM -->
+    <div class="sim-container">
+        <canvas id="pendExpCanvas" width="800" height="550" class="pend-canvas"></canvas>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>Length L: <span id="peL_Val" class="value-display">50.0 cm</span></label>
+                <input type="range" id="peL" min="20" max="100" value="50" step="5">
+            </div>
+            <div class="sim-control-group">
+                <label>Release angle: <span id="peAngle_Val" class="value-display">8°</span></label>
+                <input type="range" id="peAngle" min="2" max="25" value="8" step="1">
+            </div>
+            <button class="sim-btn sim-btn-play" id="peStart">▶ Release &amp; Time 20</button>
+            <button class="sim-btn sim-btn-reset" id="peReset">↺ Reset</button>
+            <button class="sim-btn" id="peRecord" style="background:#22c55e;color:#fff" disabled>📝 Record</button>
+            <button class="sim-btn sim-btn-reset" id="peClearData">🗑️ Clear Data</button>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem">
+            <div class="sim-readout"><span class="readout-label">Oscillations:</span> <span id="peOscCount">0</span> / 20</div>
+            <div class="sim-readout"><span class="readout-label">Time:</span> <span id="peTime">0.00</span> s</div>
+            <div class="sim-readout"><span class="readout-label">Period T:</span> <span id="pePeriod">—</span></div>
+            <div class="sim-readout"><span class="readout-label">T²:</span> <span id="peTSq">—</span></div>
+        </div>
+    </div>
+
+    <!-- DATA TABLE -->
+    <div class="content-card" style="margin-top:1.5rem">
+        <h3>📊 Recorded Data</h3>
+        <div class="data-table-wrap">
+            <table class="data-table" id="peTable">
+                <thead>
+                    <tr><th>#</th><th>L (cm)</th><th>L (m)</th><th>t₂₀ (s)</th><th>T (s)</th><th>T² (s²)</th></tr>
+                </thead>
+                <tbody id="peTableBody">
+                    <tr><td colspan="6" style="color:#94a3b8;font-style:italic">Release pendulum, then click Record</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- GRAPH -->
+    <div class="content-card" style="margin-top:1rem">
+        <h3>📈 T² vs L Graph</h3>
+        <div class="graph-container">
+            <canvas id="peGraph" width="700" height="400"></canvas>
+        </div>
+        <div id="peResult" style="display:none">
+            <div class="result-box">
+                <div class="result-value" id="peGVal">—</div>
+                <div class="result-label">Experimental value of g (m/s²) — from gradient of T² vs L</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ERRORS -->
+    <div class="content-card" style="margin-top:1rem">
+        <div class="error-box">
+            <h4>⚠️ Sources of Error</h4>
+            <ul>
+                <li><strong>Reaction time error:</strong> Starting/stopping the stopwatch is delayed by ~0.2 s. <em>Reduced by timing 20+ oscillations.</em></li>
+                <li><strong>Counting error:</strong> Miscounting oscillations. <em>Use a fiducial marker and count carefully from zero.</em></li>
+                <li><strong>Length measurement:</strong> Difficult to measure exactly to the <strong>centre of the bob</strong>. <em>Use a set square to locate the centre. Measure with bob at rest.</em></li>
+                <li><strong>Large amplitude:</strong> If the angle > 10°, the T = 2π√(L/g) formula is no longer accurate. The period increases with amplitude. <em>Keep angle < 10°.</em></li>
+                <li><strong>Air resistance:</strong> Causes the amplitude to decrease over time, slightly affecting timing. <em>Use a small, dense (heavy) bob to minimise drag.</em></li>
+                <li><strong>Non-rigid string:</strong> String may stretch under tension, changing effective length. <em>Use inextensible string.</em></li>
+                <li><strong>Parallax error:</strong> When reading the ruler. <em>Place ruler close to the string; read at eye level.</em></li>
+                <li><strong>Oscillation not in single plane:</strong> Bob swings in an ellipse instead of a straight line. <em>Release carefully without sideways push.</em></li>
+            </ul>
+        </div>
+
+        <div class="precaution-box">
+            <h4>✅ Precautions</h4>
+            <ul>
+                <li>Time from the <strong>equilibrium position</strong> (where the bob moves fastest) — easier to identify the exact moment of crossing.</li>
+                <li>Allow the pendulum to swing 2–3 times before starting the stopwatch to establish a steady rhythm.</li>
+                <li>Repeat timing and take the <strong>average</strong> of at least 2 readings for each length.</li>
+                <li>Plot the graph as you go — an anomalous point is easier to spot and re-measure.</li>
+            </ul>
+        </div>
+
+        <div class="challenge-box">
+            <h4>🏆 Extension Challenges</h4>
+            <ul>
+                <li>Does the mass of the bob affect the period? Test with different bobs of the same length.</li>
+                <li>What happens when the angle exceeds 15°? 30°? Measure and compare with the formula.</li>
+                <li>Try to achieve g = 9.81 ± 0.2 m/s². What's the smallest percentage error you can get?</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     EXPERIMENT 2 — SPRING-MASS OSCILLATIONS
+     ============================================================ -->
+<div class="tab-content" id="tab-spring-osc">
+    <div class="content-card">
+        <div class="lab-header">
+            <div class="lab-number">6</div>
+            <h2>Spring-Mass Oscillations — Period vs Mass</h2>
+        </div>
+
+        <div class="lab-aim">
+            <strong>Aim:</strong> To investigate how the period of vertical oscillation of a spring-mass system depends on the attached mass, and to determine the spring constant <em>k</em>.
+        </div>
+
+        <h3>Apparatus</h3>
+        <div class="lab-apparatus">
+            <span class="apparatus-tag">Helical spring</span>
+            <span class="apparatus-tag">Retort stand + clamp</span>
+            <span class="apparatus-tag">Slotted masses (50–400 g)</span>
+            <span class="apparatus-tag">Mass hanger</span>
+            <span class="apparatus-tag">Stopwatch</span>
+            <span class="apparatus-tag">Ruler</span>
+            <span class="apparatus-tag">Fiducial marker</span>
+        </div>
+
+        <h3>Theory</h3>
+        <div class="formula-box">
+            <span class="formula-label">Period of a Spring-Mass System</span>
+            <span class="formula">T = 2π √(m / k)</span>
+        </div>
+        <div class="formula-box" style="margin-top:.5rem;border-left-color:var(--secondary)">
+            <span class="formula-label">Linearised Form</span>
+            <span class="formula">T² = (4π² / k) × m &nbsp;&nbsp; → &nbsp;&nbsp; k = 4π² / gradient</span>
+        </div>
+
+        <h3>Procedure</h3>
+        <div class="procedure-steps">
+            <div class="proc-step"><div class="proc-step-num">1</div><div class="proc-step-text">Hang the spring from the clamp. Attach a known mass and let it reach equilibrium.</div></div>
+            <div class="proc-step"><div class="proc-step-num">2</div><div class="proc-step-text">Pull the mass down by 2–3 cm (small amplitude) and release. Time <strong>20 oscillations</strong>.</div></div>
+            <div class="proc-step"><div class="proc-step-num">3</div><div class="proc-step-text">Record t₂₀ and calculate T = t₂₀ / 20.</div></div>
+            <div class="proc-step"><div class="proc-step-num">4</div><div class="proc-step-text">Repeat for at least 6 different masses.</div></div>
+            <div class="proc-step"><div class="proc-step-num">5</div><div class="proc-step-text">Plot <strong>T² vs m</strong>. Gradient = 4π²/k → find k.</div></div>
+        </div>
+    </div>
+
+    <div class="sim-container">
+        <canvas id="soCanvas" width="800" height="550" class="spring-osc-canvas"></canvas>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>Mass: <span id="soMass_Val" class="value-display">200 g</span></label>
+                <input type="range" id="soMass" min="50" max="500" value="200" step="50">
+            </div>
+            <div class="sim-control-group">
+                <label>Spring k: <span id="soK_Val" class="value-display">30 N/m</span></label>
+                <input type="range" id="soK" min="10" max="80" value="30" step="5">
+            </div>
+            <button class="sim-btn sim-btn-play" id="soStart">▶ Pull &amp; Release</button>
+            <button class="sim-btn sim-btn-reset" id="soReset">↺ Reset</button>
+            <button class="sim-btn" id="soRecord" style="background:#22c55e;color:#fff" disabled>📝 Record</button>
+            <button class="sim-btn sim-btn-reset" id="soClearData">🗑️ Clear Data</button>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem">
+            <div class="sim-readout"><span class="readout-label">Oscillations:</span> <span id="soOscCount">0</span> / 20</div>
+            <div class="sim-readout"><span class="readout-label">Time:</span> <span id="soTime">0.00</span> s</div>
+            <div class="sim-readout"><span class="readout-label">Period T:</span> <span id="soPeriod">—</span></div>
+            <div class="sim-readout"><span class="readout-label">T²:</span> <span id="soTSq">—</span></div>
+        </div>
+    </div>
+
+    <!-- DATA TABLE -->
+    <div class="content-card" style="margin-top:1.5rem">
+        <h3>📊 Recorded Data</h3>
+        <div class="data-table-wrap">
+            <table class="data-table" id="soTable">
+                <thead>
+                    <tr><th>#</th><th>m (g)</th><th>m (kg)</th><th>t₂₀ (s)</th><th>T (s)</th><th>T² (s²)</th></tr>
+                </thead>
+                <tbody id="soTableBody">
+                    <tr><td colspan="6" style="color:#94a3b8;font-style:italic">Pull mass and release, then click Record</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 style="margin-top:1rem">📈 T² vs m Graph</h3>
+        <div class="graph-container">
+            <canvas id="soGraph" width="700" height="400"></canvas>
+        </div>
+        <div id="soResult" style="display:none">
+            <div class="result-box">
+                <div class="result-value" id="soKResult">—</div>
+                <div class="result-label">Spring constant k (N/m) — from gradient of T² vs m</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card" style="margin-top:1rem">
+        <div class="error-box">
+            <h4>⚠️ Sources of Error</h4>
+            <ul>
+                <li><strong>Reaction time:</strong> Same as pendulum — time 20 oscillations to minimise.</li>
+                <li><strong>Lateral sway:</strong> Mass may swing sideways instead of bouncing purely vertically. <em>Guide the mass to oscillate vertically only.</em></li>
+                <li><strong>Exceeding elastic limit:</strong> If too much mass causes permanent deformation of the spring. <em>Check spring returns to original length after removing mass.</em></li>
+                <li><strong>Large amplitude:</strong> Very large displacements may make the oscillation non-sinusoidal. <em>Keep amplitude small (2–3 cm).</em></li>
+                <li><strong>Mass of spring:</strong> The formula assumes the spring is massless. A heavy spring adds to effective oscillating mass, increasing T. <em>Use a light spring with heavy bobs.</em></li>
+                <li><strong>Resonance with stand:</strong> The retort stand may sway in sympathy. <em>Clamp the stand firmly or weight the base.</em></li>
+                <li><strong>Counting error:</strong> Same as pendulum — use a fiducial marker at the equilibrium position.</li>
+            </ul>
+        </div>
+        <div class="precaution-box">
+            <h4>✅ Precautions</h4>
+            <ul>
+                <li>Wait for transient vibrations to die down before starting timing.</li>
+                <li>Count from the <strong>equilibrium position</strong> where the mass moves fastest.</li>
+                <li>Repeat timing and take averages.</li>
+                <li>Do not exceed the elastic limit of the spring.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     EXPERIMENT 3 — SPRING BALANCE CALIBRATION
+     ============================================================ -->
+<div class="tab-content" id="tab-balance">
+    <div class="content-card">
+        <div class="lab-header">
+            <div class="lab-number">7</div>
+            <h2>Spring Balance — Calibration &amp; Measurement</h2>
+        </div>
+
+        <div class="lab-aim">
+            <strong>Aim:</strong> To calibrate a spring as a force meter using known weights, then use it to measure unknown forces.
+        </div>
+
+        <h3>Apparatus</h3>
+        <div class="lab-apparatus">
+            <span class="apparatus-tag">Helical spring</span>
+            <span class="apparatus-tag">Retort stand + clamp</span>
+            <span class="apparatus-tag">Ruler</span>
+            <span class="apparatus-tag">Known masses (50 g to 400 g)</span>
+            <span class="apparatus-tag">Unknown masses (2–3)</span>
+            <span class="apparatus-tag">Card strip for marking</span>
+        </div>
+
+        <h3>Procedure</h3>
+        <div class="procedure-steps">
+            <div class="proc-step"><div class="proc-step-num">1</div><div class="proc-step-text"><strong>Calibration:</strong> Record the pointer position with <strong>no load</strong> (0 N mark).</div></div>
+            <div class="proc-step"><div class="proc-step-num">2</div><div class="proc-step-text">Add known masses one at a time (e.g. 100 g = 1.0 N). Mark the pointer position on the card for each.</div></div>
+            <div class="proc-step"><div class="proc-step-num">3</div><div class="proc-step-text">Continue until you have marks for 0 N, 1.0 N, 2.0 N, 3.0 N, 4.0 N (or as many as the spring allows).</div></div>
+            <div class="proc-step"><div class="proc-step-num">4</div><div class="proc-step-text"><strong>Measurement:</strong> Hang an unknown mass. Read the force from your calibrated scale.</div></div>
+            <div class="proc-step"><div class="proc-step-num">5</div><div class="proc-step-text">Check by weighing the unknown mass on a balance and calculating W = mg.</div></div>
+        </div>
+    </div>
+
+    <div class="sim-container">
+        <canvas id="balCanvas" width="800" height="520" class="balance-canvas"></canvas>
+
+        <div class="sim-controls">
+            <div class="sim-control-group">
+                <label>Mode:</label>
+                <select id="balMode">
+                    <option value="calibrate">🔧 Calibrate</option>
+                    <option value="measure">📏 Measure Unknown</option>
+                </select>
+            </div>
+            <div class="sim-control-group" id="balCalGroup">
+                <label>Known mass: <span id="balCalMass_Val" class="value-display">100 g</span></label>
+                <input type="range" id="balCalMass" min="0" max="400" value="100" step="50">
+            </div>
+            <div class="sim-control-group" id="balMeasGroup" style="display:none">
+                <label>Unknown object:</label>
+                <select id="balUnknown">
+                    <option value="A">Object A</option>
+                    <option value="B">Object B</option>
+                    <option value="C">Object C</option>
+                </select>
+            </div>
+            <button class="sim-btn sim-btn-play" id="balMark">📌 Mark Scale</button>
+            <button class="sim-btn sim-btn-reset" id="balClear">↺ Clear Marks</button>
+        </div>
+
+        <div class="calc-display" id="balCalc">
+            <span class="calc-label">Add known masses and mark the scale to calibrate your spring balance.</span>
+        </div>
+    </div>
+
+    <div class="content-card" style="margin-top:1.5rem">
+        <div class="error-box">
+            <h4>⚠️ Sources of Error</h4>
+            <ul>
+                <li><strong>Zero error:</strong> The pointer may not return exactly to the zero mark after removing loads. <em>Check and adjust the zero before each measurement.</em></li>
+                <li><strong>Parallax error:</strong> Reading the pointer position from an angle. <em>Read at eye level perpendicular to the scale.</em></li>
+                <li><strong>Hysteresis:</strong> The spring may give slightly different readings when loading vs unloading. <em>Always load masses (not unload) for calibration.</em></li>
+                <li><strong>Exceeding elastic limit:</strong> Too much mass permanently stretches the spring, ruining calibration. <em>Do not exceed the rated capacity.</em></li>
+                <li><strong>Spring fatigue:</strong> Repeated use may change the spring constant over time. <em>Re-calibrate periodically.</em></li>
+                <li><strong>Temperature effects:</strong> Metal springs expand/contract with temperature. <em>Calibrate and measure at the same temperature.</em></li>
+                <li><strong>Oscillation:</strong> Spring may bounce when mass is added. <em>Wait for equilibrium before reading.</em></li>
+                <li><strong>Interpolation error:</strong> Reading between calibration marks introduces uncertainty. <em>Mark at small intervals (e.g. every 0.5 N).</em></li>
+            </ul>
+        </div>
+
+        <div class="challenge-box">
+            <h4>🏆 Challenge</h4>
+            <ul>
+                <li>How close can you get to the actual weight of the unknown objects?</li>
+                <li>What is the resolution (smallest readable division) of your calibrated scale?</li>
+                <li>Compare with a commercial spring balance — what is the percentage difference?</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TAB 4 — COMPREHENSIVE ERROR ANALYSIS GUIDE
+     ============================================================ -->
+<div class="tab-content" id="tab-errors">
+    <div class="content-card">
+        <h2>📊 Comprehensive Error Analysis Guide</h2>
+        <p>Understanding errors is <strong>essential for O-Level practical exams</strong>. This guide covers everything you need to know about identifying, classifying and reducing errors in experiments.</p>
+    </div>
+
+    <!-- TYPES OF ERRORS -->
+    <div class="content-card">
+        <h3>🔍 Types of Errors</h3>
+        <div class="error-type-grid">
+            <div class="error-type-card" style="border-left:4px solid #ef4444">
+                <h4>🎯 Systematic Errors</h4>
+                <p>Errors that shift <strong>all readings</strong> in the <strong>same direction</strong> by the same amount. They affect <strong>accuracy</strong> but not precision.</p>
+                <ul>
+                    <li><strong>Zero error</strong> — instrument doesn't read zero when it should</li>
+                    <li><strong>Wrongly calibrated instrument</strong> — all readings consistently too high or too low</li>
+                    <li><strong>Background reading</strong> — e.g. background radiation not accounted for</li>
+                    <li><strong>Parallax</strong> (if consistently reading from the same wrong angle)</li>
+                </ul>
+                <p style="margin-top:.5rem"><strong>Reduced by:</strong> Recalibrating instruments, correcting for zero errors, better experimental technique.</p>
+                <p><strong>Cannot be reduced by:</strong> Repeating and averaging (repeats give the same wrong value).</p>
+            </div>
+            <div class="error-type-card" style="border-left:4px solid #3b82f6">
+                <h4>🎲 Random Errors</h4>
+                <p>Errors that cause readings to scatter <strong>unpredictably</strong> above and below the true value. They affect <strong>precision</strong>.</p>
+                <ul>
+                    <li><strong>Reaction time</strong> when using a stopwatch</li>
+                    <li><strong>Estimating between scale divisions</strong></li>
+                    <li><strong>Fluctuations</strong> — air currents, vibrations</li>
+                    <li><strong>Variations in the quantity being measured</strong></li>
+                </ul>
+                <p style="margin-top:.5rem"><strong>Reduced by:</strong> Repeating measurements and taking the <strong>average</strong>, using more sensitive instruments, timing many oscillations.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCURACY vs PRECISION -->
+    <div class="content-card">
+        <h3>🎯 Accuracy vs Precision</h3>
+        <div class="accuracy-grid">
+            <div class="accuracy-card">
+                <div class="target">🎯</div>
+                <h4>Accurate &amp; Precise</h4>
+                <p>Readings are <strong>close to the true value</strong> AND <strong>close to each other</strong>. This is the goal!</p>
+            </div>
+            <div class="accuracy-card">
+                <div class="target">🎯</div>
+                <h4 style="color:var(--primary)">Precise but NOT Accurate</h4>
+                <p>Readings are <strong>close to each other</strong> but consistently <strong>off from the true value</strong>. Indicates a <strong>systematic error</strong>.</p>
+            </div>
+            <div class="accuracy-card">
+                <div class="target">🎯</div>
+                <h4 style="color:var(--secondary)">Accurate but NOT Precise</h4>
+                <p>Readings <strong>average to the true value</strong> but are <strong>widely scattered</strong>. Indicates large <strong>random errors</strong>.</p>
+            </div>
+            <div class="accuracy-card">
+                <div class="target">🎯</div>
+                <h4 style="color:var(--danger)">Neither Accurate nor Precise</h4>
+                <p>Readings are <strong>scattered</strong> AND <strong>off from the true value</strong>. Both error types present.</p>
+            </div>
+        </div>
+
+        <!-- Interactive accuracy/precision demo -->
+        <div class="sim-container" style="margin-top:1rem">
+            <canvas id="errorCanvas" width="700" height="350" class="error-canvas"></canvas>
+            <div class="sim-controls">
+                <div class="sim-control-group">
+                    <label>Systematic error: <span id="errSysVal" class="value-display">0</span></label>
+                    <input type="range" id="errSys" min="-50" max="50" value="0" step="5">
+                </div>
+                <div class="sim-control-group">
+                    <label>Random error: <span id="errRandVal" class="value-display">5</span></label>
+                    <input type="range" id="errRand" min="2" max="60" value="5" step="1">
+                </div>
+                <button class="sim-btn sim-btn-play" id="errShoot">🎯 Take 10 Readings</button>
+                <button class="sim-btn sim-btn-reset" id="errClear">↺ Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMMON ERRORS BY EXPERIMENT -->
+    <div class="content-card">
+        <h3>📋 Common Errors by Experiment</h3>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Experiment</th><th>Main Errors</th><th>How to Reduce</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pendulum</strong></td>
+                        <td>Reaction time, counting, measuring L to centre of bob, large angle</td>
+                        <td>Time 20+ oscillations, use fiducial marker, measure carefully, keep angle < 10°</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hooke's Law</strong></td>
+                        <td>Parallax reading ruler, spring not returned to original length, oscillation</td>
+                        <td>Eye-level reading, check elastic limit, wait for equilibrium</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Density</strong></td>
+                        <td>Meniscus reading, trapped bubbles (displacement), ruler precision</td>
+                        <td>Read at bottom of meniscus, tap cylinder, use vernier calipers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Moments</strong></td>
+                        <td>Ruler not balanced before starting, mass of string loops, pivot friction</td>
+                        <td>Balance ruler first, use light string, use knife-edge pivot</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ticker Tape</strong></td>
+                        <td>Friction of tape through timer, overlapping dots at low speed, uneven start</td>
+                        <td>Keep tape straight, use ink pad, release cleanly</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spring-Mass Oscillation</strong></td>
+                        <td>Lateral sway, mass of spring ignored, exceeding elastic limit</td>
+                        <td>Guide vertically, use light spring, check spring recovery</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spring Balance</strong></td>
+                        <td>Zero error, hysteresis, parallax, temperature</td>
+                        <td>Check zero, always load (not unload), read at eye level</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PERCENTAGE ERROR -->
+    <div class="content-card">
+        <h3>📐 Calculating Percentage Error</h3>
+        <div class="formula-box">
+            <span class="formula-label">Percentage Error</span>
+            <span class="formula">% error = |experimental − accepted| / accepted × 100%</span>
+        </div>
+
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Example — Percentage Error in g</div>
+            <div class="worked-example-body">
+                <p><strong>Q:</strong> A pendulum experiment gives g = 10.3 m/s². The accepted value is 9.81 m/s². Find the % error.</p>
+                <div class="step"><div class="step-number">1</div><div class="step-content">
+                    <span class="math">% error = |10.3 − 9.81| / 9.81 × 100% = 0.49/9.81 × 100% = 5.0%</span>
+                </div></div>
+            </div>
+        </div>
+
+        <div class="key-concept">
+            <strong>💡 What's a "good" result?</strong><br>
+            For O-Level practicals, a percentage error of <strong>< 5%</strong> is considered good.
+            <strong>5–10%</strong> is acceptable. <strong>> 10%</strong> suggests significant errors that should be investigated.
+        </div>
+    </div>
+
+    <!-- READING INSTRUMENTS -->
+    <div class="content-card">
+        <h3>📏 Reading Instruments Correctly</h3>
+
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Instrument</th><th>Precision</th><th>Uncertainty</th><th>Key Tip</th></tr></thead>
+                <tbody>
+                    <tr><td>Metre Rule</td><td>1 mm</td><td>± 0.5 mm</td><td>Read at eye level; use end of rule carefully (zero error?)</td></tr>
+                    <tr><td>Vernier Calipers</td><td>0.1 mm</td><td>± 0.05 mm</td><td>Close jaws gently; read main + vernier scales</td></tr>
+                    <tr><td>Micrometer</td><td>0.01 mm</td><td>± 0.005 mm</td><td>Use ratchet; check zero error first</td></tr>
+                    <tr><td>Stopwatch</td><td>0.01 s</td><td>± 0.2 s (reaction)</td><td>Human reaction ≈ 0.2 s dominates; time many cycles</td></tr>
+                    <tr><td>Measuring Cylinder</td><td>1 cm³</td><td>± 0.5 cm³</td><td>Read at bottom of meniscus; eye at liquid level</td></tr>
+                    <tr><td>Thermometer</td><td>0.5 °C</td><td>± 0.5 °C</td><td>Wait for reading to stabilise; bulb fully immersed</td></tr>
+                    <tr><td>Spring Balance</td><td>0.1 N</td><td>± 0.05 N</td><td>Check zero; read at eye level; wait for stability</td></tr>
+                    <tr><td>Electronic Balance</td><td>0.1 g</td><td>± 0.05 g</td><td>Tare (zero) before use; shield from drafts</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="warning-box" style="margin-top:1rem">
+            <strong>⚠️ Parallax Error Demonstration:</strong> When your eye is not directly in front of the scale, you read a different value. For a ruler: if your eye is above, you read too high; if below, too low. Always position your eye <strong>perpendicular to the scale</strong> at the point of measurement.
+        </div>
+    </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+    <p><strong>Physics Lab 6091</strong> — More Virtual Lab Experiments</p>
+    <p style="margin-top:.5rem">
+        <a href="../index.html">← Back to Topics</a> &nbsp;|&nbsp;
+        <a href="experiments.html">Lab Set 1 →</a>
+    </p>
+</footer>
+<a href="#" class="back-to-top" id="btt">↑</a>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+var G = 9.81;
+var PI = Math.PI;
+
+// ========== UTILITIES ==========
+function roundedRect(ctx,x,y,w,h,r){
+    if(w<2*r)r=w/2;if(h<2*r)r=h/2;
+    ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+}
+function drawArrow(ctx,x1,y1,x2,y2,color,lw){
+    lw=lw||3;var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+    if(len<2)return;var a=Math.atan2(dy,dx),hl=Math.min(12,len*.35);
+    ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-hl*Math.cos(a-.4),y2-hl*Math.sin(a-.4));
+    ctx.lineTo(x2-hl*Math.cos(a+.4),y2-hl*Math.sin(a+.4));
+    ctx.closePath();ctx.fill();ctx.restore();
+}
+function drawLabel(ctx,text,x,y,color,align,size){
+    ctx.save();ctx.font='600 '+(size||13)+'px Inter,sans-serif';ctx.fillStyle=color;
+    ctx.textAlign=align||'center';ctx.textBaseline='middle';ctx.fillText(text,x,y);ctx.restore();
+}
+function clearSim(ctx,c){
+    var g=ctx.createLinearGradient(0,0,0,c.height);
+    g.addColorStop(0,'#0f172a');g.addColorStop(1,'#1e293b');
+    ctx.fillStyle=g;ctx.fillRect(0,0,c.width,c.height);
+}
+function linReg(xs,ys){
+    var n=xs.length,sx=0,sy=0,sxy=0,sx2=0;
+    for(var i=0;i<n;i++){sx+=xs[i];sy+=ys[i];sxy+=xs[i]*ys[i];sx2+=xs[i]*xs[i];}
+    var slope=(n*sxy-sx*sy)/(n*sx2-sx*sx);
+    var intercept=(sy-slope*sx)/n;
+    return {slope:slope,intercept:intercept};
+}
+function plotGraph(canvas,ctx,data,xKey,yKey,xLabel,yLabel,color,calcFn){
+    ctx.fillStyle='#0f172a';ctx.fillRect(0,0,canvas.width,canvas.height);
+    if(data.length<2){
+        ctx.font='500 14px Inter';ctx.fillStyle='rgba(255,255,255,.3)';ctx.textAlign='center';
+        ctx.fillText('Record at least 2 data points to plot',canvas.width/2,canvas.height/2);
+        return null;
+    }
+    var padL=70,padR=40,padT=40,padB=60;
+    var pW=canvas.width-padL-padR,pH=canvas.height-padT-padB;
+    var maxX=0,maxY=0;
+    for(var i=0;i<data.length;i++){
+        if(data[i][xKey]>maxX)maxX=data[i][xKey];
+        if(data[i][yKey]>maxY)maxY=data[i][yKey];
+    }
+    maxX*=1.2;maxY*=1.2;if(maxX<0.01)maxX=0.01;if(maxY<0.01)maxY=0.01;
+
+    ctx.save();
+    ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(padL,padT);ctx.lineTo(padL,padT+pH);ctx.lineTo(padL+pW,padT+pH);ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.06)';
+    for(var i=1;i<=5;i++){
+        var gy=padT+pH-pH*i/5;
+        ctx.beginPath();ctx.moveTo(padL,gy);ctx.lineTo(padL+pW,gy);ctx.stroke();
+        ctx.font='500 10px "JetBrains Mono"';ctx.fillStyle='rgba(255,255,255,.4)';ctx.textAlign='right';
+        ctx.fillText((maxY*i/5).toFixed(2),padL-8,gy+3);
+        var gx=padL+pW*i/5;
+        ctx.beginPath();ctx.moveTo(gx,padT);ctx.lineTo(gx,padT+pH);ctx.stroke();
+        ctx.textAlign='center';
+        ctx.fillText((maxX*i/5).toFixed(3),gx,padT+pH+18);
+    }
+    ctx.font='600 12px Inter';ctx.fillStyle='rgba(255,255,255,.6)';ctx.textAlign='center';
+    ctx.fillText(xLabel,padL+pW/2,padT+pH+48);
+    ctx.save();ctx.translate(18,padT+pH/2);ctx.rotate(-PI/2);ctx.fillText(yLabel,0,0);ctx.restore();
+
+    // Points
+    for(var i=0;i<data.length;i++){
+        var px=padL+(data[i][xKey]/maxX)*pW;
+        var py=padT+pH-(data[i][yKey]/maxY)*pH;
+        ctx.fillStyle=color;ctx.beginPath();ctx.arc(px,py,5,0,PI*2);ctx.fill();
+        ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+    }
+
+    // Best fit
+    var xs=[],ys=[];
+    for(var i=0;i<data.length;i++){xs.push(data[i][xKey]);ys.push(data[i][yKey]);}
+    var reg=linReg(xs,ys);
+    ctx.strokeStyle='#22c55e';ctx.lineWidth=2;ctx.setLineDash([8,4]);
+    ctx.beginPath();
+    ctx.moveTo(padL,padT+pH-(reg.intercept/maxY)*pH);
+    ctx.lineTo(padL+pW,padT+pH-((reg.slope*maxX+reg.intercept)/maxY)*pH);
+    ctx.stroke();ctx.setLineDash([]);
+    ctx.font='700 13px "JetBrains Mono"';ctx.fillStyle='#22c55e';ctx.textAlign='left';
+    ctx.fillText('Gradient = '+reg.slope.toFixed(4),padL+20,padT+20);
+    if(calcFn){
+        var result=calcFn(reg.slope);
+        ctx.fillText(result.text,padL+20,padT+40);
+    }
+    ctx.restore();
+    return reg;
+}
+
+// ========== TABS ==========
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+        document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+        document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});
+        btn.classList.add('active');
+        document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    });
+});
+var bttBtn=document.getElementById('btt');
+window.addEventListener('scroll',function(){bttBtn.classList.toggle('visible',window.scrollY>400)});
+
+
+// ============================================================
+//  EXPERIMENT 5 — SIMPLE PENDULUM (DETERMINE g)
+// ============================================================
+(function(){
+    var canvas=document.getElementById('pendExpCanvas');
+    var ctx=canvas.getContext('2d');
+    var graphCanvas=document.getElementById('peGraph');
+    var gctx=graphCanvas.getContext('2d');
+
+    var L_cm=50, releaseAngle=8;
+    var angle=0, omega=0, running=false, animId=null;
+    var oscCount=0, elapsedTime=0, lastCrossDir=0, period=null, t20=null;
+    var data=[];
+    var startTimestamp=null;
+
+    document.getElementById('peL').addEventListener('input',function(e){
+        L_cm=parseInt(e.target.value);
+        document.getElementById('peL_Val').textContent=L_cm+'.0 cm';
+        resetPend();
+    });
+    document.getElementById('peAngle').addEventListener('input',function(e){
+        releaseAngle=parseInt(e.target.value);
+        document.getElementById('peAngle_Val').textContent=releaseAngle+'°';
+        resetPend();
+    });
+
+    function resetPend(){
+        running=false;cancelAnimationFrame(animId);
+        angle=0;omega=0;oscCount=0;elapsedTime=0;period=null;t20=null;lastCrossDir=0;startTimestamp=null;
+        document.getElementById('peStart').textContent='▶ Release & Time 20';
+        document.getElementById('peRecord').disabled=true;
+        updateReadouts();
+        pendDraw();
+    }
+
+    function updateReadouts(){
+        document.getElementById('peOscCount').textContent=oscCount;
+        document.getElementById('peTime').textContent=elapsedTime.toFixed(2);
+        document.getElementById('pePeriod').textContent=period?period.toFixed(4)+' s':'—';
+        document.getElementById('peTSq').textContent=period?(period*period).toFixed(4)+' s²':'—';
+    }
+
+    document.getElementById('peStart').addEventListener('click',function(){
+        if(running)return;
+        running=true;
+        angle=releaseAngle*PI/180;
+        omega=0;oscCount=0;elapsedTime=0;period=null;t20=null;lastCrossDir=0;
+        startTimestamp=null;
+        document.getElementById('peStart').textContent='Timing...';
+        document.getElementById('peRecord').disabled=true;
+        requestAnimationFrame(animatePend);
+    });
+    document.getElementById('peReset').addEventListener('click',resetPend);
+    document.getElementById('peRecord').addEventListener('click',function(){
+        if(!period)return;
+        // Check if already recorded this length
+        for(var i=0;i<data.length;i++){if(data[i].L_cm===L_cm)return;}
+        var noise=(Math.random()-0.5)*0.4; // ± 0.2s reaction time effect
+        var t20noisy=t20+noise;
+        var Tnoisy=t20noisy/20;
+        data.push({L_cm:L_cm, L_m:L_cm/100, t20:t20noisy, T:Tnoisy, T2:Tnoisy*Tnoisy});
+        data.sort(function(a,b){return a.L_cm-b.L_cm;});
+        renderPeTable();
+        drawPeGraph();
+    });
+    document.getElementById('peClearData').addEventListener('click',function(){
+        data=[];renderPeTable();drawPeGraph();
+        document.getElementById('peResult').style.display='none';
+    });
+
+    function renderPeTable(){
+        var tbody=document.getElementById('peTableBody');
+        if(data.length===0){
+            tbody.innerHTML='<tr><td colspan="6" style="color:#94a3b8;font-style:italic">Release pendulum, then click Record</td></tr>';
+            return;
+        }
+        var html='';
+        for(var i=0;i<data.length;i++){
+            var d=data[i];
+            html+='<tr><td>'+(i+1)+'</td><td>'+d.L_cm+'</td><td>'+d.L_m.toFixed(2)+'</td><td>'+d.t20.toFixed(2)+'</td><td>'+d.T.toFixed(4)+'</td><td>'+d.T2.toFixed(4)+'</td></tr>';
+        }
+        tbody.innerHTML=html;
+    }
+
+    function drawPeGraph(){
+        var reg=plotGraph(graphCanvas,gctx,data,'L_m','T2','L (m)','T² (s²)','#60a5fa',function(slope){
+            var gExp=4*PI*PI/slope;
+            document.getElementById('peResult').style.display='block';
+            document.getElementById('peGVal').textContent='g = '+gExp.toFixed(2)+' m/s² (accepted: 9.81)';
+            return {text:'g = 4π²/gradient = '+gExp.toFixed(2)+' m/s² (% error: '+Math.abs((gExp-9.81)/9.81*100).toFixed(1)+'%)'};
+        });
+    }
+
+    function animatePend(timestamp){
+        if(!running)return;
+        if(!startTimestamp)startTimestamp=timestamp;
+        var dt=0.016; // fixed time step for stability
+
+        // Physics
+        var L_m=L_cm/100;
+        var alpha=-(G/L_m)*Math.sin(angle);
+        omega+=alpha*dt;
+        var prevAngle=angle;
+        angle+=omega*dt;
+
+        // Detect zero crossing (equilibrium position) in positive direction
+        if(prevAngle<0 && angle>=0){
+            if(lastCrossDir!==0){
+                oscCount++;
+            }
+            lastCrossDir=1;
+        } else if(prevAngle>0 && angle<=0){
+            lastCrossDir=-1;
+        }
+
+        elapsedTime+=dt;
+
+        // After 20 oscillations
+        if(oscCount>=20 && !period){
+            t20=elapsedTime;
+            period=t20/20;
+            document.getElementById('peStart').textContent='✓ Done!';
+            document.getElementById('peRecord').disabled=false;
+            running=false;
+        }
+
+        updateReadouts();
+        pendDraw();
+        if(running) animId=requestAnimationFrame(animatePend);
+    }
+
+    function pendDraw(){
+        clearSim(ctx,canvas);
+        var W=canvas.width,H=canvas.height;
+        var L_m=L_cm/100;
+        var pivotX=W*0.45, pivotY=70;
+        var scale=Math.min(350,(H-120)/1.1);
+        var drawLen=L_m*scale;
+
+        // Support
+        ctx.save();ctx.fillStyle='#475569';
+        ctx.fillRect(pivotX-40,pivotY-8,80,12);
+        ctx.strokeStyle='#64748b';ctx.lineWidth=2;ctx.strokeRect(pivotX-40,pivotY-8,80,12);
+        ctx.restore();
+
+        // Fiducial marker at equilibrium
+        ctx.save();ctx.strokeStyle='rgba(34,197,94,.3)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+        ctx.beginPath();ctx.moveTo(pivotX,pivotY);ctx.lineTo(pivotX,pivotY+drawLen+30);ctx.stroke();
+        ctx.setLineDash([]);
+        drawLabel(ctx,'⬆ fiducial',pivotX,pivotY+drawLen+45,'rgba(34,197,94,.4)','center',10);
+        ctx.restore();
+
+        // Ghost arc
+        var maxAngle=releaseAngle*PI/180;
+        ctx.save();ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;
+        ctx.beginPath();ctx.arc(pivotX,pivotY,drawLen,PI/2-maxAngle,PI/2+maxAngle);ctx.stroke();
+        ctx.restore();
+
+        // String
+        var bobX=pivotX+Math.sin(angle)*drawLen;
+        var bobY=pivotY+Math.cos(angle)*drawLen;
+        ctx.save();ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(pivotX,pivotY);ctx.lineTo(bobX,bobY);ctx.stroke();
+        ctx.restore();
+
+        // Bob
+        ctx.save();
+        var bobR=14;
+        var grad=ctx.createRadialGradient(bobX-2,bobY-2,0,bobX,bobY,bobR);
+        grad.addColorStop(0,'#94a3b8');grad.addColorStop(1,'#475569');
+        ctx.fillStyle=grad;
+        ctx.beginPath();ctx.arc(bobX,bobY,bobR,0,PI*2);ctx.fill();
+        ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.stroke();
+        ctx.restore();
+
+        // Length dimension
+        ctx.save();ctx.strokeStyle='rgba(250,204,21,.4)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+        ctx.beginPath();ctx.moveTo(pivotX+30,pivotY);ctx.lineTo(pivotX+30,pivotY+drawLen);ctx.stroke();
+        ctx.setLineDash([]);
+        drawArrow(ctx,pivotX+30,pivotY+5,pivotX+30,pivotY+drawLen-5,'#facc15',1.5);
+        drawLabel(ctx,'L = '+L_cm+' cm',pivotX+55,(pivotY+pivotY+drawLen)/2,'#facc15','left',12);
+        ctx.restore();
+
+        // Angle arc
+        if(Math.abs(angle)>0.02){
+            ctx.save();ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;
+            var arcR=35;
+            ctx.beginPath();
+            if(angle>0) ctx.arc(pivotX,pivotY,arcR,PI/2-angle,PI/2);
+            else ctx.arc(pivotX,pivotY,arcR,PI/2,PI/2-angle);
+            ctx.stroke();
+            drawLabel(ctx,(Math.abs(angle)*180/PI).toFixed(1)+'°',pivotX+arcR+15,pivotY+25,'rgba(255,255,255,.4)','left',10);
+            ctx.restore();
+        }
+
+        // Warning if angle too large
+        if(releaseAngle>10){
+            drawLabel(ctx,'⚠ Angle > 10° — formula less accurate!',W/2,25,'#ef4444','center',13);
+        }
+
+        // Oscillation counter visual
+        ctx.save();
+        ctx.font='800 36px "JetBrains Mono"';ctx.fillStyle=oscCount>=20?'#22c55e':'#fff';
+        ctx.textAlign='right';ctx.fillText(oscCount+'/20',W-30,50);
+        ctx.font='500 12px Inter';ctx.fillStyle='rgba(255,255,255,.4)';
+        ctx.fillText('oscillations',W-30,70);
+        if(running){
+            ctx.font='600 18px "JetBrains Mono"';ctx.fillStyle='#f97316';
+            ctx.fillText(elapsedTime.toFixed(1)+' s',W-30,100);
+        }
+        ctx.restore();
+
+        // Info
+        ctx.save();ctx.font='500 11px Inter';ctx.fillStyle='rgba(255,255,255,.4)';ctx.textAlign='left';
+        var Ttheory=2*PI*Math.sqrt(L_m/G);
+        ctx.fillText('Theoretical T = 2π√(L/g) = '+Ttheory.toFixed(4)+' s',20,H-20);
+        ctx.fillText('Theoretical T² = '+(Ttheory*Ttheory).toFixed(4)+' s²',20,H-5);
+        ctx.restore();
+    }
+
+    pendDraw();
+    drawPeGraph();
+})();
+
+
+// ============================================================
+//  EXPERIMENT 6 — SPRING-MASS OSCILLATIONS
+// ============================================================
+(function(){
+    var canvas=document.getElementById('soCanvas');
+    var ctx=canvas.getContext('2d');
+    var graphCanvas=document.getElementById('soGraph');
+    var gctx=graphCanvas.getContext('2d');
+
+    var mass_g=200, k=30;
+    var disp=0, vel=0, running=false, animId=null;
+    var oscCount=0, elapsedTime=0, lastCrossDir=0, period=null, t20=null;
+    var data=[];
+    var startTimestamp=null;
+    var amplitude=0.03; // 3 cm
+
+    document.getElementById('soMass').addEventListener('input',function(e){
+        mass_g=parseInt(e.target.value);
+        document.getElementById('soMass_Val').textContent=mass_g+' g';
+        resetSO();
+    });
+    document.getElementById('soK').addEventListener('input',function(e){
+        k=parseInt(e.target.value);
+        document.getElementById('soK_Val').textContent=k+' N/m';
+        data=[];renderSoTable();drawSoGraph();resetSO();
+    });
+
+    function resetSO(){
+        running=false;cancelAnimationFrame(animId);
+        disp=0;vel=0;oscCount=0;elapsedTime=0;period=null;t20=null;lastCrossDir=0;startTimestamp=null;
+        document.getElementById('soStart').textContent='▶ Pull & Release';
+        document.getElementById('soRecord').disabled=true;
+        updateSOReadouts();soDraw();
+    }
+
+    function updateSOReadouts(){
+        document.getElementById('soOscCount').textContent=oscCount;
+        document.getElementById('soTime').textContent=elapsedTime.toFixed(2);
+        document.getElementById('soPeriod').textContent=period?period.toFixed(4)+' s':'—';
+        document.getElementById('soTSq').textContent=period?(period*period).toFixed(4)+' s²':'—';
+    }
+
+    document.getElementById('soStart').addEventListener('click',function(){
+        if(running)return;
+        running=true;
+        disp=amplitude;vel=0;oscCount=0;elapsedTime=0;period=null;t20=null;lastCrossDir=0;startTimestamp=null;
+        document.getElementById('soStart').textContent='Timing...';
+        document.getElementById('soRecord').disabled=true;
+        requestAnimationFrame(animateSO);
+    });
+    document.getElementById('soReset').addEventListener('click',resetSO);
+    document.getElementById('soRecord').addEventListener('click',function(){
+        if(!period)return;
+        for(var i=0;i<data.length;i++){if(data[i].mass_g===mass_g)return;}
+        var noise=(Math.random()-0.5)*0.4;
+        var t20n=t20+noise;
+        var Tn=t20n/20;
+        data.push({mass_g:mass_g, mass_kg:mass_g/1000, t20:t20n, T:Tn, T2:Tn*Tn});
+        data.sort(function(a,b){return a.mass_g-b.mass_g;});
+        renderSoTable();drawSoGraph();
+    });
+    document.getElementById('soClearData').addEventListener('click',function(){
+        data=[];renderSoTable();drawSoGraph();
+        document.getElementById('soResult').style.display='none';
+    });
+
+    function renderSoTable(){
+        var tbody=document.getElementById('soTableBody');
+        if(data.length===0){
+            tbody.innerHTML='<tr><td colspan="6" style="color:#94a3b8;font-style:italic">Pull mass and release, then click Record</td></tr>';
+            return;
+        }
+        var html='';
+        for(var i=0;i<data.length;i++){
+            var d=data[i];
+            html+='<tr><td>'+(i+1)+'</td><td>'+d.mass_g+'</td><td>'+d.mass_kg.toFixed(3)+'</td><td>'+d.t20.toFixed(2)+'</td><td>'+d.T.toFixed(4)+'</td><td>'+d.T2.toFixed(4)+'</td></tr>';
+        }
+        tbody.innerHTML=html;
+    }
+
+    function drawSoGraph(){
+        plotGraph(graphCanvas,gctx,data,'mass_kg','T2','m (kg)','T² (s²)','#f97316',function(slope){
+            var kExp=4*PI*PI/slope;
+            document.getElementById('soResult').style.display='block';
+            document.getElementById('soKResult').textContent='k = '+kExp.toFixed(1)+' N/m (set value: '+k+')';
+            return {text:'k = 4π²/gradient = '+kExp.toFixed(1)+' N/m (% error: '+Math.abs((kExp-k)/k*100).toFixed(1)+'%)'};
+        });
+    }
+
+    function animateSO(timestamp){
+        if(!running)return;
+        var dt=0.016;
+        var m_kg=mass_g/1000;
+        var accel=-(k/m_kg)*disp;
+        vel+=accel*dt;
+        var prevDisp=disp;
+        disp+=vel*dt;
+
+        // Detect zero crossing (going downward)
+        if(prevDisp>0 && disp<=0){
+            if(lastCrossDir!==0) oscCount++;
+            lastCrossDir=-1;
+        } else if(prevDisp<0 && disp>=0){
+            lastCrossDir=1;
+        }
+        elapsedTime+=dt;
+
+        if(oscCount>=20 && !period){
+            t20=elapsedTime;
+            period=t20/20;
+            document.getElementById('soStart').textContent='✓ Done!';
+            document.getElementById('soRecord').disabled=false;
+            running=false;
+        }
+        updateSOReadouts();soDraw();
+        if(running) animId=requestAnimationFrame(animateSO);
+    }
+
+    function soDraw(){
+        clearSim(ctx,canvas);
+        var W=canvas.width,H=canvas.height;
+        var m_kg=mass_g/1000;
+
+        // Stand
+        ctx.save();ctx.fillStyle='#475569';
+        ctx.fillRect(180,30,8,H-80);ctx.fillRect(120,H-50,120,10);
+        ctx.fillRect(180,55,80,8);ctx.restore();
+
+        // Equilibrium position (where mass would hang at rest)
+        var eqExtension=m_kg*G/k;
+        var springNatLen=0.15; // 15cm
+        var eqLen=(springNatLen+eqExtension)*600;
+        var springTopY=63;
+        var springX=255;
+        var eqBottomY=springTopY+eqLen;
+
+        // Current position includes oscillation
+        var dispPx=disp*600;
+        var currentBottomY=eqBottomY+dispPx;
+        var currentSpringLen=eqLen+dispPx;
+        if(currentSpringLen<30) currentSpringLen=30;
+
+        // Fiducial marker at equilibrium
+        ctx.save();ctx.strokeStyle='rgba(34,197,94,.3)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+        ctx.beginPath();ctx.moveTo(springX-40,eqBottomY);ctx.lineTo(springX+40,eqBottomY);ctx.stroke();
+        ctx.setLineDash([]);
+        drawLabel(ctx,'equilibrium',springX+50,eqBottomY,'rgba(34,197,94,.4)','left',10);
+        ctx.restore();
+
+        // Spring coils
+        var coils=14;
+        var coilW=14;
+        ctx.save();
+        ctx.strokeStyle=running?'#f97316':'#60a5fa';ctx.lineWidth=2.5;ctx.lineCap='round';
+        ctx.beginPath();ctx.moveTo(springX,springTopY);
+        for(var i=0;i<=coils;i++){
+            var t=i/coils;
+            var sy=springTopY+t*currentSpringLen;
+            var sx=springX+((i%2===0)?-coilW:coilW);
+            ctx.lineTo(sx,sy);
+        }
+        ctx.stroke();ctx.restore();
+
+        // Mass block
+        var massH=25+Math.min(mass_g/8,30);
+        ctx.save();ctx.fillStyle='#f97316';
+        roundedRect(ctx,springX-24,currentBottomY,48,massH,5);ctx.fill();
+        ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.stroke();
+        ctx.font='700 11px Inter';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(mass_g+'g',springX,currentBottomY+massH/2);
+        ctx.restore();
+
+        // Displacement arrow
+        if(Math.abs(disp)>0.002){
+            var arrStart=eqBottomY;
+            var arrEnd=currentBottomY;
+            drawArrow(ctx,springX+35,arrStart,springX+35,arrEnd,'#facc15',2);
+            drawLabel(ctx,(disp*100).toFixed(1)+' cm',springX+55,(arrStart+arrEnd)/2,'#facc15','left',11);
+        }
+
+        // Counter
+        ctx.save();
+        ctx.font='800 36px "JetBrains Mono"';ctx.fillStyle=oscCount>=20?'#22c55e':'#fff';
+        ctx.textAlign='right';ctx.fillText(oscCount+'/20',W-30,50);
+        ctx.font='500 12px Inter';ctx.fillStyle='rgba(255,255,255,.4)';
+        ctx.fillText('oscillations',W-30,70);
+        if(running){
+            ctx.font='600 18px "JetBrains Mono"';ctx.fillStyle='#f97316';
+            ctx.fillText(elapsedTime.toFixed(1)+' s',W-30,100);
+        }
+        ctx.restore();
+
+        // Theory
+        var Ttheory=2*PI*Math.sqrt(m_kg/k);
+        ctx.save();ctx.font='500 11px Inter';ctx.fillStyle='rgba(255,255,255,.4)';ctx.textAlign='left';
+        ctx.fillText('Theoretical T = 2π√(m/k) = '+Ttheory.toFixed(4)+' s',400,200);
+        ctx.fillText('k = '+k+' N/m, m = '+m_kg.toFixed(3)+' kg',400,220);
+        ctx.restore();
+    }
+
+    resetSO();soDraw();drawSoGraph();
+})();
+
+
+// ============================================================
+//  EXPERIMENT 7 — SPRING BALANCE CALIBRATION
+// ============================================================
+(function(){
+    var canvas=document.getElementById('balCanvas');
+    var ctx=canvas.getContext('2d');
+    var calcDiv=document.getElementById('balCalc');
+
+    var k=25; // N/m (spring constant for the balance)
+    var marks=[]; // {force:N, y:px}
+    var mode='calibrate';
+    var calMass=100;
+    var unknowns={A:{mass:135},B:{mass:278},C:{mass:62}};
+
+    document.getElementById('balMode').addEventListener('change',function(e){
+        mode=e.target.value;
+        document.getElementById('balCalGroup').style.display=mode==='calibrate'?'':'none';
+        document.getElementById('balMeasGroup').style.display=mode==='measure'?'':'none';
+        document.getElementById('balMark').textContent=mode==='calibrate'?'📌 Mark Scale':'📏 Read Force';
+        balDraw();
+    });
+    document.getElementById('balCalMass').addEventListener('input',function(e){
+        calMass=parseInt(e.target.value);
+        document.getElementById('balCalMass_Val').textContent=calMass+' g';
+        balDraw();
+    });
+    document.getElementById('balMark').addEventListener('click',function(){
+        if(mode==='calibrate'){
+            var force=(calMass/1000)*10;
+            for(var i=0;i<marks.length;i++){if(Math.abs(marks[i].force-force)<0.05)return;}
+            marks.push({force:force});
+            marks.sort(function(a,b){return a.force-b.force;});
+            calcDiv.innerHTML='<span class="calc-val">✓ Marked '+force.toFixed(1)+' N ('+calMass+' g)</span><br>'+
+                '<span class="calc-label">Total marks:</span> '+marks.length+'. Add more masses for a complete scale.';
+        } else {
+            if(marks.length<2){
+                calcDiv.innerHTML='<span style="color:#ef4444">⚠ Calibrate with at least 2 known masses first!</span>';
+                return;
+            }
+            var obj=document.getElementById('balUnknown').value;
+            var uMass=unknowns[obj].mass;
+            var uForce=(uMass/1000)*10;
+            var noise=(Math.random()-0.5)*0.15;
+            var reading=uForce+noise;
+            calcDiv.innerHTML=
+                '<span class="calc-label">Object '+obj+':</span><br>'+
+                'Spring balance reading: <span class="calc-val highlight-row">'+reading.toFixed(2)+' N</span><br>'+
+                'Estimated mass = F/g = '+reading.toFixed(2)+'/10 = <span class="calc-val">'+(reading/10*1000).toFixed(0)+' g</span><br><br>'+
+                '<span class="calc-label">Actual mass:</span> '+uMass+' g ('+((uMass/1000)*10).toFixed(2)+' N)<br>'+
+                '<span class="calc-label">% Error:</span> <span class="calc-val">'+Math.abs((reading-uForce)/uForce*100).toFixed(1)+'%</span>';
+        }
+        balDraw();
+    });
+    document.getElementById('balClear').addEventListener('click',function(){
+        marks=[];balDraw();
+        calcDiv.innerHTML='<span class="calc-label">Add known masses and mark the scale to calibrate your spring balance.</span>';
+    });
+
+    function balDraw(){
+        clearSim(ctx,canvas);
+        var W=canvas.width,H=canvas.height;
+
+        // Current load
+        var force=0;
+        if(mode==='calibrate'){
+            force=(calMass/1000)*10;
+        } else {
+            var obj=document.getElementById('balUnknown').value;
+            force=(unknowns[obj].mass/1000)*10;
+        }
+        var ext=force/k; // metres
+        var extPx=ext*500;
+
+        // Housing
+        var housingX=W/2-40, housingY=50, housingW=80, housingH=400;
+        ctx.save();
+        ctx.fillStyle='rgba(255,255,255,.05)';ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=2;
+        roundedRect(ctx,housingX,housingY,housingW,housingH,8);ctx.fill();ctx.stroke();
+        ctx.restore();
+
+        // Support at top
+        ctx.save();ctx.fillStyle='#475569';
+        ctx.fillRect(housingX+20,housingY-5,40,12);
+        ctx.fillStyle='#94a3b8';
+        ctx.fillRect(housingX+35,housingY+7,10,10);
+        ctx.restore();
+
+        // Spring inside housing
+        var springTop=housingY+25;
+        var springLen=80+extPx;
+        var springX=housingX+housingW/2;
+        var coils=10, coilW=10;
+        ctx.save();ctx.strokeStyle='#60a5fa';ctx.lineWidth=2;ctx.lineCap='round';
+        ctx.beginPath();ctx.moveTo(springX,springTop);
+        for(var i=0;i<=coils;i++){
+            var t=i/coils;
+            var sy=springTop+t*springLen;
+            var sx=springX+((i%2===0)?-coilW:coilW);
+            ctx.lineTo(sx,sy);
+        }
+        ctx.stroke();ctx.restore();
+
+        // Pointer
+        var pointerY=springTop+springLen;
+        ctx.save();ctx.fillStyle='#ef4444';
+        ctx.beginPath();
+        ctx.moveTo(springX,pointerY);
+        ctx.lineTo(housingX+housingW+5,pointerY);
+        ctx.lineTo(housingX+housingW+5,pointerY+2);
+        ctx.lineTo(springX,pointerY+2);
+        ctx.closePath();ctx.fill();
+        ctx.restore();
+
+        // Scale card (right side of housing)
+        var scaleX=housingX+housingW+10;
+        ctx.save();
+        ctx.fillStyle='rgba(255,255,255,.08)';
+        ctx.fillRect(scaleX,housingY+20,50,housingH-40);
+        ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;
+        ctx.strokeRect(scaleX,housingY+20,50,housingH-40);
+        ctx.restore();
+
+        // Draw calibration marks
+        for(var i=0;i<marks.length;i++){
+            var mForce=marks[i].force;
+            var mExt=mForce/k;
+            var mY=springTop+80+mExt*500;
+            ctx.save();
+            ctx.strokeStyle='#22c55e';ctx.lineWidth=2;
+            ctx.beginPath();ctx.moveTo(scaleX,mY);ctx.lineTo(scaleX+35,mY);ctx.stroke();
+            ctx.font='700 11px "JetBrains Mono"';ctx.fillStyle='#22c55e';ctx.textAlign='left';
+            ctx.fillText(mForce.toFixed(1)+' N',scaleX+38,mY+3);
+            ctx.restore();
+        }
+
+        // Hook at bottom
+        ctx.save();ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;
+        ctx.beginPath();
+        ctx.moveTo(springX,pointerY+2);ctx.lineTo(springX,pointerY+15);
+        ctx.arc(springX,pointerY+20,5,PI*1.5,PI*0.5,false);
+        ctx.stroke();ctx.restore();
+
+        // Hanging mass
+        if(force>0.01){
+            var massY=pointerY+30;
+            var massH=20+force*5;
+            ctx.save();
+            ctx.fillStyle=mode==='calibrate'?'#3b82f6':'#a855f7';
+            roundedRect(ctx,springX-22,massY,44,massH,5);ctx.fill();
+            ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.stroke();
+            ctx.font='700 10px Inter';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+            if(mode==='calibrate'){
+                ctx.fillText(calMass+'g',springX,massY+massH/2);
+            } else {
+                ctx.fillText('Object '+document.getElementById('balUnknown').value,springX,massY+massH/2);
+            }
+            ctx.restore();
+        }
+
+        // Current reading
+        ctx.save();
+        ctx.font='800 20px "JetBrains Mono"';ctx.fillStyle='#fff';ctx.textAlign='left';
+        ctx.fillText('Reading: '+force.toFixed(2)+' N',20,40);
+        ctx.font='500 12px Inter';ctx.fillStyle='rgba(255,255,255,.4)';
+        ctx.fillText(mode==='calibrate'?'Calibration mode — add mass and mark':'Measurement mode — read from calibrated scale',20,60);
+        ctx.fillText('Marks: '+marks.length,20,80);
+        ctx.restore();
+
+        // Title
+        drawLabel(ctx,'Spring Balance',W/2,housingY-25,'rgba(255,255,255,.5)','center',14);
+    }
+
+    balDraw();
+})();
+
+
+// ============================================================
+//  ERROR ANALYSIS — ACCURACY/PRECISION DEMO
+// ============================================================
+(function(){
+    var canvas=document.getElementById('errorCanvas');
+    var ctx=canvas.getContext('2d');
+    var shots=[];
+    var sysErr=0, randErr=5;
+
+    document.getElementById('errSys').addEventListener('input',function(e){
+        sysErr=parseInt(e.target.value);
+        document.getElementById('errSysVal').textContent=sysErr;
+        errDraw();
+    });
+    document.getElementById('errRand').addEventListener('input',function(e){
+        randErr=parseInt(e.target.value);
+        document.getElementById('errRandVal').textContent=randErr;
+        errDraw();
+    });
+    document.getElementById('errShoot').addEventListener('click',function(){
+        shots=[];
+        for(var i=0;i<10;i++){
+            var r=randErr*(Math.random()+Math.random()+Math.random()-1.5)*0.8;
+            var a=Math.random()*PI*2;
+            var dx=sysErr+r*Math.cos(a);
+            var dy=r*Math.sin(a);
+            shots.push({x:dx,y:dy});
+        }
+        errDraw();
+    });
+    document.getElementById('errClear').addEventListener('click',function(){
+        shots=[];errDraw();
+    });
+
+    function errDraw(){
+        clearSim(ctx,canvas);
+        var W=canvas.width,H=canvas.height;
+        var cx=W/2,cy=H/2;
+
+        // Target rings
+        ctx.save();
+        for(var r=4;r>=1;r--){
+            ctx.strokeStyle='rgba(255,255,255,'+(0.06+r*0.03)+')';
+            ctx.lineWidth=1;
+            ctx.beginPath();ctx.arc(cx,cy,r*30,0,PI*2);ctx.stroke();
+        }
+        // Bullseye
+        ctx.fillStyle='rgba(239,68,68,0.3)';
+        ctx.beginPath();ctx.arc(cx,cy,8,0,PI*2);ctx.fill();
+        ctx.fillStyle='#ef4444';
+        ctx.beginPath();ctx.arc(cx,cy,3,0,PI*2);ctx.fill();
+        drawLabel(ctx,'True Value',cx,cy-140,'rgba(255,255,255,.3)','center',10);
+        ctx.restore();
+
+        // Shots
+        for(var i=0;i<shots.length;i++){
+            var sx=cx+shots[i].x*1.5;
+            var sy=cy+shots[i].y*1.5;
+            ctx.save();
+            ctx.fillStyle='rgba(96,165,250,0.7)';
+            ctx.beginPath();ctx.arc(sx,sy,5,0,PI*2);ctx.fill();
+            ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.stroke();
+            ctx.restore();
+        }
+
+        // Average marker
+        if(shots.length>0){
+            var avgX=0,avgY=0;
+            for(var i=0;i<shots.length;i++){avgX+=shots[i].x;avgY+=shots[i].y;}
+            avgX/=shots.length;avgY/=shots.length;
+            ctx.save();
+            ctx.strokeStyle='#22c55e';ctx.lineWidth=2;
+            ctx.beginPath();
+            ctx.moveTo(cx+avgX*1.5-8,cy+avgY*1.5);ctx.lineTo(cx+avgX*1.5+8,cy+avgY*1.5);ctx.stroke();
+            ctx.moveTo(cx+avgX*1.5,cy+avgY*1.5-8);ctx.lineTo(cx+avgX*1.5,cy+avgY*1.5+8);ctx.stroke();
+            drawLabel(ctx,'avg',cx+avgX*1.5+12,cy+avgY*1.5,'#22c55e','left',10);
+            ctx.restore();
+        }
+
+        // Classification
+        var isAccurate=Math.abs(sysErr)<15;
+        var isPrecise=randErr<15;
+        var label='';
+        if(isAccurate&&isPrecise) label='✅ Accurate & Precise';
+        else if(!isAccurate&&isPrecise) label='⚠ Precise but NOT Accurate (systematic error)';
+        else if(isAccurate&&!isPrecise) label='⚠ Accurate but NOT Precise (random error)';
+        else label='❌ Neither Accurate nor Precise';
+
+        ctx.save();ctx.font='700 14px Inter';ctx.textAlign='center';
+        ctx.fillStyle=isAccurate&&isPrecise?'#22c55e':(!isAccurate&&!isPrecise?'#ef4444':'#facc15');
+        ctx.fillText(label,cx,25);
+        ctx.restore();
+
+        // Info
+        drawLabel(ctx,'Systematic offset: '+sysErr,100,H-20,'rgba(255,255,255,.3)','left',10);
+        drawLabel(ctx,'Random spread: '+randErr,W-100,H-20,'rgba(255,255,255,.3)','right',10);
+    }
+
+    errDraw();
+})();
+</script>
+</body>
+</html>
