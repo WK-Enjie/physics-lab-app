@@ -66,7 +66,7 @@
     <button class="tab-btn" data-tab="quiz"><span class="tab-emoji">✏️</span> Practice</button>
 </div>
 
-<!-- ===== TAB: THEORY (same as before, abbreviated for space) ===== -->
+<!-- ===== TAB: THEORY ===== -->
 <div class="tab-content active" id="tab-theory">
     <div class="content-card">
         <h2>🔧 Moment of a Force</h2>
@@ -107,7 +107,7 @@
     </div>
 </div>
 
-<!-- ===== TAB: BEAM LAB (same fixed version) ===== -->
+<!-- ===== TAB: BEAM LAB ===== -->
 <div class="tab-content" id="tab-beam-lab">
     <div class="content-card">
         <h2>🔬 Interactive Beam Lab</h2>
@@ -131,7 +131,7 @@
 </div>
 
 <!-- ============================================================
-     TAB: ROTATING OBJECTS — FORCE AT AN ANGLE
+     TAB: ROTATING OBJECTS — FORCE AT AN ANGLE (fixed rotation)
      ============================================================ -->
 <div class="tab-content" id="tab-rotate">
     <div class="content-card">
@@ -236,19 +236,9 @@
             <div class="worked-example-header">📝 Worked Example — Force at an Angle on a Spanner</div>
             <div class="worked-example-body">
                 <p><strong>Q:</strong> A force of 60 N is applied at 30° to the end of a 0.25 m spanner. Calculate the moment about the bolt.</p>
-                <div class="step"><div class="step-number">1</div><div class="step-content">
-                    <p>Identify: F = 60 N, L = 0.25 m, θ = 30°</p>
-                </div></div>
-                <div class="step"><div class="step-number">2</div><div class="step-content">
-                    <p><strong>Method 1 (perpendicular distance):</strong></p>
-                    <span class="math">d⊥ = L sin θ = 0.25 × sin 30° = 0.25 × 0.5 = 0.125 m</span><br>
-                    <span class="math">τ = F × d⊥ = 60 × 0.125 = 7.5 N m</span>
-                </div></div>
-                <div class="step"><div class="step-number">3</div><div class="step-content">
-                    <p><strong>Method 2 (perpendicular component):</strong></p>
-                    <span class="math">F⊥ = F sin θ = 60 × sin 30° = 60 × 0.5 = 30 N</span><br>
-                    <span class="math">τ = F⊥ × L = 30 × 0.25 = 7.5 N m ✓ Same answer!</span>
-                </div></div>
+                <div class="step"><div class="step-number">1</div><div class="step-content"><p>Identify: F = 60 N, L = 0.25 m, θ = 30°</p></div></div>
+                <div class="step"><div class="step-number">2</div><div class="step-content"><p><strong>Method 1 (perpendicular distance):</strong></p><span class="math">d⊥ = L sin θ = 0.25 × sin 30° = 0.25 × 0.5 = 0.125 m</span><br><span class="math">τ = F × d⊥ = 60 × 0.125 = 7.5 N m</span></div></div>
+                <div class="step"><div class="step-number">3</div><div class="step-content"><p><strong>Method 2 (perpendicular component):</strong></p><span class="math">F⊥ = F sin θ = 60 × sin 30° = 60 × 0.5 = 30 N</span><br><span class="math">τ = F⊥ × L = 30 × 0.25 = 7.5 N m ✓ Same answer!</span></div></div>
             </div>
         </div>
 
@@ -256,13 +246,8 @@
             <div class="worked-example-header">📝 Worked Example — Rope on a Trapdoor</div>
             <div class="worked-example-body">
                 <p><strong>Q:</strong> A rope is attached to the end of a 1.2 m trapdoor, pulling with 80 N at 45° to the door. Find the moment about the hinge.</p>
-                <div class="step"><div class="step-number">1</div><div class="step-content">
-                    <span class="math">τ = F × L × sin θ = 80 × 1.2 × sin 45°</span><br>
-                    <span class="math">= 80 × 1.2 × 0.707 = 67.9 N m</span>
-                </div></div>
-                <div class="step"><div class="step-number">2</div><div class="step-content">
-                    <p><strong>Compare:</strong> If the rope pulled at 90°, τ = 80 × 1.2 × 1 = 96 N m — that's <strong>41% more effective!</strong></p>
-                </div></div>
+                <div class="step"><div class="step-number">1</div><div class="step-content"><span class="math">τ = F × L × sin θ = 80 × 1.2 × sin 45°</span><br><span class="math">= 80 × 1.2 × 0.707 = 67.9 N m</span></div></div>
+                <div class="step"><div class="step-number">2</div><div class="step-content"><p><strong>Compare:</strong> If the rope pulled at 90°, τ = 80 × 1.2 × 1 = 96 N m — that's <strong>41% more effective!</strong></p></div></div>
             </div>
         </div>
     </div>
@@ -339,7 +324,7 @@ document.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('cl
 var bttBtn=document.getElementById('btt');window.addEventListener('scroll',function(){bttBtn.classList.toggle('visible',window.scrollY>400)});
 
 // ============================================================
-// BEAM LAB (fixed — same code from previous fix, condensed)
+// BEAM LAB (same as before)
 // ============================================================
 (function(){var canvas=document.getElementById('beamCanvas'),ctx=canvas.getContext('2d'),calcDiv=document.getElementById('beamCalc'),badgesDiv=document.getElementById('weightBadges');var BL=4,bm=0,pp=2,wts=[{w:100,pos:0.8,color:'#ef4444',id:0},{w:150,pos:3.2,color:'#60a5fa',id:1}],nid=2,si=0;var BLF=80,BRT=720,BY=250;function ppm(){return(BRT-BLF)/BL;}function ptx(p){return BLF+p*ppm();}var COL=['#ef4444','#60a5fa','#22c55e','#a855f7','#f97316','#ec4899','#14b8a6','#eab308'];
 function rb(){var h='';for(var i=0;i<wts.length;i++){var w=wts[i],c=i===si?'weight-badge selected':'weight-badge';h+='<span class="'+c+'" data-idx="'+i+'"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+w.color+'"></span> '+w.w+'N@'+w.pos.toFixed(2)+'m <button class="remove-btn" data-rm="'+i+'">✕</button></span>';}badgesDiv.innerHTML=h;badgesDiv.querySelectorAll('.weight-badge').forEach(function(b,j){b.addEventListener('click',function(e){if(e.target.dataset.rm!==undefined)return;si=j;usu();rb();beamDraw();});});badgesDiv.querySelectorAll('.remove-btn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();wts.splice(parseInt(b.dataset.rm),1);if(si>=wts.length)si=Math.max(0,wts.length-1);usu();rb();beamDraw();});});}
@@ -359,7 +344,7 @@ ctx.restore();drawLabel(ctx,'▲ Pivot',px,py+66,'#94a3b8','center',11);ctx.save
 var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span><br><br>';var ad=md.filter(function(x){return x.d==='ACW';}),cd=md.filter(function(x){return x.d==='CW';});h+='<span class="moment-color-acw">↺ ACW:</span><br>';if(!ad.length)h+='&nbsp;(none)<br>';ad.forEach(function(d){h+='&nbsp;'+d.l+' = <span class="calc-val">'+d.v.toFixed(1)+' Nm</span><br>';});h+='&nbsp;<strong>Total='+acw.toFixed(1)+' Nm</strong><br><br>';h+='<span class="moment-color-cw">↻ CW:</span><br>';if(!cd.length)h+='&nbsp;(none)<br>';cd.forEach(function(d){h+='&nbsp;'+d.l+' = <span class="calc-val">'+d.v.toFixed(1)+' Nm</span><br>';});h+='&nbsp;<strong>Total='+cw.toFixed(1)+' Nm</strong><br><br>';h+=bal?'<span class="calc-val highlight-row">✓ Balanced!</span>':'<span class="highlight-row">Net='+net.toFixed(1)+' Nm ('+(net>0?'CW':'ACW')+')</span>';calcDiv.innerHTML=h;};rb();usu();beamDraw();})();
 
 // ============================================================
-// ROTATING OBJECTS — WITH PERPENDICULAR DISTANCE EMPHASIS
+// ROTATING OBJECTS — FIXED ROTATION DIRECTION
 // ============================================================
 (function(){
     var canvas = document.getElementById('rotateCanvas');
@@ -382,7 +367,6 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
             cancelAnimationFrame(animId);
             document.getElementById('rotAnimate').textContent = '▶ Animate Rotation';
 
-            // Show/hide controls
             var isCouple = (scenario === 'steering');
             var isProp = (scenario === 'propeller');
             document.getElementById('rotAngleGroup').style.display = (isCouple || isProp) ? 'none' : '';
@@ -416,22 +400,40 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
         showPerpDist = e.target.checked; rotateDraw();
     });
 
-    // Animation
+    // Animation with correct direction per scenario
     document.getElementById('rotAnimate').addEventListener('click', function(){
         if(animating){ animating = false; cancelAnimationFrame(animId); this.textContent = '▶ Animate Rotation'; return; }
         animating = true; this.textContent = '⏸ Pause';
         function anim(){
             if(!animating) return;
             var rad = angle * PI / 180;
-            var moment = force * armLen * Math.sin(rad);
-            if(scenario === 'steering') moment = force * armLen * 2;
-            if(scenario === 'propeller') moment = 3 * force * 0.25;
-            rotAngle -= moment * 0.0002;
+            var torque = force * armLen * Math.sin(rad);
+            var torqueSign = 1;   // anticlockwise positive
+
+            // Determine sign based on physical effect of drawn force
+            if(scenario === 'lever' || scenario === 'spanner') {
+                // Force points down-left → clockwise rotation
+                torqueSign = -1;
+            } else if(scenario === 'trapdoor') {
+                // Rope pulls up-left → anticlockwise rotation
+                torqueSign = 1;
+            } else if(scenario === 'steering') {
+                // Couple (left up, right down) → anticlockwise
+                torqueSign = 1;
+            } else if(scenario === 'propeller') {
+                // Force arrows point downward → clockwise rotation
+                torqueSign = -1;
+            }
+
+            var speedFactor = (scenario === 'trapdoor') ? 0.3 : 1.0;
+            rotAngle += torque * torqueSign * 0.0002 * speedFactor;
+
             rotateDraw();
             animId = requestAnimationFrame(anim);
         }
         anim();
     });
+
     document.getElementById('rotStop').addEventListener('click', function(){
         animating = false; cancelAnimationFrame(animId);
         rotAngle = 0;
@@ -466,19 +468,17 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
         var Fpar = force * cosA;
         var dPerp = armLen * sinA;
 
-        // ============ LEVER / PERPENDICULAR DISTANCE DEMO ============
+        // ============ LEVER / SPANNER ============
         if(scenario === 'lever' || scenario === 'spanner'){
             var pivotX = W * 0.3, pivotY = H * 0.45;
             var armPx = armLen * 500;
             var fArrowLen = Math.min(100, force * 1.8);
 
-            // === Draw pivot ===
+            // Draw pivot
             ctx.save();
             if(scenario === 'spanner'){
-                // Bolt head
                 ctx.fillStyle = '#475569'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
                 ctx.beginPath(); ctx.arc(pivotX, pivotY, 20, 0, PI*2); ctx.fill(); ctx.stroke();
-                // Hex
                 ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.lineWidth = 1;
                 for(var i = 0; i < 6; i++){
                     var ha = i*PI/3 + rotAngle;
@@ -487,7 +487,6 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
                 }
                 ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(pivotX, pivotY, 6, 0, PI*2); ctx.fill();
             } else {
-                // Simple pivot dot
                 ctx.fillStyle = '#f97316';
                 ctx.beginPath(); ctx.arc(pivotX, pivotY, 8, 0, PI*2); ctx.fill();
                 ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
@@ -495,22 +494,13 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
             ctx.restore();
             drawLabel(ctx, 'Pivot', pivotX, pivotY + 30, 'rgba(255,255,255,.5)', 'center', 11);
 
-            // === Draw lever (rotated if animating) ===
+            // Draw lever (rotated)
             ctx.save();
             ctx.translate(pivotX, pivotY);
             ctx.rotate(rotAngle);
-
-            // Lever body
             ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = scenario === 'spanner' ? 14 : 6; ctx.lineCap = 'round';
             ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(armPx, 0); ctx.stroke();
-
-            if(scenario === 'spanner'){
-                // Jaw
-                ctx.fillStyle = '#64748b';
-                ctx.fillRect(-12, -18, 24, 36);
-            }
-
-            // Length label along lever
+            if(scenario === 'spanner'){ ctx.fillStyle = '#64748b'; ctx.fillRect(-12, -18, 24, 36); }
             ctx.save();
             ctx.strokeStyle = 'rgba(250,204,21,.4)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
             ctx.beginPath(); ctx.moveTo(0, 22); ctx.lineTo(armPx, 22); ctx.stroke();
@@ -518,27 +508,21 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
             drawLabel(ctx, 'L = ' + armLen.toFixed(2) + ' m', armPx/2, 38, '#facc15', 'center', 12);
             ctx.restore();
 
-            // === Point of application (end of lever) ===
+            // Point of application
             ctx.fillStyle = '#3b82f6';
             ctx.beginPath(); ctx.arc(armPx, 0, 5, 0, PI*2); ctx.fill();
 
-            // === Force arrow at the end, at angle θ to lever ===
-            // Angle θ is measured between force direction and lever direction
-            // Force direction in lever-local coords:
-            var fDirX = -Math.cos(rad); // component along negative lever direction + perpendicular
-            var fDirY = -Math.sin(rad); // perpendicular component (up)
-
+            // Force arrow at angle
+            var fDirX = -Math.cos(rad), fDirY = -Math.sin(rad);
             var fEndX = armPx + fArrowLen * fDirX;
             var fEndY = 0 + fArrowLen * fDirY;
-
             drawArrow(ctx, armPx, 0, fEndX, fEndY, '#3b82f6', 3);
             drawLabel(ctx, 'F = ' + force + ' N', fEndX + (fDirX < 0 ? -10 : 10), fEndY - 15, '#3b82f6', fDirX < 0 ? 'right' : 'left', 13);
 
-            // === LINE OF ACTION (extended dashed line) ===
+            // Line of action and perpendicular distance
             if(showPerpDist){
                 ctx.save();
                 ctx.strokeStyle = 'rgba(96,165,250,0.35)'; ctx.lineWidth = 1.5; ctx.setLineDash([8, 6]);
-                // Extend line of action far in both directions from force application point
                 var extLen = 300;
                 ctx.beginPath();
                 ctx.moveTo(armPx - extLen * fDirX, 0 - extLen * fDirY);
@@ -548,45 +532,25 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
                 drawLabel(ctx, 'Line of action of F', armPx + extLen*fDirX*0.6 + 15, extLen*fDirY*0.6 - 10, 'rgba(96,165,250,0.5)', 'left', 10);
                 ctx.restore();
 
-                // === PERPENDICULAR DISTANCE from pivot to line of action ===
-                // The perpendicular from origin (pivot) to the line through (armPx,0) in direction (fDirX,fDirY)
-                // Using projection: foot of perpendicular
-                var t = (armPx * fDirX + 0 * fDirY); // dot product of (armPx,0) with direction
-                var footX = armPx - t * fDirX;
-                var footY = 0 - t * fDirY;
-
-                // Actually let's compute properly
-                // Line: P = (armPx, 0) + s*(fDirX, fDirY)
-                // Foot from origin: s = -((armPx)*fDirX + 0*fDirY) / (fDirX²+fDirY²)
+                // Perpendicular foot
                 var denom = fDirX*fDirX + fDirY*fDirY;
                 var s_foot = -(armPx * fDirX) / denom;
-                footX = armPx + s_foot * fDirX;
-                footY = 0 + s_foot * fDirY;
+                var footX = armPx + s_foot * fDirX;
+                var footY = 0 + s_foot * fDirY;
 
-                // Draw perpendicular line (pivot to foot)
                 ctx.save();
                 ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 2.5;
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(footX, footY);
-                ctx.stroke();
-
-                // Right angle symbol at foot
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(footX, footY); ctx.stroke();
                 var perpAngle1 = Math.atan2(fDirY, fDirX);
                 var perpAngle2 = Math.atan2(-footY, -footX);
                 drawRightAngle(ctx, footX, footY, perpAngle1, perpAngle2, 12, '#22c55e');
-
-                // Small dot at foot
                 ctx.fillStyle = '#22c55e';
                 ctx.beginPath(); ctx.arc(footX, footY, 4, 0, PI*2); ctx.fill();
                 ctx.restore();
 
-                // Label for d⊥
                 var midX = footX / 2, midY = footY / 2;
-                // Offset label to avoid overlap
                 var labelOffX = (footY > 0 ? -15 : 15);
                 var labelOffY = (footX > 0 ? 15 : -15);
-
                 ctx.save();
                 ctx.font = '700 14px "JetBrains Mono", monospace';
                 ctx.fillStyle = '#22c55e';
@@ -598,74 +562,52 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
                 ctx.restore();
             }
 
-            // === Force components (F⊥ and F∥) ===
+            // Force components
             if(showComps && angle !== 90 && angle !== 0 && angle !== 180){
                 var compScale = fArrowLen;
-
-                // F⊥ (perpendicular to lever = vertical in lever coords)
                 var fperpLen = sinA * compScale;
-                ctx.save();
-                ctx.setLineDash([5, 4]);
+                ctx.save(); ctx.setLineDash([5, 4]);
                 drawArrow(ctx, armPx, 0, armPx, -fperpLen, '#22c55e', 2);
-                ctx.setLineDash([]);
-                ctx.restore();
+                ctx.setLineDash([]); ctx.restore();
                 drawLabel(ctx, 'F⊥ = ' + Fperp.toFixed(1) + ' N', armPx + 15, -fperpLen/2, '#22c55e', 'left', 11);
                 drawLabel(ctx, '(creates moment)', armPx + 15, -fperpLen/2 + 14, 'rgba(34,197,94,.5)', 'left', 9);
 
-                // F∥ (along lever = horizontal in lever coords)
                 var fparLen = Math.abs(cosA) * compScale;
-                ctx.save();
-                ctx.setLineDash([5, 4]);
+                ctx.save(); ctx.setLineDash([5, 4]);
                 drawArrow(ctx, armPx, 0, armPx - fparLen, 0, '#ef4444', 2);
-                ctx.setLineDash([]);
-                ctx.restore();
+                ctx.setLineDash([]); ctx.restore();
                 drawLabel(ctx, 'F∥ = ' + Math.abs(Fpar).toFixed(1) + ' N', armPx - fparLen/2, 16, '#ef4444', 'center', 10);
                 drawLabel(ctx, '(wasted)', armPx - fparLen/2, 28, 'rgba(239,68,68,.5)', 'center', 9);
 
-                // Dashed rectangle showing resolution
-                ctx.save();
-                ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+                ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
                 ctx.strokeRect(armPx - fparLen, -fperpLen, fparLen, fperpLen);
                 ctx.setLineDash([]); ctx.restore();
             }
 
-            // === Angle arc at point of application ===
+            // Angle arc
             if(angle > 0 && angle < 180){
                 ctx.save();
                 ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.5;
                 var arcR = 30;
-                ctx.beginPath();
-                ctx.arc(armPx, 0, arcR, PI, PI + rad, false);
-                ctx.stroke();
-
-                // Angle label
+                ctx.beginPath(); ctx.arc(armPx, 0, arcR, PI, PI + rad, false); ctx.stroke();
                 var labelAngle = PI + rad/2;
-                drawLabel(ctx, 'θ = ' + angle + '°',
-                    armPx + (arcR + 18) * Math.cos(labelAngle),
-                    (arcR + 18) * Math.sin(labelAngle),
-                    'rgba(255,255,255,.7)', 'center', 12);
+                drawLabel(ctx, 'θ = ' + angle + '°', armPx + (arcR + 18) * Math.cos(labelAngle), (arcR + 18) * Math.sin(labelAngle), 'rgba(255,255,255,.7)', 'center', 12);
                 ctx.restore();
             }
-
             ctx.restore(); // end lever rotation
 
-            // === Rotation indicator ===
+            // Rotation indicator
             if(moment > 0.1 && animating){
                 ctx.save();
                 ctx.strokeStyle = 'rgba(249,115,22,.4)'; ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.arc(pivotX, pivotY, armPx + 20, rotAngle - 0.3, rotAngle + 1.0);
-                ctx.stroke();
+                ctx.beginPath(); ctx.arc(pivotX, pivotY, armPx + 20, rotAngle - 0.3, rotAngle + 1.0); ctx.stroke();
                 var aEnd = rotAngle + 1.0;
-                drawArrow(ctx,
-                    pivotX + (armPx+20)*Math.cos(aEnd-0.08), pivotY + (armPx+20)*Math.sin(aEnd-0.08),
-                    pivotX + (armPx+20)*Math.cos(aEnd), pivotY + (armPx+20)*Math.sin(aEnd),
-                    'rgba(249,115,22,.6)', 2);
+                drawArrow(ctx, pivotX + (armPx+20)*Math.cos(aEnd-0.08), pivotY + (armPx+20)*Math.sin(aEnd-0.08), pivotX + (armPx+20)*Math.cos(aEnd), pivotY + (armPx+20)*Math.sin(aEnd), 'rgba(249,115,22,.6)', 2);
                 ctx.restore();
             }
 
-            // === Moment gauge (top right) ===
-            var maxMoment = 100 * 0.6; // max possible
+            // Moment gauge
+            var maxMoment = 100 * 0.6;
             var gaugeX = W - 130, gaugeY = 50, gaugeH = 200, gaugeW = 25;
             ctx.save();
             ctx.fillStyle = 'rgba(255,255,255,.05)';
@@ -678,27 +620,20 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
             roundedRect(ctx, gaugeX, gaugeY, gaugeW, gaugeH, 4); ctx.stroke();
             drawLabel(ctx, 'τ', gaugeX + gaugeW/2, gaugeY - 12, 'rgba(255,255,255,.4)', 'center', 11);
             drawLabel(ctx, 'max', gaugeX + gaugeW/2, gaugeY + gaugeH + 14, 'rgba(255,255,255,.2)', 'center', 9);
-            // 90° marker on gauge
             ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1;
             ctx.beginPath(); ctx.moveTo(gaugeX - 4, gaugeY); ctx.lineTo(gaugeX + gaugeW + 4, gaugeY); ctx.stroke();
             drawLabel(ctx, '90°', gaugeX + gaugeW + 10, gaugeY, 'rgba(34,197,94,.5)', 'left', 9);
             ctx.restore();
 
-            // === Big readout ===
-            ctx.save();
-            ctx.font = '800 26px "JetBrains Mono"'; ctx.fillStyle = '#fff'; ctx.textAlign = 'right';
-            ctx.fillText('τ = ' + moment.toFixed(1) + ' N m', W - 20, H - 30);
-            ctx.restore();
+            ctx.save(); ctx.font = '800 26px "JetBrains Mono"'; ctx.fillStyle = '#fff'; ctx.textAlign = 'right';
+            ctx.fillText('τ = ' + moment.toFixed(1) + ' N m', W - 20, H - 30); ctx.restore();
 
-            // === sin θ visual indicator ===
-            ctx.save();
-            ctx.font = '600 16px "JetBrains Mono"'; ctx.fillStyle = '#facc15'; ctx.textAlign = 'left';
+            ctx.save(); ctx.font = '600 16px "JetBrains Mono"'; ctx.fillStyle = '#facc15'; ctx.textAlign = 'left';
             ctx.fillText('sin ' + angle + '° = ' + sinA.toFixed(4), 20, H - 50);
             ctx.font = '500 12px Inter'; ctx.fillStyle = 'rgba(255,255,255,.4)';
             ctx.fillText(angle === 90 ? '→ Maximum moment!' : angle === 0 || angle === 180 ? '→ Zero moment!' : '→ ' + (sinA*100).toFixed(0) + '% of maximum', 20, H - 30);
             ctx.restore();
 
-            // === Calculation panel ===
             var html = '<span class="calc-label">Method 1 — Perpendicular Distance:</span><br>' +
                 'd⊥ = L × sinθ = ' + armLen.toFixed(2) + ' × sin' + angle + '° = ' + armLen.toFixed(2) + ' × ' + sinA.toFixed(4) + ' = <span class="calc-val">' + dPerp.toFixed(4) + ' m</span><br>' +
                 'τ = F × d⊥ = ' + force + ' × ' + dPerp.toFixed(4) + ' = <span class="calc-val highlight-row">' + moment.toFixed(2) + ' N m</span><br><br>' +
@@ -706,7 +641,6 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
                 'F⊥ = F × sinθ = ' + force + ' × sin' + angle + '° = <span class="calc-val">' + Fperp.toFixed(1) + ' N</span><br>' +
                 'F∥ = F × cosθ = ' + force + ' × cos' + angle + '° = <span style="color:#ef4444">' + Math.abs(Fpar).toFixed(1) + ' N</span> (no moment — pushes into pivot)<br>' +
                 'τ = F⊥ × L = ' + Fperp.toFixed(1) + ' × ' + armLen.toFixed(2) + ' = <span class="calc-val highlight-row">' + (Fperp*armLen).toFixed(2) + ' N m ✓</span><br><br>';
-
             if(angle === 90) html += '<span style="color:#22c55e">💡 At 90°: sinθ = 1, d⊥ = L → MAXIMUM moment. All of F is perpendicular!</span>';
             else if(angle === 0 || angle === 180) html += '<span style="color:#ef4444">⚠ At 0°/180°: sinθ = 0, d⊥ = 0 → ZERO moment. Force passes through pivot!</span>';
             else html += '<span class="calc-label">💡 Efficiency:</span> Only <span class="calc-val">' + (sinA*100).toFixed(0) + '%</span> of the force is creating a moment. <span style="color:#ef4444">' + (Math.abs(cosA)*100).toFixed(0) + '% is wasted</span> pushing along the lever.';
@@ -717,65 +651,44 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
             var hingeX = 150, hingeY = H * 0.65;
             var doorLen = armLen * 500;
 
-            // Wall (vertical)
-            ctx.save();
             ctx.fillStyle = '#334155';
             ctx.fillRect(hingeX - 25, hingeY - 150, 25, 200);
             ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
             ctx.strokeRect(hingeX - 25, hingeY - 150, 25, 200);
-            ctx.restore();
 
-            // Hinge
-            ctx.save();
             ctx.fillStyle = '#f97316';
             ctx.beginPath(); ctx.arc(hingeX, hingeY, 8, 0, PI*2); ctx.fill();
             ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
-            ctx.restore();
             drawLabel(ctx, 'Hinge', hingeX, hingeY + 25, 'rgba(255,255,255,.5)', 'center', 11);
 
-            // Door (horizontal, with slight rotation for animation)
             ctx.save();
             ctx.translate(hingeX, hingeY);
-            ctx.rotate(rotAngle * 0.3); // slower rotation for visual
+            ctx.rotate(rotAngle * 0.3); // slower
 
-            // Door panel
             ctx.fillStyle = 'rgba(139,92,42,.3)'; ctx.strokeStyle = '#a0785a'; ctx.lineWidth = 3;
             ctx.fillRect(0, -8, doorLen, 16);
             ctx.strokeRect(0, -8, doorLen, 16);
 
-            // Rope attachment point
             ctx.fillStyle = '#3b82f6';
             ctx.beginPath(); ctx.arc(doorLen, 0, 5, 0, PI*2); ctx.fill();
 
-            // Rope (force) at angle
             var fLen = Math.min(100, force * 1.5);
-            var ropeEndX = doorLen + fLen * Math.cos(PI/2 + rad - PI/2);
-            var ropeEndY = -fLen * Math.sin(rad);
-
-            // Simplified: rope pulls upward at angle θ to door
-            var rDirX = -Math.cos(rad);
-            var rDirY = -Math.sin(rad);
+            var rDirX = -Math.cos(rad), rDirY = -Math.sin(rad);
             drawArrow(ctx, doorLen, 0, doorLen + fLen*rDirX, fLen*rDirY, '#3b82f6', 3);
             drawLabel(ctx, 'T = ' + force + ' N', doorLen + fLen*rDirX + 10, fLen*rDirY - 10, '#3b82f6', 'left', 13);
 
-            // Line of action
             if(showPerpDist){
                 ctx.save();
                 ctx.strokeStyle = 'rgba(96,165,250,.3)'; ctx.lineWidth = 1.5; ctx.setLineDash([8,6]);
-                ctx.beginPath();
-                ctx.moveTo(doorLen - 200*rDirX, -200*rDirY);
-                ctx.lineTo(doorLen + 250*rDirX, 250*rDirY);
-                ctx.stroke(); ctx.setLineDash([]);
-                ctx.restore();
+                ctx.beginPath(); ctx.moveTo(doorLen - 200*rDirX, -200*rDirY); ctx.lineTo(doorLen + 250*rDirX, 250*rDirY); ctx.stroke();
+                ctx.setLineDash([]); ctx.restore();
 
-                // Perpendicular from hinge to line of action
                 var s_f = -(doorLen*rDirX) / (rDirX*rDirX + rDirY*rDirY);
                 var fX = doorLen + s_f*rDirX, fY = s_f*rDirY;
                 ctx.save();
                 ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 2.5;
                 ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(fX, fY); ctx.stroke();
-                ctx.fillStyle = '#22c55e';
-                ctx.beginPath(); ctx.arc(fX, fY, 4, 0, PI*2); ctx.fill();
+                ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(fX, fY, 4, 0, PI*2); ctx.fill();
                 var pA1 = Math.atan2(rDirY, rDirX);
                 var pA2 = Math.atan2(-fY, -fX);
                 drawRightAngle(ctx, fX, fY, pA1, pA2, 12, '#22c55e');
@@ -783,7 +696,6 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
                 drawLabel(ctx, 'd⊥ = ' + (dPerp*100).toFixed(1) + ' cm', fX/2 - 20, fY/2 + 20, '#22c55e', 'center', 13);
             }
 
-            // Components
             if(showComps && angle !== 90 && angle !== 0){
                 var cS = fLen;
                 ctx.save(); ctx.setLineDash([5,4]);
@@ -794,24 +706,17 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
                 drawLabel(ctx, 'T∥=' + Math.abs(Fpar).toFixed(1) + 'N', doorLen - Math.abs(cosA)*cS/2, 14, '#ef4444', 'center', 10);
             }
 
-            // Angle arc
             if(angle > 0 && angle < 180){
                 ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1.5;
                 ctx.beginPath(); ctx.arc(doorLen, 0, 28, PI, PI + rad, false); ctx.stroke();
                 drawLabel(ctx, 'θ=' + angle + '°', doorLen - 38, -20, 'rgba(255,255,255,.6)', 'center', 11);
                 ctx.restore();
             }
-
-            // Length
             drawLabel(ctx, 'L = ' + armLen.toFixed(2) + ' m', doorLen/2, 28, '#facc15', 'center', 11);
-
             ctx.restore();
 
-            // Readout
-            ctx.save();
-            ctx.font = '800 26px "JetBrains Mono"'; ctx.fillStyle = '#fff'; ctx.textAlign = 'right';
-            ctx.fillText('τ = ' + moment.toFixed(1) + ' N m', W - 20, H - 30);
-            ctx.restore();
+            ctx.save(); ctx.font = '800 26px "JetBrains Mono"'; ctx.fillStyle = '#fff'; ctx.textAlign = 'right';
+            ctx.fillText('τ = ' + moment.toFixed(1) + ' N m', W - 20, H - 30); ctx.restore();
 
             calcDiv.innerHTML =
                 '<span class="calc-label">🪟 Rope on Trapdoor (hinge at left):</span><br><br>' +
@@ -826,8 +731,8 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
             var cx = W*0.45, cy = H*0.45, wheelR = armLen * 350;
             moment = force * armLen * 2;
 
-            ctx.save(); ctx.fillStyle = '#475569';
-            ctx.fillRect(cx - 8, cy + wheelR + 5, 16, 80); ctx.restore();
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(cx - 8, cy + wheelR + 5, 16, 80);
 
             ctx.save(); ctx.translate(cx, cy); ctx.rotate(rotAngle);
             ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 10;
@@ -925,7 +830,7 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
 })();
     
 // ============================================================
-// COG SIMULATION (fixed)
+// COG SIMULATION
 // ============================================================
 (function(){var canvas=document.getElementById('cogCanvas'),ctx=canvas.getContext('2d'),calcDiv=document.getElementById('cogCalc');var bW=100,bH=160,cgP=50,tilt=0;
 document.getElementById('cogWidth').addEventListener('input',function(e){bW=parseInt(e.target.value);document.getElementById('cogWidthVal').textContent=bW;cogDraw();});
@@ -946,7 +851,7 @@ var ca=Math.atan2(bW/2,cgLY)*180/PI;
 calcDiv.innerHTML='<span class="calc-label">Tilt:</span> '+tilt+'° | <span class="calc-label">Critical angle:</span> <span class="calc-val highlight-row">'+ca.toFixed(1)+'°</span><br>= arctan('+(bW/2)+'/'+cgLY.toFixed(0)+') = '+ca.toFixed(1)+'°<br><br>'+(top?'<span style="color:#ef4444">⚠ Tilt > critical → Topples!</span>':tilt>0?'<span style="color:#22c55e">✓ Tilt < critical → Stable</span>':'💡 Increase tilt. Lower CG / wider base = more stable.');};cogDraw();})();
 
 // ============================================================
-// VARIANTS (condensed, same as fixed version)
+// VARIANTS
 // ============================================================
 (function(){var canvas=document.getElementById('variantCanvas'),ctx=canvas.getContext('2d'),calcDiv=document.getElementById('variantCalc');var vr='cantilever',v1=3,v2=200,v3=100,v4=1.5;
 document.querySelectorAll('#variantCards .variant-card').forEach(function(c){c.addEventListener('click',function(){document.querySelectorAll('#variantCards .variant-card').forEach(function(x){x.classList.remove('active')});c.classList.add('active');vr=c.dataset.variant;sv();variantDraw();});});
