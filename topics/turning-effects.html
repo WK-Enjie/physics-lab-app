@@ -8,10 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         .sim-container canvas { aspect-ratio: 2; }
-        .beam-canvas    { aspect-ratio: 5/3 !important; }
-        .cog-canvas     { aspect-ratio: 4/3 !important; }
+        .beam-canvas { aspect-ratio: 5/3 !important; }
+        .cog-canvas  { aspect-ratio: 4/3 !important; }
         .variant-canvas { aspect-ratio: 5/3 !important; }
-        .rotate-canvas  { aspect-ratio: 4/3 !important; }
         .weight-badge {
             display:inline-flex; align-items:center; gap:.3rem;
             background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.15);
@@ -21,22 +20,29 @@
         }
         .weight-badge:hover { border-color:rgba(255,255,255,.4); }
         .weight-badge.selected { border-color:#60a5fa; background:rgba(96,165,250,.15); }
-        .weight-badge .remove-btn { cursor:pointer; color:#ef4444; margin-left:.3rem; font-weight:700; border:none; background:none; font-size:.9rem; padding:0 2px; }
+        .weight-badge .remove-btn {
+            cursor:pointer; color:#ef4444; margin-left:.3rem; font-weight:700;
+            border:none; background:none; font-size:.9rem; padding:0 2px;
+        }
+        .weight-badge .remove-btn:hover { color:#ff6b6b; }
         .moment-color-cw  { color:#f97316; }
         .moment-color-acw { color:#60a5fa; }
         .variant-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:.7rem; margin:1rem 0; }
-        .variant-card { padding:.8rem; background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.1); border-radius:8px; cursor:pointer; transition:all .2s; text-align:center; color:rgba(255,255,255,.7); font-size:.82rem; }
+        .variant-card {
+            padding:.8rem; background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.1);
+            border-radius:8px; cursor:pointer; transition:all .2s; text-align:center;
+            color:rgba(255,255,255,.7); font-size:.82rem;
+        }
         .variant-card:hover, .variant-card.active { border-color:var(--secondary-light); background:rgba(52,168,83,.1); color:#fff; }
         .variant-card .vc-icon { font-size:1.8rem; margin-bottom:.3rem; }
         .stability-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1rem 0; }
-        .stability-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.2rem; text-align:center; }
+        .stability-card {
+            background:#fff; border:1px solid var(--border); border-radius:var(--radius-sm);
+            padding:1.2rem; text-align:center;
+        }
         .stability-card h4 { font-size:.95rem; margin:.5rem 0 .3rem; }
         .stability-card p  { font-size:.82rem; color:var(--text-light); }
         .stability-card .stab-icon { font-size:2.5rem; }
-        .rotate-scenarios { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:.7rem; margin:1rem 0; }
-        .rotate-scenario { padding:.7rem; background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.1); border-radius:8px; cursor:pointer; transition:all .2s; text-align:center; color:rgba(255,255,255,.7); font-size:.8rem; }
-        .rotate-scenario:hover, .rotate-scenario.active { border-color:#f97316; background:rgba(249,115,22,.1); color:#fff; }
-        .rotate-scenario .rs-icon { font-size:1.8rem; margin-bottom:.2rem; }
         .calc-display { background:rgba(0,0,0,.3); border-radius:8px; padding:1rem; margin-top:1rem; font-family:var(--font-mono); font-size:.88rem; color:rgba(255,255,255,.85); line-height:1.8; }
         .calc-display .calc-label { color:var(--primary-light); font-weight:600; }
         .calc-display .calc-val { color:#34d399; }
@@ -45,230 +51,205 @@
 </head>
 <body>
 
+<!-- ============ HEADER ============ -->
 <header class="topic-header">
     <nav class="navbar">
         <a href="../index.html" class="logo" style="text-decoration:none">⚛️ Physics Lab 6091</a>
-        <div class="nav-links"><a href="../index.html">← All Topics</a></div>
+        <div class="nav-links">
+            <a href="../index.html">← All Topics</a>
+        </div>
     </nav>
     <div class="topic-hero">
-        <div class="breadcrumb"><a href="../index.html">Home</a><span>›</span> Turning Effects of Forces</div>
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a><span>›</span> Turning Effects of Forces
+        </div>
         <h1>⚖️ Turning Effects of Forces</h1>
-        <p>Moments, principle of moments, rotating objects, equilibrium, centre of gravity &amp; classic problems</p>
+        <p>Moments, principle of moments, conditions for equilibrium, centre of gravity &amp; classic problems</p>
     </div>
 </header>
 
+<!-- ============ TAB NAV ============ -->
 <div class="tab-nav" id="tabNav">
     <button class="tab-btn active" data-tab="theory"><span class="tab-emoji">📖</span> Theory</button>
     <button class="tab-btn" data-tab="beam-lab"><span class="tab-emoji">🔬</span> Beam Lab</button>
-    <button class="tab-btn" data-tab="rotate"><span class="tab-emoji">🔧</span> Rotating Objects</button>
     <button class="tab-btn" data-tab="cog"><span class="tab-emoji">🎯</span> Centre of Gravity</button>
     <button class="tab-btn" data-tab="variants"><span class="tab-emoji">🏗️</span> Classic Problems</button>
     <button class="tab-btn" data-tab="quiz"><span class="tab-emoji">✏️</span> Practice</button>
 </div>
 
-<!-- ===== TAB: THEORY (same as before, abbreviated for space) ===== -->
+<!-- ============================================================
+     TAB 1 — THEORY
+     ============================================================ -->
 <div class="tab-content active" id="tab-theory">
     <div class="content-card">
         <h2>🔧 Moment of a Force</h2>
-        <div class="formula-box"><span class="formula-label">Moment</span><span class="formula">τ = F × d (unit: N m)</span></div>
-        <p>A <strong>moment</strong> is the <strong>turning effect</strong> of a force about a pivot. The <strong>perpendicular distance</strong> from the line of action to the pivot determines the moment.</p>
-        <div class="key-concept"><strong>💡 "Perpendicular distance"</strong> means the <em>shortest</em> distance from pivot to the <strong>line of action</strong> of the force. If force is applied at an angle θ to the lever, only the <strong>perpendicular component</strong> (F sin θ) creates a moment, or equivalently: τ = F × L × sin θ.</div>
+        <div class="formula-box">
+            <span class="formula-label">Moment (Torque)</span>
+            <span class="formula">Moment = Force × Perpendicular distance from pivot</span>
+        </div>
+        <div class="formula-box" style="margin-top:.5rem">
+            <span class="formula-label">In symbols</span>
+            <span class="formula">τ = F × d &nbsp;&nbsp; (unit: N m)</span>
+        </div>
+        <h3>Understanding Moment</h3>
+        <p>A <strong>moment</strong> (or torque) is the <strong>turning effect</strong> of a force about a pivot. It depends on:</p>
+        <ul>
+            <li><strong>The magnitude of the force</strong> — a larger force produces a larger moment.</li>
+            <li><strong>The perpendicular distance</strong> from the line of action of the force to the pivot.</li>
+        </ul>
+        <div class="key-concept">
+            <strong>💡 "Perpendicular distance"</strong> means the <em>shortest</em> distance from the pivot to the <strong>line of action</strong> of the force — not the length of the lever!
+        </div>
         <h3>Direction of Moments</h3>
         <ul>
-            <li><strong style="color:#f97316">Clockwise (CW)</strong></li>
-            <li><strong style="color:#60a5fa">Anticlockwise (ACW)</strong></li>
+            <li><strong style="color:#f97316">Clockwise (CW)</strong> — the force tends to rotate the object clockwise.</li>
+            <li><strong style="color:#60a5fa">Anticlockwise (ACW)</strong> — the force tends to rotate anticlockwise.</li>
         </ul>
-        <div class="example-box"><h4>🔧 Opening a Door</h4><p>Handle placed far from hinge → maximum perpendicular distance → large moment with small force.</p></div>
-        <div class="example-box"><h4>🔩 Long Spanner</h4><p>Longer spanner = larger d = less force needed for same moment.</p></div>
+        <div class="example-box">
+            <h4>🔧 Opening a Door</h4>
+            <p>The handle is far from the hinge to <strong>maximise perpendicular distance</strong>, producing a larger moment with less force.</p>
+        </div>
+        <div class="example-box">
+            <h4>🔩 Long Spanner</h4>
+            <p>A longer spanner means larger <em>d</em>, so a smaller <em>F</em> is needed for the same moment.</p>
+        </div>
     </div>
+
     <div class="content-card">
         <h2>⚖️ Principle of Moments</h2>
-        <div class="formula-box"><span class="formula-label">Principle of Moments</span><span class="formula">For rotational equilibrium: ΣCW moments = ΣACW moments</span></div>
-        <div class="key-concept"><strong>💡 Smart Pivot Choice:</strong> Take moments about a point where an unknown force acts — its moment = 0 (d = 0).</div>
-        <h3>Conditions for Complete Equilibrium</h3>
-        <ol><li><strong>Translational:</strong> Resultant force = 0</li><li><strong>Rotational:</strong> Resultant moment about any point = 0</li></ol>
-        <div class="worked-example"><div class="worked-example-header">📝 Worked Example 1 — Seesaw</div><div class="worked-example-body"><p><strong>Q:</strong> 300 N at 1.5 m left; find position for 500 N on right to balance.</p><div class="step"><div class="step-number">1</div><div class="step-content"><p>ACW = 300 × 1.5 = 450 N m</p></div></div><div class="step"><div class="step-number">2</div><div class="step-content"><p>500 × d = 450 → <span class="math">d = 0.90 m</span></p></div></div></div></div>
-        <div class="worked-example"><div class="worked-example-header">📝 Worked Example 2 — Non-Central Pivot</div><div class="worked-example-body"><p><strong>Q:</strong> 10 kg plank (4 m), pivot 1.5 m from left, 5 kg at left end. Find F at right end.</p><div class="step"><div class="step-number">1</div><div class="step-content"><p>ACW: 50 × 1.5 = 75 N m</p></div></div><div class="step"><div class="step-number">2</div><div class="step-content"><p>CW: 100 × 0.5 + F × 2.5</p></div></div><div class="step"><div class="step-number">3</div><div class="step-content"><p>75 = 50 + 2.5F → <span class="math">F = 10 N</span></p></div></div></div></div>
-    </div>
-    <div class="content-card">
-        <h2>🎯 Centre of Gravity &amp; Stability</h2>
-        <div class="formula-box"><span class="formula-label">Centre of Gravity</span><span class="formula">The point where the entire weight may be considered to act.</span></div>
-        <div class="stability-grid">
-            <div class="stability-card"><div class="stab-icon">🔺</div><h4>Stable</h4><p>CG rises when displaced → returns.</p></div>
-            <div class="stability-card"><div class="stab-icon">🔻</div><h4>Unstable</h4><p>CG falls when displaced → topples.</p></div>
-            <div class="stability-card"><div class="stab-icon">⚪</div><h4>Neutral</h4><p>CG stays same height → stays put.</p></div>
+        <div class="formula-box">
+            <span class="formula-label">Principle of Moments</span>
+            <span class="formula">For rotational equilibrium:<br>Sum of CW moments = Sum of ACW moments</span>
         </div>
-        <div class="key-concept"><strong>💡 Toppling:</strong> Object topples when vertical from CG falls outside base. Lower CG + wider base = more stable.</div>
+        <div class="key-concept">
+            <strong>💡 Smart Pivot Choice:</strong> Take moments about a point where an unknown force acts — that force has zero moment (d = 0), simplifying calculations!
+        </div>
+        <h3>Conditions for Complete Equilibrium</h3>
+        <ol>
+            <li><strong>Translational:</strong> Resultant force = 0</li>
+            <li><strong>Rotational:</strong> Resultant moment about any point = 0</li>
+        </ol>
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example 1 — Simple Seesaw</div>
+            <div class="worked-example-body">
+                <p><strong>Q:</strong> A uniform 4 m beam (200 N) is pivoted at centre. 300 N is placed 1.5 m left of pivot. Where must 500 N be placed on the right to balance?</p>
+                <div class="step"><div class="step-number">1</div><div class="step-content"><p>Beam weight acts at pivot → moment = 0.</p></div></div>
+                <div class="step"><div class="step-number">2</div><div class="step-content"><p>ACW = 300 × 1.5 = <span class="math">450 N m</span></p></div></div>
+                <div class="step"><div class="step-number">3</div><div class="step-content"><p>CW = 500 × d = 450 → <span class="math">d = 0.90 m</span></p></div></div>
+            </div>
+        </div>
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example 2 — Non-Central Pivot</div>
+            <div class="worked-example-body">
+                <p><strong>Q:</strong> Uniform plank: 10 kg, 4 m long. Pivot at 1.5 m from left. 5 kg hangs from left end. Find force F at right end to balance. (g = 10 m/s²)</p>
+                <div class="step"><div class="step-number">1</div><div class="step-content"><p>Plank weight = 100 N at centre (2 m from left). Mass weight = 50 N at left end.</p></div></div>
+                <div class="step"><div class="step-number">2</div><div class="step-content"><p>ACW: 50 × 1.5 = <span class="math">75 N m</span></p></div></div>
+                <div class="step"><div class="step-number">3</div><div class="step-content"><p>CW: 100 × 0.5 + F × 2.5</p></div></div>
+                <div class="step"><div class="step-number">4</div><div class="step-content"><p>75 = 50 + 2.5F → <span class="math">F = 10 N</span></p></div></div>
+            </div>
+        </div>
     </div>
+
+    <div class="content-card">
+        <h2>🎯 Centre of Gravity (CG)</h2>
+        <div class="formula-box">
+            <span class="formula-label">Definition</span>
+            <span class="formula">The point where the entire weight of the object may be considered to act.</span>
+        </div>
+        <ul>
+            <li>For <strong>uniform</strong> objects, CG is at the <strong>geometric centre</strong>.</li>
+            <li>For irregular shapes, use the <strong>plumb line method</strong>.</li>
+            <li>CG need <strong>not be inside</strong> the object (e.g. a ring).</li>
+        </ul>
+        <h3>Stability</h3>
+        <div class="stability-grid">
+            <div class="stability-card">
+                <div class="stab-icon">🔺</div>
+                <h4>Stable</h4>
+                <p>CG <strong>rises</strong> when displaced → returns to original position. Wide base, low CG.</p>
+            </div>
+            <div class="stability-card">
+                <div class="stab-icon">🔻</div>
+                <h4>Unstable</h4>
+                <p>CG <strong>falls</strong> when displaced → topples. Narrow base, high CG.</p>
+            </div>
+            <div class="stability-card">
+                <div class="stab-icon">⚪</div>
+                <h4>Neutral</h4>
+                <p>CG stays at <strong>same height</strong> → stays in new position.</p>
+            </div>
+        </div>
+        <div class="key-concept">
+            <strong>💡 Toppling:</strong> An object topples when the <strong>vertical line from CG</strong> falls <strong>outside the base</strong>. To improve stability: <strong>lower CG</strong> and/or <strong>widen base</strong>.
+        </div>
+    </div>
+
     <div class="content-card">
         <h2>🔄 Couple</h2>
-        <div class="formula-box"><span class="formula-label">Couple</span><span class="formula">Two equal, opposite, non-coincident forces → pure rotation. Torque = F × d</span></div>
-        <div class="example-box"><h4>🚗 Steering Wheel</h4><p>Both hands apply equal opposite forces → pure rotation, no translation.</p></div>
+        <div class="formula-box">
+            <span class="formula-label">Couple</span>
+            <span class="formula">Two equal, opposite, non-coincident forces → pure rotation<br>Torque = F × d (d = distance between forces)</span>
+        </div>
+        <div class="example-box">
+            <h4>🚗 Steering Wheel</h4>
+            <p>Both hands apply equal opposite forces → pure rotation, no translation.</p>
+        </div>
     </div>
 </div>
 
-<!-- ===== TAB: BEAM LAB (same fixed version) ===== -->
+<!-- ============================================================
+     TAB 2 — BEAM LAB (FIXED)
+     ============================================================ -->
 <div class="tab-content" id="tab-beam-lab">
     <div class="content-card">
         <h2>🔬 Interactive Beam Lab</h2>
-        <p>Add weights, position them, and watch the beam tilt. Achieve equilibrium when CW = ACW!</p>
-        <p style="color:var(--primary);font-size:.9rem">🖱️ Click a weight badge to select, then use position slider.</p>
+        <p>Add weights and position them along the beam. The beam tilts based on net moment. Achieve <strong>equilibrium</strong> when CW = ACW moments!</p>
+        <p style="color:var(--primary);font-size:.9rem">🖱️ Click a weight badge below to select it, then use the position slider to move it.</p>
     </div>
+
     <div class="sim-container">
         <canvas id="beamCanvas" width="800" height="500" class="beam-canvas"></canvas>
+
         <div class="sim-controls" style="flex-wrap:wrap">
-            <div class="sim-control-group"><label>Beam mass: <span id="beamMassVal" class="value-display">0 kg</span></label><input type="range" id="beamMass" min="0" max="10" value="0" step="0.5"></div>
-            <div class="sim-control-group"><label>Pivot: <span id="pivotPosVal" class="value-display">2.0 m</span></label><input type="range" id="pivotPos" min="0.5" max="3.5" value="2" step="0.1"></div>
+            <div class="sim-control-group">
+                <label>Beam mass: <span id="beamMassVal" class="value-display">0 kg</span></label>
+                <input type="range" id="beamMass" min="0" max="10" value="0" step="0.5">
+            </div>
+            <div class="sim-control-group">
+                <label>Pivot position: <span id="pivotPosVal" class="value-display">2.0 m</span></label>
+                <input type="range" id="pivotPos" min="0.5" max="3.5" value="2" step="0.1">
+            </div>
         </div>
-        <div style="margin-top:1rem"><span style="color:rgba(255,255,255,.5);font-size:.82rem;">Weights:</span><div id="weightBadges" style="margin-top:.4rem;min-height:36px"></div></div>
+
+        <div style="margin-top:1rem;">
+            <span style="color:rgba(255,255,255,.5);font-size:.82rem;">Weights (click to select):</span>
+            <div id="weightBadges" style="margin-top:.4rem;min-height:36px;"></div>
+        </div>
+
         <div class="sim-controls" style="margin-top:.8rem;flex-wrap:wrap">
-            <div class="sim-control-group" id="selWeightGroup" style="display:none;min-width:250px"><label>Selected: <span id="selWeightLabel" class="value-display" style="color:#60a5fa">—</span></label><label>Position: <span id="selPosVal" class="value-display">0.00 m</span></label><input type="range" id="selPos" min="0" max="4" value="0" step="0.05"></div>
-            <div class="sim-control-group"><label>Add:</label><div style="display:flex;gap:.4rem;align-items:center"><input type="number" id="newWeightVal" class="sim-input" value="50" min="10" max="500" step="10" style="width:70px"><span style="color:rgba(255,255,255,.5);font-size:.82rem">N</span><button class="sim-btn sim-btn-play" id="addWeightBtn">+ Add</button></div></div>
-            <button class="sim-btn sim-btn-reset" id="beamClear">↺ Clear</button>
+            <div class="sim-control-group" id="selWeightGroup" style="display:none;min-width:250px">
+                <label>Selected: <span id="selWeightLabel" class="value-display" style="color:#60a5fa">—</span></label>
+                <label>Position (m from left): <span id="selPosVal" class="value-display">0.00</span></label>
+                <input type="range" id="selPos" min="0" max="4" value="0" step="0.05">
+            </div>
+            <div class="sim-control-group">
+                <label>Add weight:</label>
+                <div style="display:flex;gap:.4rem;align-items:center">
+                    <input type="number" id="newWeightVal" class="sim-input" value="50" min="10" max="500" step="10" style="width:70px">
+                    <span style="color:rgba(255,255,255,.5);font-size:.82rem">N</span>
+                    <button class="sim-btn sim-btn-play" id="addWeightBtn">+ Add</button>
+                </div>
+            </div>
+            <button class="sim-btn sim-btn-reset" id="beamClear">↺ Clear All</button>
         </div>
+
         <div class="calc-display" id="beamCalc"></div>
     </div>
 </div>
 
 <!-- ============================================================
-     TAB: ROTATING OBJECTS — FORCE AT AN ANGLE
+     TAB 3 — CENTRE OF GRAVITY
      ============================================================ -->
-<div class="tab-content" id="tab-rotate">
-    <div class="content-card">
-        <h2>🔧 Force at an Angle — Perpendicular Distance</h2>
-        <p>This is one of the <strong>most commonly misunderstood concepts</strong> in O-Level Physics. When a force acts at an angle to a lever, only the <strong>perpendicular component</strong> creates a moment — or equivalently, we use the <strong>perpendicular distance</strong> from the pivot to the <strong>line of action</strong> of the force.</p>
-
-        <div class="formula-box">
-            <span class="formula-label">Moment with Force at Angle θ</span>
-            <span class="formula">τ = F × d⊥ = F × L × sin θ</span>
-        </div>
-
-        <div class="key-concept">
-            <strong>💡 Two equivalent methods to find the moment:</strong><br><br>
-            <strong>Method 1 — Use perpendicular distance:</strong><br>
-            Extend the <strong>line of action</strong> of F. Drop a perpendicular from the pivot to this line. This distance is d⊥ = L sin θ.<br>
-            τ = F × d⊥<br><br>
-            <strong>Method 2 — Use perpendicular component of force:</strong><br>
-            Resolve F into components: F⊥ = F sin θ (perpendicular to lever) and F∥ = F cos θ (along lever).<br>
-            τ = F⊥ × L = (F sin θ) × L<br><br>
-            <strong>Both give the same answer!</strong> τ = F × L × sin θ
-        </div>
-
-        <div class="warning-box">
-            <strong>⚠️ Common Exam Mistake:</strong> Students often multiply F × L without considering the angle. If F is not perpendicular to the lever, you <strong>must</strong> include sin θ. When θ = 90°, sin θ = 1 and the formula simplifies to τ = F × L.
-        </div>
-    </div>
-
-    <!-- MAIN SIMULATION -->
-    <div class="sim-container">
-        <div class="rotate-scenarios" id="rotateScenarios">
-            <div class="rotate-scenario active" data-scenario="lever">
-                <div class="rs-icon">📐</div>
-                Force on Lever<br>(Perp. distance)
-            </div>
-            <div class="rotate-scenario" data-scenario="spanner">
-                <div class="rs-icon">🔧</div>
-                Spanner on Bolt
-            </div>
-            <div class="rotate-scenario" data-scenario="trapdoor">
-                <div class="rs-icon">🪟</div>
-                Rope on Trapdoor
-            </div>
-            <div class="rotate-scenario" data-scenario="steering">
-                <div class="rs-icon">🚗</div>
-                Steering (Couple)
-            </div>
-            <div class="rotate-scenario" data-scenario="propeller">
-                <div class="rs-icon">✈️</div>
-                Propeller
-            </div>
-        </div>
-
-        <canvas id="rotateCanvas" width="800" height="600" class="rotate-canvas"></canvas>
-
-        <div class="sim-controls" id="rotateControls">
-            <div class="sim-control-group">
-                <label>Force F: <span id="rotForceVal" class="value-display">40 N</span></label>
-                <input type="range" id="rotForce" min="5" max="100" value="40" step="1">
-            </div>
-            <div class="sim-control-group" id="rotAngleGroup">
-                <label>Angle θ: <span id="rotAngleVal" class="value-display">60°</span></label>
-                <input type="range" id="rotAngle" min="0" max="180" value="60" step="1">
-            </div>
-            <div class="sim-control-group" id="rotLengthGroup">
-                <label>Lever length L: <span id="rotLenVal" class="value-display">0.40 m</span></label>
-                <input type="range" id="rotLen" min="0.10" max="0.60" value="0.40" step="0.02">
-            </div>
-            <div class="sim-control-group">
-                <label>
-                    <input type="checkbox" id="rotShowComponents" checked style="accent-color:var(--primary-light)">
-                    Show force components
-                </label>
-            </div>
-            <div class="sim-control-group">
-                <label>
-                    <input type="checkbox" id="rotShowPerpDist" checked style="accent-color:#22c55e">
-                    Show perpendicular distance
-                </label>
-            </div>
-            <button class="sim-btn sim-btn-play" id="rotAnimate">▶ Animate Rotation</button>
-            <button class="sim-btn sim-btn-reset" id="rotStop">⏸ Stop</button>
-        </div>
-
-        <div class="calc-display" id="rotateCalc"></div>
-    </div>
-
-    <!-- COMPARISON TABLE -->
-    <div class="content-card" style="margin-top:1.5rem">
-        <h3>📊 How Angle Affects Moment</h3>
-        <p>This table shows how the moment changes as the angle varies — notice how sin θ peaks at 90°.</p>
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>θ</th><th>sin θ</th><th>d⊥ = L sin θ</th><th>Moment = F × d⊥</th><th>Effectiveness</th></tr></thead>
-                <tbody id="angleTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- WORKED EXAMPLES -->
-    <div class="content-card" style="margin-top:1rem">
-        <div class="worked-example">
-            <div class="worked-example-header">📝 Worked Example — Force at an Angle on a Spanner</div>
-            <div class="worked-example-body">
-                <p><strong>Q:</strong> A force of 60 N is applied at 30° to the end of a 0.25 m spanner. Calculate the moment about the bolt.</p>
-                <div class="step"><div class="step-number">1</div><div class="step-content">
-                    <p>Identify: F = 60 N, L = 0.25 m, θ = 30°</p>
-                </div></div>
-                <div class="step"><div class="step-number">2</div><div class="step-content">
-                    <p><strong>Method 1 (perpendicular distance):</strong></p>
-                    <span class="math">d⊥ = L sin θ = 0.25 × sin 30° = 0.25 × 0.5 = 0.125 m</span><br>
-                    <span class="math">τ = F × d⊥ = 60 × 0.125 = 7.5 N m</span>
-                </div></div>
-                <div class="step"><div class="step-number">3</div><div class="step-content">
-                    <p><strong>Method 2 (perpendicular component):</strong></p>
-                    <span class="math">F⊥ = F sin θ = 60 × sin 30° = 60 × 0.5 = 30 N</span><br>
-                    <span class="math">τ = F⊥ × L = 30 × 0.25 = 7.5 N m ✓ Same answer!</span>
-                </div></div>
-            </div>
-        </div>
-
-        <div class="worked-example">
-            <div class="worked-example-header">📝 Worked Example — Rope on a Trapdoor</div>
-            <div class="worked-example-body">
-                <p><strong>Q:</strong> A rope is attached to the end of a 1.2 m trapdoor, pulling with 80 N at 45° to the door. Find the moment about the hinge.</p>
-                <div class="step"><div class="step-number">1</div><div class="step-content">
-                    <span class="math">τ = F × L × sin θ = 80 × 1.2 × sin 45°</span><br>
-                    <span class="math">= 80 × 1.2 × 0.707 = 67.9 N m</span>
-                </div></div>
-                <div class="step"><div class="step-number">2</div><div class="step-content">
-                    <p><strong>Compare:</strong> If the rope pulled at 90°, τ = 80 × 1.2 × 1 = 96 N m — that's <strong>41% more effective!</strong></p>
-                </div></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ===== TAB: CENTRE OF GRAVITY ===== -->
 <div class="tab-content" id="tab-cog">
     <div class="content-card">
         <h2>🎯 Centre of Gravity &amp; Stability Explorer</h2>
@@ -277,831 +258,932 @@
     <div class="sim-container">
         <canvas id="cogCanvas" width="800" height="500" class="cog-canvas"></canvas>
         <div class="sim-controls">
-            <div class="sim-control-group"><label>Width: <span id="cogWidthVal" class="value-display">100</span></label><input type="range" id="cogWidth" min="40" max="200" value="100" step="5"></div>
-            <div class="sim-control-group"><label>Height: <span id="cogHeightVal" class="value-display">160</span></label><input type="range" id="cogHeight" min="60" max="300" value="160" step="5"></div>
-            <div class="sim-control-group"><label>CG height: <span id="cogCGVal" class="value-display">50%</span></label><input type="range" id="cogCG" min="10" max="90" value="50" step="1"></div>
-            <div class="sim-control-group"><label>Tilt: <span id="cogTiltVal" class="value-display">0°</span></label><input type="range" id="cogTilt" min="0" max="60" value="0" step="1"></div>
+            <div class="sim-control-group">
+                <label>Width: <span id="cogWidthVal" class="value-display">100</span></label>
+                <input type="range" id="cogWidth" min="40" max="200" value="100" step="5">
+            </div>
+            <div class="sim-control-group">
+                <label>Height: <span id="cogHeightVal" class="value-display">160</span></label>
+                <input type="range" id="cogHeight" min="60" max="300" value="160" step="5">
+            </div>
+            <div class="sim-control-group">
+                <label>CG height (%): <span id="cogCGVal" class="value-display">50%</span></label>
+                <input type="range" id="cogCG" min="10" max="90" value="50" step="1">
+            </div>
+            <div class="sim-control-group">
+                <label>Tilt: <span id="cogTiltVal" class="value-display">0°</span></label>
+                <input type="range" id="cogTilt" min="0" max="60" value="0" step="1">
+            </div>
         </div>
         <div class="calc-display" id="cogCalc"></div>
     </div>
 </div>
 
-<!-- ===== TAB: CLASSIC PROBLEMS ===== -->
+<!-- ============================================================
+     TAB 4 — CLASSIC PROBLEMS
+     ============================================================ -->
 <div class="tab-content" id="tab-variants">
-    <div class="content-card"><h2>🏗️ Classic Moment Problems</h2><p>Adjustable parameters and full solutions.</p></div>
+    <div class="content-card">
+        <h2>🏗️ Classic Moment Problems</h2>
+        <p>Explore exam-style problems with adjustable parameters and full solutions.</p>
+    </div>
     <div class="sim-container">
         <div class="variant-cards" id="variantCards">
             <div class="variant-card active" data-variant="cantilever"><div class="vc-icon">🏗️</div>Cantilever</div>
             <div class="variant-card" data-variant="twosupports"><div class="vc-icon">🌉</div>Two Supports</div>
-            <div class="variant-card" data-variant="ladder"><div class="vc-icon">🪜</div>Ladder</div>
+            <div class="variant-card" data-variant="ladder"><div class="vc-icon">🪜</div>Ladder on Wall</div>
         </div>
         <canvas id="variantCanvas" width="800" height="480" class="variant-canvas"></canvas>
         <div class="sim-controls" id="variantControls">
             <div class="sim-control-group"><label><span id="vc1Label">Length:</span> <span id="vc1Val" class="value-display">3 m</span></label><input type="range" id="vc1" min="1" max="8" value="3" step="0.5"></div>
             <div class="sim-control-group"><label><span id="vc2Label">Load:</span> <span id="vc2Val" class="value-display">200 N</span></label><input type="range" id="vc2" min="50" max="1000" value="200" step="10"></div>
-            <div class="sim-control-group"><label><span id="vc3Label">Beam wt:</span> <span id="vc3Val" class="value-display">100 N</span></label><input type="range" id="vc3" min="0" max="500" value="100" step="10"></div>
+            <div class="sim-control-group"><label><span id="vc3Label">Beam weight:</span> <span id="vc3Val" class="value-display">100 N</span></label><input type="range" id="vc3" min="0" max="500" value="100" step="10"></div>
             <div class="sim-control-group" id="vc4Group" style="display:none"><label><span id="vc4Label">Position:</span> <span id="vc4Val" class="value-display">1.5 m</span></label><input type="range" id="vc4" min="0.5" max="5" value="1.5" step="0.1"></div>
         </div>
         <div class="calc-display" id="variantCalc"></div>
     </div>
 </div>
 
-<!-- ===== TAB: QUIZ ===== -->
+<!-- ============================================================
+     TAB 5 — QUIZ
+     ============================================================ -->
 <div class="tab-content" id="tab-quiz">
-    <div class="content-card"><h2>✏️ Practice Questions</h2><p>10 questions — click Check for feedback.</p></div>
-    <div class="quiz-container" id="quizContainer">
-        <div class="quiz-question" id="q1"><h4><span class="question-number">1</span> SI unit of moment?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q1" value="a"> A. N</label><label class="quiz-option"><input type="radio" name="q1" value="b"> B. N m</label><label class="quiz-option"><input type="radio" name="q1" value="c"> C. J</label><label class="quiz-option"><input type="radio" name="q1" value="d"> D. Pa</label></div><button class="check-btn" onclick="checkAnswer('q1','b')">Check</button><div class="quiz-feedback" id="q1-feedback"></div></div>
-        <div class="quiz-question" id="q2"><h4><span class="question-number">2</span> 40 N at end of 0.5 m spanner. Moment?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q2" value="a"> A. 10 Nm</label><label class="quiz-option"><input type="radio" name="q2" value="b"> B. 20 Nm</label><label class="quiz-option"><input type="radio" name="q2" value="c"> C. 80 Nm</label><label class="quiz-option"><input type="radio" name="q2" value="d"> D. 40.5 Nm</label></div><button class="check-btn" onclick="checkAnswer('q2','b')">Check</button><div class="quiz-feedback" id="q2-feedback"></div></div>
-        <div class="quiz-question" id="q3"><h4><span class="question-number">3</span> Metre rule (1.2 N) balances at 35 cm with W at 5 cm. Find W.</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q3" value="a"> A. 0.4 N</label><label class="quiz-option"><input type="radio" name="q3" value="b"> B. 0.5 N</label><label class="quiz-option"><input type="radio" name="q3" value="c"> C. 0.6 N</label><label class="quiz-option"><input type="radio" name="q3" value="d"> D. 1.2 N</label></div><button class="check-btn" onclick="checkAnswer('q3','c')">Check</button><div class="quiz-feedback" id="q3-feedback"></div></div>
-        <div class="quiz-question" id="q4"><h4><span class="question-number">4</span> For equilibrium, which is correct?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q4" value="a"> A. Only ΣF=0</label><label class="quiz-option"><input type="radio" name="q4" value="b"> B. Only Στ=0</label><label class="quiz-option"><input type="radio" name="q4" value="c"> C. Both ΣF=0 and Στ=0</label><label class="quiz-option"><input type="radio" name="q4" value="d"> D. Body must not move</label></div><button class="check-btn" onclick="checkAnswer('q4','c')">Check</button><div class="quiz-feedback" id="q4-feedback"></div></div>
-        <div class="quiz-question" id="q5"><h4><span class="question-number">5</span> Why open door at handle not hinge?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q5" value="a"> A. Force is larger</label><label class="quiz-option"><input type="radio" name="q5" value="b"> B. Larger perp. distance → larger moment</label><label class="quiz-option"><input type="radio" name="q5" value="c"> C. Less friction</label><label class="quiz-option"><input type="radio" name="q5" value="d"> D. Door is lighter</label></div><button class="check-btn" onclick="checkAnswer('q5','b')">Check</button><div class="quiz-feedback" id="q5-feedback"></div></div>
-        <div class="quiz-question" id="q6"><h4><span class="question-number">6</span> 80 N plank on two supports. 200 N at ¼ from left. Left reaction?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q6" value="a"> A. 140 N</label><label class="quiz-option"><input type="radio" name="q6" value="b"> B. 190 N</label><label class="quiz-option"><input type="radio" name="q6" value="c"> C. 40 N</label><label class="quiz-option"><input type="radio" name="q6" value="d"> D. 280 N</label></div><button class="check-btn" onclick="checkAnswer('q6','b')">Check</button><div class="quiz-feedback" id="q6-feedback"></div></div>
-        <div class="quiz-question" id="q7"><h4><span class="question-number">7</span> Centre of gravity is:</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q7" value="a"> A. Geometric centre</label><label class="quiz-option"><input type="radio" name="q7" value="b"> B. Heaviest part</label><label class="quiz-option"><input type="radio" name="q7" value="c"> C. Point where entire weight acts</label><label class="quiz-option"><input type="radio" name="q7" value="d"> D. Lowest point</label></div><button class="check-btn" onclick="checkAnswer('q7','c')">Check</button><div class="quiz-feedback" id="q7-feedback"></div></div>
-        <div class="quiz-question" id="q8"><h4><span class="question-number">8</span> Stable equilibrium — CG when tilted:</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q8" value="a"> A. Falls → topples</label><label class="quiz-option"><input type="radio" name="q8" value="b"> B. Rises → returns</label><label class="quiz-option"><input type="radio" name="q8" value="c"> C. Same height → stays</label><label class="quiz-option"><input type="radio" name="q8" value="d"> D. Moves horizontally</label></div><button class="check-btn" onclick="checkAnswer('q8','b')">Check</button><div class="quiz-feedback" id="q8-feedback"></div></div>
-        <div class="quiz-question" id="q9"><h4><span class="question-number">9</span> Couple: two 15 N forces, 0.4 m apart. Torque?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q9" value="a"> A. 3 Nm</label><label class="quiz-option"><input type="radio" name="q9" value="b"> B. 6 Nm</label><label class="quiz-option"><input type="radio" name="q9" value="c"> C. 12 Nm</label><label class="quiz-option"><input type="radio" name="q9" value="d"> D. 30 Nm</label></div><button class="check-btn" onclick="checkAnswer('q9','b')">Check</button><div class="quiz-feedback" id="q9-feedback"></div></div>
-        <div class="quiz-question" id="q10"><h4><span class="question-number">10</span> A 50 N force at 30° to a 0.4 m spanner. What is the moment?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q10" value="a"> A. 10 Nm</label><label class="quiz-option"><input type="radio" name="q10" value="b"> B. 17.3 Nm</label><label class="quiz-option"><input type="radio" name="q10" value="c"> C. 20 Nm</label><label class="quiz-option"><input type="radio" name="q10" value="d"> D. 5 Nm</label></div><button class="check-btn" onclick="checkAnswer('q10','a')">Check</button><div class="quiz-feedback" id="q10-feedback"></div></div>
+    <div class="content-card">
+        <h2>✏️ Practice Questions — Turning Effects</h2>
+        <p>Answer all 10, then click <strong>Check</strong> for instant feedback.</p>
     </div>
-    <div class="quiz-score" id="quizScore" style="display:none"><div class="score-number" id="scoreNum">0/10</div><p style="margin-top:.5rem;color:var(--text-secondary)" id="scoreMsg"></p><button class="btn btn-primary" style="margin-top:1rem" onclick="resetQuiz()">Try Again</button></div>
+    <div class="quiz-container" id="quizContainer">
+        <div class="quiz-question" id="q1"><h4><span class="question-number">1</span> What is the SI unit of moment?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q1" value="a"> A. Newton (N)</label><label class="quiz-option"><input type="radio" name="q1" value="b"> B. Newton metre (N m)</label><label class="quiz-option"><input type="radio" name="q1" value="c"> C. Joule (J)</label><label class="quiz-option"><input type="radio" name="q1" value="d"> D. Pascal (Pa)</label></div><button class="check-btn" onclick="checkAnswer('q1','b')">Check Answer</button><div class="quiz-feedback" id="q1-feedback"></div></div>
+        <div class="quiz-question" id="q2"><h4><span class="question-number">2</span> A 40 N force acts at the end of a 0.5 m spanner. What is the moment?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q2" value="a"> A. 10 N m</label><label class="quiz-option"><input type="radio" name="q2" value="b"> B. 20 N m</label><label class="quiz-option"><input type="radio" name="q2" value="c"> C. 80 N m</label><label class="quiz-option"><input type="radio" name="q2" value="d"> D. 40.5 N m</label></div><button class="check-btn" onclick="checkAnswer('q2','b')">Check Answer</button><div class="quiz-feedback" id="q2-feedback"></div></div>
+        <div class="quiz-question" id="q3"><h4><span class="question-number">3</span> A uniform metre rule (1.2 N) balances at the 35 cm mark with weight W at 5 cm. Find W.</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q3" value="a"> A. 0.4 N</label><label class="quiz-option"><input type="radio" name="q3" value="b"> B. 0.5 N</label><label class="quiz-option"><input type="radio" name="q3" value="c"> C. 0.6 N</label><label class="quiz-option"><input type="radio" name="q3" value="d"> D. 1.2 N</label></div><button class="check-btn" onclick="checkAnswer('q3','c')">Check Answer</button><div class="quiz-feedback" id="q3-feedback"></div></div>
+        <div class="quiz-question" id="q4"><h4><span class="question-number">4</span> For a body in equilibrium, which is correct?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q4" value="a"> A. Resultant force must be zero only</label><label class="quiz-option"><input type="radio" name="q4" value="b"> B. Resultant moment must be zero only</label><label class="quiz-option"><input type="radio" name="q4" value="c"> C. Both resultant force AND moment must be zero</label><label class="quiz-option"><input type="radio" name="q4" value="d"> D. The body must not be moving</label></div><button class="check-btn" onclick="checkAnswer('q4','c')">Check Answer</button><div class="quiz-feedback" id="q4-feedback"></div></div>
+        <div class="quiz-question" id="q5"><h4><span class="question-number">5</span> Why is it easier to open a door at the handle than near the hinge?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q5" value="a"> A. Force is larger at handle</label><label class="quiz-option"><input type="radio" name="q5" value="b"> B. Perpendicular distance is larger → larger moment</label><label class="quiz-option"><input type="radio" name="q5" value="c"> C. Less friction at handle</label><label class="quiz-option"><input type="radio" name="q5" value="d"> D. Door is lighter near handle</label></div><button class="check-btn" onclick="checkAnswer('q5','b')">Check Answer</button><div class="quiz-feedback" id="q5-feedback"></div></div>
+        <div class="quiz-question" id="q6"><h4><span class="question-number">6</span> A uniform plank (80 N) rests on two end supports. A 200 N load is placed ¼ from left. Find the left support reaction.</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q6" value="a"> A. 140 N</label><label class="quiz-option"><input type="radio" name="q6" value="b"> B. 190 N</label><label class="quiz-option"><input type="radio" name="q6" value="c"> C. 40 N</label><label class="quiz-option"><input type="radio" name="q6" value="d"> D. 280 N</label></div><button class="check-btn" onclick="checkAnswer('q6','b')">Check Answer</button><div class="quiz-feedback" id="q6-feedback"></div></div>
+        <div class="quiz-question" id="q7"><h4><span class="question-number">7</span> The centre of gravity is best described as:</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q7" value="a"> A. The geometric centre</label><label class="quiz-option"><input type="radio" name="q7" value="b"> B. The heaviest part</label><label class="quiz-option"><input type="radio" name="q7" value="c"> C. The point where entire weight may be considered to act</label><label class="quiz-option"><input type="radio" name="q7" value="d"> D. The lowest point</label></div><button class="check-btn" onclick="checkAnswer('q7','c')">Check Answer</button><div class="quiz-feedback" id="q7-feedback"></div></div>
+        <div class="quiz-question" id="q8"><h4><span class="question-number">8</span> In stable equilibrium, when slightly tilted the CG:</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q8" value="a"> A. Falls → topples</label><label class="quiz-option"><input type="radio" name="q8" value="b"> B. Rises → returns to original</label><label class="quiz-option"><input type="radio" name="q8" value="c"> C. Stays same height → stays in new position</label><label class="quiz-option"><input type="radio" name="q8" value="d"> D. Moves horizontally</label></div><button class="check-btn" onclick="checkAnswer('q8','b')">Check Answer</button><div class="quiz-feedback" id="q8-feedback"></div></div>
+        <div class="quiz-question" id="q9"><h4><span class="question-number">9</span> A couple: two 15 N forces, 0.4 m apart. What is the torque?</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q9" value="a"> A. 3 N m</label><label class="quiz-option"><input type="radio" name="q9" value="b"> B. 6 N m</label><label class="quiz-option"><input type="radio" name="q9" value="c"> C. 12 N m</label><label class="quiz-option"><input type="radio" name="q9" value="d"> D. 30 N m</label></div><button class="check-btn" onclick="checkAnswer('q9','b')">Check Answer</button><div class="quiz-feedback" id="q9-feedback"></div></div>
+        <div class="quiz-question" id="q10"><h4><span class="question-number">10</span> A 4 m uniform beam (120 N) supported at left end. Cable pulls up 3 m from left. Find tension.</h4><div class="quiz-options"><label class="quiz-option"><input type="radio" name="q10" value="a"> A. 40 N</label><label class="quiz-option"><input type="radio" name="q10" value="b"> B. 60 N</label><label class="quiz-option"><input type="radio" name="q10" value="c"> C. 80 N</label><label class="quiz-option"><input type="radio" name="q10" value="d"> D. 120 N</label></div><button class="check-btn" onclick="checkAnswer('q10','c')">Check Answer</button><div class="quiz-feedback" id="q10-feedback"></div></div>
+    </div>
+    <div class="quiz-score" id="quizScore" style="display:none">
+        <div class="score-number" id="scoreNum">0 / 10</div>
+        <p style="margin-top:.5rem;color:var(--text-secondary)" id="scoreMsg"></p>
+        <button class="btn btn-primary" style="margin-top:1rem" onclick="resetQuiz()">Try Again</button>
+    </div>
 </div>
 
-<footer><p><strong>Physics Lab 6091</strong> — Turning Effects</p><p style="margin-top:.5rem"><a href="../index.html">← Topics</a></p></footer>
+<!-- ============ FOOTER ============ -->
+<footer>
+    <p><strong>Physics Lab 6091</strong> — Turning Effects of Forces</p>
+    <p style="margin-top:.5rem"><a href="../index.html">← Back to Topics</a></p>
+</footer>
 <a href="#" class="back-to-top" id="btt">↑</a>
 
+<!-- ============================================================
+     JAVASCRIPT — COMPLETE REWRITE WITH FIXES
+     ============================================================ -->
 <script>
-var G=10,PI=Math.PI;
-function roundedRect(c,x,y,w,h,r){if(w<2*r)r=w/2;if(h<2*r)r=h/2;c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
-function drawArrow(c,x1,y1,x2,y2,col,lw){lw=lw||3;var dx=x2-x1,dy=y2-y1,ln=Math.sqrt(dx*dx+dy*dy);if(ln<2)return;var a=Math.atan2(dy,dx),hl=Math.min(14,ln*.35);c.save();c.strokeStyle=col;c.fillStyle=col;c.lineWidth=lw;c.lineCap='round';c.lineJoin='round';c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.beginPath();c.moveTo(x2,y2);c.lineTo(x2-hl*Math.cos(a-.45),y2-hl*Math.sin(a-.45));c.lineTo(x2-hl*Math.cos(a+.45),y2-hl*Math.sin(a+.45));c.closePath();c.fill();c.restore();}
-function drawLabel(c,t,x,y,col,al,sz){c.save();c.font='600 '+(sz||13)+'px Inter,sans-serif';c.fillStyle=col;c.textAlign=al||'center';c.textBaseline='middle';c.fillText(t,x,y);c.restore();}
-function clearCanvas(c,cv){var g=c.createLinearGradient(0,0,0,cv.height);g.addColorStop(0,'#0f172a');g.addColorStop(1,'#1e293b');c.fillStyle=g;c.fillRect(0,0,cv.width,cv.height);}
+const G = 10;
 
-// TABS
-document.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.tab-btn').forEach(function(t){t.classList.remove('active')});document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active')});b.classList.add('active');document.getElementById('tab-'+b.dataset.tab).classList.add('active');if(b.dataset.tab==='beam-lab')beamDraw();if(b.dataset.tab==='rotate')rotateDraw();if(b.dataset.tab==='cog')cogDraw();if(b.dataset.tab==='variants')variantDraw();});});
-var bttBtn=document.getElementById('btt');window.addEventListener('scroll',function(){bttBtn.classList.toggle('visible',window.scrollY>400)});
+// ========== roundRect POLYFILL ==========
+function roundedRect(ctx, x, y, w, h, r) {
+    if (w < 2*r) r = w/2;
+    if (h < 2*r) r = h/2;
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.arcTo(x+w, y,   x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x,   y+h, r);
+    ctx.arcTo(x,   y+h, x,   y,   r);
+    ctx.arcTo(x,   y,   x+w, y,   r);
+    ctx.closePath();
+}
+
+// ========== DRAW UTILITIES ==========
+function drawArrow(ctx,x1,y1,x2,y2,color,lw){
+    lw=lw||3;
+    const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+    if(len<2)return;
+    const a=Math.atan2(dy,dx),hl=Math.min(14,len*.35);
+    ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-hl*Math.cos(a-Math.PI/7),y2-hl*Math.sin(a-Math.PI/7));
+    ctx.lineTo(x2-hl*Math.cos(a+Math.PI/7),y2-hl*Math.sin(a+Math.PI/7));
+    ctx.closePath();ctx.fill();ctx.restore();
+}
+function drawLabel(ctx,text,x,y,color,align,size){
+    align=align||'center';size=size||13;
+    ctx.save();ctx.font='600 '+size+'px Inter,sans-serif';ctx.fillStyle=color;
+    ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(text,x,y);ctx.restore();
+}
+function clearCanvas(ctx,c){
+    var g=ctx.createLinearGradient(0,0,0,c.height);
+    g.addColorStop(0,'#0f172a');g.addColorStop(1,'#1e293b');
+    ctx.fillStyle=g;ctx.fillRect(0,0,c.width,c.height);
+}
+
+// ========== TAB SYSTEM ==========
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+        document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+        document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});
+        btn.classList.add('active');
+        document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+        if(btn.dataset.tab==='beam-lab') beamDraw();
+        if(btn.dataset.tab==='cog') cogDraw();
+        if(btn.dataset.tab==='variants') variantDraw();
+    });
+});
+var bttBtn=document.getElementById('btt');
+window.addEventListener('scroll',function(){bttBtn.classList.toggle('visible',window.scrollY>400)});
+
 
 // ============================================================
-// BEAM LAB (fixed — same code from previous fix, condensed)
-// ============================================================
-(function(){var canvas=document.getElementById('beamCanvas'),ctx=canvas.getContext('2d'),calcDiv=document.getElementById('beamCalc'),badgesDiv=document.getElementById('weightBadges');var BL=4,bm=0,pp=2,wts=[{w:100,pos:0.8,color:'#ef4444',id:0},{w:150,pos:3.2,color:'#60a5fa',id:1}],nid=2,si=0;var BLF=80,BRT=720,BY=250;function ppm(){return(BRT-BLF)/BL;}function ptx(p){return BLF+p*ppm();}var COL=['#ef4444','#60a5fa','#22c55e','#a855f7','#f97316','#ec4899','#14b8a6','#eab308'];
-function rb(){var h='';for(var i=0;i<wts.length;i++){var w=wts[i],c=i===si?'weight-badge selected':'weight-badge';h+='<span class="'+c+'" data-idx="'+i+'"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+w.color+'"></span> '+w.w+'N@'+w.pos.toFixed(2)+'m <button class="remove-btn" data-rm="'+i+'">✕</button></span>';}badgesDiv.innerHTML=h;badgesDiv.querySelectorAll('.weight-badge').forEach(function(b,j){b.addEventListener('click',function(e){if(e.target.dataset.rm!==undefined)return;si=j;usu();rb();beamDraw();});});badgesDiv.querySelectorAll('.remove-btn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();wts.splice(parseInt(b.dataset.rm),1);if(si>=wts.length)si=Math.max(0,wts.length-1);usu();rb();beamDraw();});});}
-function usu(){var g=document.getElementById('selWeightGroup');if(!wts.length||si<0||si>=wts.length){g.style.display='none';return;}g.style.display='';var w=wts[si];document.getElementById('selWeightLabel').textContent=w.w+' N';document.getElementById('selPosVal').textContent=w.pos.toFixed(2)+' m';var s=document.getElementById('selPos');s.max=BL;s.value=w.pos;}
-document.getElementById('selPos').addEventListener('input',function(e){if(si<0||si>=wts.length)return;wts[si].pos=parseFloat(e.target.value);document.getElementById('selPosVal').textContent=wts[si].pos.toFixed(2)+' m';rb();beamDraw();});
-document.getElementById('addWeightBtn').addEventListener('click',function(){var v=parseFloat(document.getElementById('newWeightVal').value)||50;wts.push({w:v,pos:BL/2,color:COL[nid%COL.length],id:nid++});si=wts.length-1;usu();rb();beamDraw();});
-document.getElementById('beamClear').addEventListener('click',function(){wts=[];si=-1;nid=0;usu();rb();beamDraw();});
-document.getElementById('beamMass').addEventListener('input',function(e){bm=parseFloat(e.target.value);document.getElementById('beamMassVal').textContent=bm+' kg';beamDraw();});
-document.getElementById('pivotPos').addEventListener('input',function(e){pp=parseFloat(e.target.value);document.getElementById('pivotPosVal').textContent=pp.toFixed(1)+' m';beamDraw();});
-canvas.addEventListener('click',function(e){var r=canvas.getBoundingClientRect(),mx=(e.clientX-r.left)*canvas.width/r.width,my=(e.clientY-r.top)*canvas.height/r.height,best=-1,bd=80;for(var i=0;i<wts.length;i++){var d=Math.sqrt(Math.pow(mx-ptx(wts[i].pos),2)+Math.pow(my-BY,2));if(d<bd){bd=d;best=i;}}if(best>=0){si=best;usu();rb();beamDraw();}});
-window.beamDraw=function(){clearCanvas(ctx,canvas);var W=canvas.width,H=canvas.height,bw=bm*G,bc=BL/2,cw=0,acw=0,md=[];if(bw>0){var d=bc-pp,m=bw*Math.abs(d);if(d>0.001){cw+=m;md.push({l:'Beam:'+bw+'×'+Math.abs(d).toFixed(2),v:m,d:'CW'});}else if(d<-0.001){acw+=m;md.push({l:'Beam:'+bw+'×'+Math.abs(d).toFixed(2),v:m,d:'ACW'});}}for(var i=0;i<wts.length;i++){var w=wts[i],d=w.pos-pp,m=w.w*Math.abs(d);if(d>0.001){cw+=m;md.push({l:w.w+'N:'+w.w+'×'+Math.abs(d).toFixed(2),v:m,d:'CW',c:w.color});}else if(d<-0.001){acw+=m;md.push({l:w.w+'N:'+w.w+'×'+Math.abs(d).toFixed(2),v:m,d:'ACW',c:w.color});}}var net=cw-acw,bal=Math.abs(net)<0.5,td=Math.max(-18,Math.min(18,net*0.04)),tr=td*PI/180,px=ptx(pp),py=BY;
-ctx.save();ctx.fillStyle='#94a3b8';ctx.beginPath();ctx.moveTo(px,py+10);ctx.lineTo(px-24,py+50);ctx.lineTo(px+24,py+50);ctx.closePath();ctx.fill();ctx.strokeStyle='#475569';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(30,py+50);ctx.lineTo(W-30,py+50);ctx.stroke();ctx.restore();
-ctx.save();ctx.translate(px,py);ctx.rotate(tr);var bL=-(pp*ppm()),bR=(BL-pp)*ppm(),bH=18;ctx.fillStyle='#475569';ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;roundedRect(ctx,bL,-bH/2,bR-bL,bH,4);ctx.fill();ctx.stroke();ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.font='500 10px Inter';ctx.fillStyle='rgba(255,255,255,.4)';ctx.textAlign='center';for(var m=0;m<=BL;m+=0.5){var tx=(m-pp)*ppm(),big=Math.abs(m-Math.round(m))<0.01;ctx.beginPath();ctx.moveTo(tx,bH/2);ctx.lineTo(tx,bH/2+(big?12:6));ctx.stroke();if(big)ctx.fillText(m+'m',tx,bH/2+24);}
-if(bw>0){var bwx=(bc-pp)*ppm();drawArrow(ctx,bwx,bH/2+5,bwx,bH/2+45,'#94a3b8',2);drawLabel(ctx,'Wb='+bw+'N',bwx,bH/2+58,'#94a3b8','center',10);}
-for(var i=0;i<wts.length;i++){var w=wts[i],wx=(w.pos-pp)*ppm(),sel=i===si;ctx.save();ctx.strokeStyle=w.color;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(wx,bH/2);ctx.lineTo(wx,bH/2+60);ctx.stroke();ctx.restore();ctx.save();ctx.fillStyle=w.color;ctx.globalAlpha=sel?1:.7;roundedRect(ctx,wx-25,bH/2+60,50,30,5);ctx.fill();if(sel){ctx.globalAlpha=1;ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();}ctx.globalAlpha=1;ctx.font='700 11px Inter';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(w.w+'N',wx,bH/2+75);ctx.restore();}
-ctx.restore();drawLabel(ctx,'▲ Pivot',px,py+66,'#94a3b8','center',11);ctx.save();ctx.font='700 18px Inter';ctx.textAlign='center';if(bal){ctx.fillStyle='#22c55e';ctx.fillText('✓ BALANCED!',W/2,32);}else{ctx.fillStyle=net>0?'#f97316':'#60a5fa';ctx.fillText(net>0?'↻ Tilting CW':'↺ Tilting ACW',W/2,32);}ctx.restore();
-var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span><br><br>';var ad=md.filter(function(x){return x.d==='ACW';}),cd=md.filter(function(x){return x.d==='CW';});h+='<span class="moment-color-acw">↺ ACW:</span><br>';if(!ad.length)h+='&nbsp;(none)<br>';ad.forEach(function(d){h+='&nbsp;'+d.l+' = <span class="calc-val">'+d.v.toFixed(1)+' Nm</span><br>';});h+='&nbsp;<strong>Total='+acw.toFixed(1)+' Nm</strong><br><br>';h+='<span class="moment-color-cw">↻ CW:</span><br>';if(!cd.length)h+='&nbsp;(none)<br>';cd.forEach(function(d){h+='&nbsp;'+d.l+' = <span class="calc-val">'+d.v.toFixed(1)+' Nm</span><br>';});h+='&nbsp;<strong>Total='+cw.toFixed(1)+' Nm</strong><br><br>';h+=bal?'<span class="calc-val highlight-row">✓ Balanced!</span>':'<span class="highlight-row">Net='+net.toFixed(1)+' Nm ('+(net>0?'CW':'ACW')+')</span>';calcDiv.innerHTML=h;};rb();usu();beamDraw();})();
-
-// ============================================================
-// ROTATING OBJECTS — WITH PERPENDICULAR DISTANCE EMPHASIS
-// (FIXED ROTATION DIRECTION)
+//  SIMULATION 1 — BEAM LAB (COMPLETELY REWRITTEN)
 // ============================================================
 (function(){
-    var canvas = document.getElementById('rotateCanvas');
+    var canvas=document.getElementById('beamCanvas');
+    var ctx=canvas.getContext('2d');
+    var calcDiv=document.getElementById('beamCalc');
+    var badgesDiv=document.getElementById('weightBadges');
+
+    var BEAM_LEN = 4; // metres
+    var beamMass = 0;
+    var pivotPos = 2;
+    var weights = [
+        {w:100, pos:0.8, color:'#ef4444', id:0},
+        {w:150, pos:3.2, color:'#60a5fa', id:1}
+    ];
+    var nextId = 2;
+    var selectedIdx = 0;
+
+    var BEAM_LEFT=80, BEAM_RIGHT=720, BEAM_Y=250;
+
+    function pxPerM(){ return (BEAM_RIGHT - BEAM_LEFT) / BEAM_LEN; }
+    function posToX(p){ return BEAM_LEFT + p * pxPerM(); }
+
+    var COLORS = ['#ef4444','#60a5fa','#22c55e','#a855f7','#f97316','#ec4899','#14b8a6','#eab308'];
+
+    // ---- Badge rendering ----
+    function renderBadges(){
+        var html = '';
+        for(var i=0; i<weights.length; i++){
+            var wt = weights[i];
+            var cls = (i===selectedIdx) ? 'weight-badge selected' : 'weight-badge';
+            html += '<span class="'+cls+'" data-idx="'+i+'">';
+            html += '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+wt.color+'"></span> ';
+            html += wt.w+'N @ '+wt.pos.toFixed(2)+'m';
+            html += ' <button class="remove-btn" data-rm="'+i+'" title="Remove">✕</button>';
+            html += '</span>';
+        }
+        badgesDiv.innerHTML = html;
+
+        // Attach click listeners
+        var badges = badgesDiv.querySelectorAll('.weight-badge');
+        for(var j=0; j<badges.length; j++){
+            (function(idx){
+                badges[idx].addEventListener('click', function(e){
+                    if(e.target.classList.contains('remove-btn') || e.target.dataset.rm !== undefined) return;
+                    selectedIdx = idx;
+                    updateSelectionUI();
+                    renderBadges();
+                    beamDraw();
+                });
+            })(j);
+        }
+        // Remove buttons
+        var rmBtns = badgesDiv.querySelectorAll('.remove-btn');
+        for(var k=0; k<rmBtns.length; k++){
+            (function(idx){
+                rmBtns[idx].addEventListener('click', function(e){
+                    e.stopPropagation();
+                    weights.splice(idx, 1);
+                    if(selectedIdx >= weights.length) selectedIdx = Math.max(0, weights.length-1);
+                    updateSelectionUI();
+                    renderBadges();
+                    beamDraw();
+                });
+            })(parseInt(rmBtns[k].dataset.rm));
+        }
+    }
+
+    function updateSelectionUI(){
+        var grp = document.getElementById('selWeightGroup');
+        if(weights.length === 0 || selectedIdx < 0 || selectedIdx >= weights.length){
+            grp.style.display = 'none';
+            return;
+        }
+        grp.style.display = '';
+        var wt = weights[selectedIdx];
+        document.getElementById('selWeightLabel').textContent = wt.w + ' N';
+        document.getElementById('selPosVal').textContent = wt.pos.toFixed(2) + ' m';
+        var slider = document.getElementById('selPos');
+        slider.max = BEAM_LEN;
+        slider.value = wt.pos;
+    }
+
+    // ---- Slider events ----
+    document.getElementById('selPos').addEventListener('input', function(e){
+        if(selectedIdx < 0 || selectedIdx >= weights.length) return;
+        weights[selectedIdx].pos = parseFloat(e.target.value);
+        document.getElementById('selPosVal').textContent = weights[selectedIdx].pos.toFixed(2) + ' m';
+        renderBadges();
+        beamDraw();
+    });
+
+    document.getElementById('addWeightBtn').addEventListener('click', function(){
+        var v = parseFloat(document.getElementById('newWeightVal').value) || 50;
+        weights.push({w:v, pos:BEAM_LEN/2, color:COLORS[nextId % COLORS.length], id:nextId++});
+        selectedIdx = weights.length - 1;
+        updateSelectionUI();
+        renderBadges();
+        beamDraw();
+    });
+
+    document.getElementById('beamClear').addEventListener('click', function(){
+        weights = [];
+        selectedIdx = -1;
+        nextId = 0;
+        updateSelectionUI();
+        renderBadges();
+        beamDraw();
+    });
+
+    document.getElementById('beamMass').addEventListener('input', function(e){
+        beamMass = parseFloat(e.target.value);
+        document.getElementById('beamMassVal').textContent = beamMass + ' kg';
+        beamDraw();
+    });
+    document.getElementById('pivotPos').addEventListener('input', function(e){
+        pivotPos = parseFloat(e.target.value);
+        document.getElementById('pivotPosVal').textContent = pivotPos.toFixed(1) + ' m';
+        beamDraw();
+    });
+
+    // ---- Click on canvas to select nearest weight ----
+    canvas.addEventListener('click', function(e){
+        var rect = canvas.getBoundingClientRect();
+        var mx = (e.clientX - rect.left) * canvas.width / rect.width;
+        var my = (e.clientY - rect.top) * canvas.height / rect.height;
+        var best = -1, bestD = 80;
+        for(var i=0; i<weights.length; i++){
+            var wx = posToX(weights[i].pos);
+            var d = Math.sqrt(Math.pow(mx-wx,2) + Math.pow(my-BEAM_Y,2));
+            if(d < bestD){ bestD = d; best = i; }
+        }
+        if(best >= 0){
+            selectedIdx = best;
+            updateSelectionUI();
+            renderBadges();
+            beamDraw();
+        }
+    });
+
+    // ---- MAIN DRAW FUNCTION ----
+    window.beamDraw = function(){
+        clearCanvas(ctx, canvas);
+        var W = canvas.width, H = canvas.height;
+
+        // Calculate moments
+        var beamWeight = beamMass * G;
+        var beamCG = BEAM_LEN / 2;
+        var cwMoment = 0, acwMoment = 0;
+        var momentDetails = [];
+
+        // Beam weight moment
+        if(beamWeight > 0){
+            var dist = beamCG - pivotPos;
+            var mom = beamWeight * Math.abs(dist);
+            if(dist > 0.001){
+                cwMoment += mom;
+                momentDetails.push({label:'Beam: '+beamWeight.toFixed(0)+' × '+Math.abs(dist).toFixed(2), val:mom, dir:'CW', color:'#94a3b8'});
+            } else if(dist < -0.001){
+                acwMoment += mom;
+                momentDetails.push({label:'Beam: '+beamWeight.toFixed(0)+' × '+Math.abs(dist).toFixed(2), val:mom, dir:'ACW', color:'#94a3b8'});
+            }
+        }
+
+        // Weight moments
+        for(var i=0; i<weights.length; i++){
+            var wt = weights[i];
+            var dist = wt.pos - pivotPos;
+            var mom = wt.w * Math.abs(dist);
+            if(dist > 0.001){
+                cwMoment += mom;
+                momentDetails.push({label:wt.w+'N: '+wt.w+' × '+Math.abs(dist).toFixed(2), val:mom, dir:'CW', color:wt.color});
+            } else if(dist < -0.001){
+                acwMoment += mom;
+                momentDetails.push({label:wt.w+'N: '+wt.w+' × '+Math.abs(dist).toFixed(2), val:mom, dir:'ACW', color:wt.color});
+            }
+        }
+
+        var netMoment = cwMoment - acwMoment;
+        var maxTilt = 18;
+        var tiltDeg = Math.max(-maxTilt, Math.min(maxTilt, netMoment * 0.04));
+        var tiltRad = tiltDeg * Math.PI / 180;
+        var balanced = Math.abs(netMoment) < 0.5;
+
+        var px = posToX(pivotPos);
+        var py = BEAM_Y;
+
+        // Draw pivot triangle
+        ctx.save();
+        ctx.fillStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.moveTo(px, py + 10);
+        ctx.lineTo(px - 24, py + 50);
+        ctx.lineTo(px + 24, py + 50);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2; ctx.stroke();
+        // Ground
+        ctx.strokeStyle = '#475569'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(30, py+50); ctx.lineTo(W-30, py+50); ctx.stroke();
+        ctx.restore();
+
+        // Draw beam (rotated)
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(tiltRad);
+
+        var bLeft = -(pivotPos * pxPerM());
+        var bRight = (BEAM_LEN - pivotPos) * pxPerM();
+        var beamH = 18;
+
+        // Beam body
+        ctx.fillStyle = '#475569';
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        roundedRect(ctx, bLeft, -beamH/2, bRight-bLeft, beamH, 4);
+        ctx.fill(); ctx.stroke();
+
+        // Tick marks
+        ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+        ctx.lineWidth = 1;
+        ctx.font = '500 10px Inter,sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,.4)';
+        ctx.textAlign = 'center';
+        for(var m=0; m<=BEAM_LEN; m+=0.5){
+            var tx = (m - pivotPos) * pxPerM();
+            var big = (Math.abs(m - Math.round(m)) < 0.01);
+            ctx.beginPath();
+            ctx.moveTo(tx, beamH/2);
+            ctx.lineTo(tx, beamH/2 + (big ? 12 : 6));
+            ctx.stroke();
+            if(big) ctx.fillText(m+'m', tx, beamH/2 + 24);
+        }
+
+        // Beam weight arrow
+        if(beamWeight > 0){
+            var bwx = (beamCG - pivotPos) * pxPerM();
+            drawArrow(ctx, bwx, beamH/2+5, bwx, beamH/2+45, '#94a3b8', 2);
+            drawLabel(ctx, 'Wb='+beamWeight.toFixed(0)+'N', bwx, beamH/2+58, '#94a3b8', 'center', 10);
+        }
+
+        // Weight arrows and blocks
+        for(var i=0; i<weights.length; i++){
+            var wt = weights[i];
+            var wx = (wt.pos - pivotPos) * pxPerM();
+            var isSelected = (i === selectedIdx);
+
+            // Hanging line
+            ctx.save();
+            ctx.strokeStyle = wt.color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(wx, beamH/2);
+            ctx.lineTo(wx, beamH/2 + 60);
+            ctx.stroke();
+            ctx.restore();
+
+            // Weight box
+            var bxW=50, bxH=30;
+            ctx.save();
+            ctx.fillStyle = wt.color;
+            ctx.globalAlpha = isSelected ? 1 : 0.7;
+            roundedRect(ctx, wx-bxW/2, beamH/2+60, bxW, bxH, 5);
+            ctx.fill();
+            if(isSelected){
+                ctx.globalAlpha = 1;
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+            ctx.font = '700 11px Inter,sans-serif';
+            ctx.fillStyle = '#fff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(wt.w+'N', wx, beamH/2+60+bxH/2);
+            ctx.restore();
+
+            // Moment arc (visual indicator)
+            var md = wt.pos - pivotPos;
+            if(Math.abs(md) > 0.05){
+                var arcR = Math.min(Math.abs(md * pxPerM()) * 0.5, 50);
+                var isCW = md > 0;
+                ctx.save();
+                ctx.strokeStyle = isCW ? 'rgba(249,115,22,0.4)' : 'rgba(96,165,250,0.4)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4,4]);
+                ctx.beginPath();
+                if(isCW) ctx.arc(0, 0, arcR, -Math.PI*0.8, -Math.PI*0.15);
+                else ctx.arc(0, 0, arcR, -Math.PI*0.85, -Math.PI*0.2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.restore();
+            }
+        }
+
+        ctx.restore(); // End beam rotation
+
+        // Pivot label
+        drawLabel(ctx, '▲ Pivot ('+pivotPos.toFixed(1)+'m)', px, py+66, '#94a3b8', 'center', 11);
+
+        // Status banner
+        ctx.save();
+        ctx.font = '700 18px Inter,sans-serif';
+        ctx.textAlign = 'center';
+        if(balanced){
+            ctx.fillStyle = '#22c55e';
+            ctx.fillText('✓ BALANCED — Equilibrium!', W/2, 32);
+        } else {
+            ctx.fillStyle = netMoment > 0 ? '#f97316' : '#60a5fa';
+            ctx.fillText(netMoment > 0 ? '↻ Tilting Clockwise' : '↺ Tilting Anticlockwise', W/2, 32);
+        }
+        ctx.restore();
+
+        // Moment comparison bars
+        var barMaxW = 160, barH = 20;
+        var maxMom = Math.max(cwMoment, acwMoment, 0.1);
+
+        // ACW bar (top-left)
+        ctx.save();
+        ctx.fillStyle = 'rgba(96,165,250,0.15)';
+        roundedRect(ctx, 20, 50, barMaxW, barH, 4); ctx.fill();
+        ctx.fillStyle = '#60a5fa';
+        var acwW = (acwMoment/maxMom)*barMaxW;
+        roundedRect(ctx, 20, 50, acwW, barH, 4); ctx.fill();
+        drawLabel(ctx, 'ACW: '+acwMoment.toFixed(1)+' Nm', 22, 50+barH+14, '#60a5fa', 'left', 11);
+
+        // CW bar (top-right)
+        ctx.fillStyle = 'rgba(249,115,22,0.15)';
+        roundedRect(ctx, W-20-barMaxW, 50, barMaxW, barH, 4); ctx.fill();
+        ctx.fillStyle = '#f97316';
+        var cwW = (cwMoment/maxMom)*barMaxW;
+        roundedRect(ctx, W-20-barMaxW, 50, cwW, barH, 4); ctx.fill();
+        drawLabel(ctx, 'CW: '+cwMoment.toFixed(1)+' Nm', W-20-barMaxW, 50+barH+14, '#f97316', 'left', 11);
+        ctx.restore();
+
+        // Calculation panel
+        var html = '<span class="calc-label">Taking moments about pivot ('+pivotPos.toFixed(1)+' m from left):</span><br><br>';
+        var acwD = [], cwD = [];
+        for(var j=0; j<momentDetails.length; j++){
+            if(momentDetails[j].dir==='ACW') acwD.push(momentDetails[j]);
+            else cwD.push(momentDetails[j]);
+        }
+        html += '<span class="moment-color-acw">↺ ACW Moments:</span><br>';
+        if(acwD.length===0) html += '&nbsp;&nbsp;(none)<br>';
+        for(var j=0;j<acwD.length;j++) html += '&nbsp;&nbsp;'+acwD[j].label+' = <span class="calc-val">'+acwD[j].val.toFixed(1)+' Nm</span><br>';
+        html += '&nbsp;&nbsp;<strong>Total ACW = '+acwMoment.toFixed(1)+' Nm</strong><br><br>';
+        html += '<span class="moment-color-cw">↻ CW Moments:</span><br>';
+        if(cwD.length===0) html += '&nbsp;&nbsp;(none)<br>';
+        for(var j=0;j<cwD.length;j++) html += '&nbsp;&nbsp;'+cwD[j].label+' = <span class="calc-val">'+cwD[j].val.toFixed(1)+' Nm</span><br>';
+        html += '&nbsp;&nbsp;<strong>Total CW = '+cwMoment.toFixed(1)+' Nm</strong><br><br>';
+        html += balanced
+            ? '<span class="calc-val highlight-row">✓ CW moments = ACW moments → Balanced!</span>'
+            : '<span class="highlight-row">Net moment = '+cwMoment.toFixed(1)+' − '+acwMoment.toFixed(1)+' = '+netMoment.toFixed(1)+' Nm ('+(netMoment>0?'CW ↻':'ACW ↺')+')</span>';
+        calcDiv.innerHTML = html;
+    };
+
+    // Initial render
+    renderBadges();
+    updateSelectionUI();
+    beamDraw();
+})();
+
+
+// ============================================================
+//  SIMULATION 2 — CENTRE OF GRAVITY (FIXED)
+// ============================================================
+(function(){
+    var canvas = document.getElementById('cogCanvas');
     var ctx = canvas.getContext('2d');
-    var calcDiv = document.getElementById('rotateCalc');
+    var calcDiv = document.getElementById('cogCalc');
+    var bW=100, bH=160, cgPct=50, tilt=0;
 
-    var scenario = 'lever';
-    var force = 40, angle = 60, armLen = 0.40;
-    var rotAngle = 0, angVel = 0, animating = false, animId = null;
-    var showComps = true, showPerpDist = true;
+    document.getElementById('cogWidth').addEventListener('input',function(e){
+        bW=parseInt(e.target.value); document.getElementById('cogWidthVal').textContent=bW; cogDraw();
+    });
+    document.getElementById('cogHeight').addEventListener('input',function(e){
+        bH=parseInt(e.target.value); document.getElementById('cogHeightVal').textContent=bH; cogDraw();
+    });
+    document.getElementById('cogCG').addEventListener('input',function(e){
+        cgPct=parseInt(e.target.value); document.getElementById('cogCGVal').textContent=cgPct+'%'; cogDraw();
+    });
+    document.getElementById('cogTilt').addEventListener('input',function(e){
+        tilt=parseInt(e.target.value); document.getElementById('cogTiltVal').textContent=tilt+'°'; cogDraw();
+    });
 
-    // ===== Scenario selection =====
-    document.querySelectorAll('#rotateScenarios .rotate-scenario').forEach(function(card){
-        card.addEventListener('click', function(){
-            document.querySelectorAll('#rotateScenarios .rotate-scenario').forEach(function(c){ c.classList.remove('active'); });
+    window.cogDraw = function(){
+        clearCanvas(ctx, canvas);
+        var W=canvas.width, H=canvas.height;
+        var groundY = H - 80;
+
+        // Ground
+        ctx.save();
+        ctx.strokeStyle='#64748b'; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(0,groundY); ctx.lineTo(W,groundY); ctx.stroke();
+        for(var x=0;x<W;x+=18){ctx.beginPath();ctx.moveTo(x,groundY);ctx.lineTo(x-10,groundY+14);ctx.stroke();}
+        ctx.restore();
+
+        var cx = W/2;
+        var tiltRad = tilt * Math.PI / 180;
+
+        // Pivot = bottom-right corner when tilting right
+        var pivotWX = cx + bW/2;
+        var pivotWY = groundY;
+
+        // CG local coords (from bottom-left of block)
+        var cgLX = bW/2;
+        var cgLY = bH * (cgPct / 100); // from bottom
+
+        // Draw block rotated about bottom-right
+        ctx.save();
+        ctx.translate(pivotWX, pivotWY);
+        ctx.rotate(-tiltRad);
+
+        // Block (bottom-right is at origin after transform)
+        ctx.fillStyle = 'rgba(59,130,246,0.3)';
+        ctx.strokeStyle = '#60a5fa';
+        ctx.lineWidth = 2;
+        ctx.fillRect(-bW, -bH, bW, bH);
+        ctx.strokeRect(-bW, -bH, bW, bH);
+
+        // CG dot (relative to bottom-right corner: cgLX - bW from right, cgLY from bottom)
+        var cgRX = cgLX - bW; // relative x from pivot (bottom-right)
+        var cgRY = -cgLY;     // relative y (up is negative)
+
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(cgRX, cgRY, 9, 0, Math.PI*2);
+        ctx.fill();
+        ctx.font = '700 10px Inter'; ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('CG', cgRX, cgRY);
+
+        // Base markers
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath(); ctx.arc(-bW, 0, 5, 0, Math.PI*2); ctx.fill(); // bottom-left
+        ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI*2); ctx.fill();   // bottom-right (pivot)
+
+        ctx.restore();
+
+        // Calculate CG world position
+        var cosT = Math.cos(-tiltRad), sinT = Math.sin(-tiltRad);
+        var cgWX = pivotWX + cgRX * cosT - cgRY * sinT;
+        var cgWY = pivotWY + cgRX * sinT + cgRY * cosT;
+
+        // Base extent in world
+        var blWX = pivotWX + (-bW)*cosT - 0*sinT;
+        // var blWY = pivotWY + (-bW)*sinT + 0*cosT; // not needed for horizontal check
+        var baseLeft = Math.min(blWX, pivotWX);
+        var baseRight = Math.max(blWX, pivotWX);
+
+        // Vertical line from CG
+        ctx.save();
+        ctx.strokeStyle = 'rgba(239,68,68,0.6)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6,6]);
+        ctx.beginPath();
+        ctx.moveTo(cgWX, Math.min(cgWY, groundY - 20));
+        ctx.lineTo(cgWX, groundY + 30);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+
+        // Base line
+        ctx.save();
+        ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(baseLeft, groundY + 18);
+        ctx.lineTo(baseRight, groundY + 18);
+        ctx.stroke();
+        drawLabel(ctx, 'base', (baseLeft+baseRight)/2, groundY+32, '#22c55e', 'center', 11);
+        ctx.restore();
+
+        // Check toppling
+        var toppling = (cgWX > baseRight + 2) || (cgWX < baseLeft - 2);
+
+        ctx.save();
+        ctx.font = '700 16px Inter'; ctx.textAlign = 'center';
+        if(tilt === 0){
+            ctx.fillStyle = '#22c55e';
+            ctx.fillText('✓ Upright — Stable', W/2, 32);
+        } else if(toppling){
+            ctx.fillStyle = '#ef4444';
+            ctx.fillText('⚠ CG outside base — TOPPLES!', W/2, 32);
+        } else {
+            ctx.fillStyle = '#facc15';
+            ctx.fillText('⚖ Tilted but CG within base — returns', W/2, 32);
+        }
+        ctx.restore();
+
+        // Critical angle
+        var critAngle = Math.atan2(bW/2, cgLY) * 180 / Math.PI;
+        calcDiv.innerHTML =
+            '<span class="calc-label">Block:</span> '+bW+' × '+bH+' | CG at '+cgPct+'% from bottom<br>'+
+            '<span class="calc-label">Tilt:</span> '+tilt+'° | <span class="calc-label">Critical angle:</span> <span class="calc-val highlight-row">'+critAngle.toFixed(1)+'°</span><br><br>'+
+            '<span class="calc-label">Critical angle = arctan(half-base / CG height)</span><br>'+
+            '= arctan('+((bW/2).toFixed(0))+' / '+cgLY.toFixed(0)+') = <span class="calc-val">'+critAngle.toFixed(1)+'°</span><br><br>'+
+            (toppling ? '<span style="color:#ef4444">⚠ Tilt ('+tilt+'°) > critical angle ('+critAngle.toFixed(1)+'°) → Topples!</span>' :
+             tilt > 0 ? '<span style="color:#22c55e">✓ Tilt ('+tilt+'°) < critical angle ('+critAngle.toFixed(1)+'°) → Stable</span>' :
+             '💡 Increase tilt to see when it topples. Lower CG or wider base = more stable.');
+    };
+    cogDraw();
+})();
+
+
+// ============================================================
+//  SIMULATION 3 — CLASSIC VARIANTS (FIXED)
+// ============================================================
+(function(){
+    var canvas=document.getElementById('variantCanvas');
+    var ctx=canvas.getContext('2d');
+    var calcDiv=document.getElementById('variantCalc');
+
+    var variant='cantilever', v1=3, v2=200, v3=100, v4=1.5;
+
+    document.querySelectorAll('#variantCards .variant-card').forEach(function(card){
+        card.addEventListener('click',function(){
+            document.querySelectorAll('#variantCards .variant-card').forEach(function(c){c.classList.remove('active')});
             card.classList.add('active');
-            scenario = card.dataset.scenario;
-            rotAngle = 0; angVel = 0;
-            animating = false;
-            cancelAnimationFrame(animId);
-            document.getElementById('rotAnimate').textContent = '▶ Animate Rotation';
-            var isCouple = (scenario === 'steering');
-            var isProp = (scenario === 'propeller');
-            document.getElementById('rotAngleGroup').style.display = (isCouple || isProp) ? 'none' : '';
-            document.getElementById('rotLengthGroup').style.display = isProp ? 'none' : '';
-            if(isCouple){ angle = 90; document.getElementById('rotAngle').value = 90; document.getElementById('rotAngleVal').textContent = '90°'; }
-            rotateDraw();
+            variant=card.dataset.variant;
+            setupVariant(); variantDraw();
         });
     });
 
-    // ===== Sliders =====
-    document.getElementById('rotForce').addEventListener('input', function(e){
-        force = parseInt(e.target.value);
-        document.getElementById('rotForceVal').textContent = force + ' N';
-        rotateDraw();
-    });
-    document.getElementById('rotAngle').addEventListener('input', function(e){
-        angle = parseInt(e.target.value);
-        document.getElementById('rotAngleVal').textContent = angle + '°';
-        rotateDraw();
-        updateAngleTable();
-    });
-    document.getElementById('rotLen').addEventListener('input', function(e){
-        armLen = parseFloat(e.target.value);
-        document.getElementById('rotLenVal').textContent = armLen.toFixed(2) + ' m';
-        rotateDraw();
-    });
-    document.getElementById('rotShowComponents').addEventListener('change', function(e){
-        showComps = e.target.checked; rotateDraw();
-    });
-    document.getElementById('rotShowPerpDist').addEventListener('change', function(e){
-        showPerpDist = e.target.checked; rotateDraw();
-    });
-
-    // ===== Animation =====
-    document.getElementById('rotAnimate').addEventListener('click', function(){
-        if(animating){
-            animating = false;
-            cancelAnimationFrame(animId);
-            this.textContent = '▶ Animate Rotation';
-            return;
+    function setupVariant(){
+        var vc4G=document.getElementById('vc4Group');
+        if(variant==='cantilever'){
+            document.getElementById('vc1Label').textContent='Beam length (m):';
+            document.getElementById('vc2Label').textContent='Sign weight (N):';
+            document.getElementById('vc3Label').textContent='Beam weight (N):';
+            document.getElementById('vc1').value=v1=3;
+            document.getElementById('vc2').value=v2=200;
+            document.getElementById('vc3').value=v3=100;
+            vc4G.style.display='none';
+        } else if(variant==='twosupports'){
+            document.getElementById('vc1Label').textContent='Beam length (m):';
+            document.getElementById('vc2Label').textContent='Load (N):';
+            document.getElementById('vc3Label').textContent='Beam weight (N):';
+            document.getElementById('vc4Label').textContent='Load position (m):';
+            document.getElementById('vc1').value=v1=4;
+            document.getElementById('vc2').value=v2=300;
+            document.getElementById('vc3').value=v3=100;
+            document.getElementById('vc4').value=v4=1; document.getElementById('vc4').max=v1;
+            vc4G.style.display='';
+        } else if(variant==='ladder'){
+            document.getElementById('vc1Label').textContent='Ladder length (m):';
+            document.getElementById('vc2Label').textContent='Person weight (N):';
+            document.getElementById('vc3Label').textContent='Ladder weight (N):';
+            document.getElementById('vc4Label').textContent='Person position (m):';
+            document.getElementById('vc1').value=v1=5;
+            document.getElementById('vc2').value=v2=600;
+            document.getElementById('vc3').value=v3=100;
+            document.getElementById('vc4').value=v4=3; document.getElementById('vc4').max=v1;
+            vc4G.style.display='';
         }
-        animating = true;
-        angVel = 0;
-        this.textContent = '⏸ Pause';
-        var lastTime = null;
-        function anim(timestamp){
-            if(!animating) return;
-            if(!lastTime) lastTime = timestamp;
-            var dt = Math.min((timestamp - lastTime) / 1000, 0.05);
-            lastTime = timestamp;
-
-            // Calculate signed torque
-            // For lever/spanner/trapdoor:
-            //   Force at angle θ (0-180°) measured FROM the lever direction
-            //   θ between 0° and 180° → sinθ is always ≥ 0
-            //   The perpendicular component F sinθ pushes AWAY from the lever
-            //   This creates a CLOCKWISE moment (positive rotation angle in our canvas coords)
-            //   when the force pulls "downward" relative to lever direction
-            //
-            //   In our coordinate system (canvas: y-down):
-            //   - Lever points to the right (positive x in local coords)
-            //   - Force direction = (−cosθ, −sinθ) in local coords
-            //   - The y-component (−sinθ) is UPWARD (negative y = up in canvas)
-            //   - This creates a COUNTER-CLOCKWISE torque (negative rotation)
-            //
-            //   So signed torque = −F × L × sinθ for angles 0-180°
-            //   (force pulls the lever end upward/counter-clockwise)
-
-            var rad = angle * PI / 180;
-            var signedTorque = 0;
-
-            if(scenario === 'lever' || scenario === 'spanner' || scenario === 'trapdoor'){
-                // Force direction in lever-local coords: (-cosθ, -sinθ)
-                // Cross product r × F for torque sign:
-                // r = (L, 0), F_direction = (-cosθ, -sinθ)
-                // Cross product z-component = L × (-sinθ) - 0 × (-cosθ) = -L sinθ
-                // So torque = F × (-L sinθ) → rotation in negative direction (CCW in math, but CW visually)
-                // In canvas coords (y-down), negative rotation = counter-clockwise visually
-                // We want: force pointing "below" lever → CW rotation (positive canvas angle)
-                //          force pointing "above" lever → CCW rotation (negative canvas angle)
-                
-                // The perpendicular component of force in local coords:
-                // F_perp = -F sinθ (points in -y direction = upward in canvas)
-                // This pulls the end of the lever UP → CCW rotation → negative angular change
-                signedTorque = -force * armLen * Math.sin(rad);
-                
-                // Special: if angle > 180°, sin is negative, so torque flips
-                // But our slider is 0-180, so sinθ ≥ 0 always
-                // Force is always in the "upper" half → always CCW
-
-            } else if(scenario === 'steering'){
-                // Couple: always rotates CCW (left hand pushes up, right pushes down)
-                signedTorque = -force * armLen * 2;
-            } else if(scenario === 'propeller'){
-                // Engine-driven: always CCW
-                signedTorque = -3 * force * 0.25;
-            }
-
-            // Simple physics: angular acceleration = torque / moment_of_inertia
-            // Use a fake moment of inertia for visual effect
-            var I = 5; // arbitrary
-            var angAccel = signedTorque / I;
-            angVel += angAccel * dt;
-            // Add damping so it doesn't spin forever
-            angVel *= 0.97;
-            rotAngle += angVel * dt;
-
-            rotateDraw();
-            animId = requestAnimationFrame(anim);
-        }
-        animId = requestAnimationFrame(anim);
-    });
-
-    document.getElementById('rotStop').addEventListener('click', function(){
-        animating = false;
-        cancelAnimationFrame(animId);
-        rotAngle = 0; angVel = 0;
-        document.getElementById('rotAnimate').textContent = '▶ Animate Rotation';
-        rotateDraw();
-    });
-
-    // ===== Right angle symbol =====
-    function drawRightAngle(ctx, x, y, a1, a2, size, color){
-        ctx.save();
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 1.5;
-        var dx1 = Math.cos(a1)*size, dy1 = Math.sin(a1)*size;
-        var dx2 = Math.cos(a2)*size, dy2 = Math.sin(a2)*size;
-        ctx.beginPath();
-        ctx.moveTo(x+dx1, y+dy1);
-        ctx.lineTo(x+dx1+dx2, y+dy1+dy2);
-        ctx.lineTo(x+dx2, y+dy2);
-        ctx.stroke();
-        ctx.restore();
+        updateVals();
+    }
+    function updateVals(){
+        document.getElementById('vc1Val').textContent=v1+' m';
+        document.getElementById('vc2Val').textContent=v2+' N';
+        document.getElementById('vc3Val').textContent=v3+' N';
+        document.getElementById('vc4Val').textContent=v4+' m';
     }
 
-    // ===== Determine rotation direction label =====
-    function getRotLabel(signedMoment){
-        if(Math.abs(signedMoment) < 0.01) return {text: 'No rotation', color: 'rgba(255,255,255,.4)'};
-        // In canvas coords: negative rotation = CCW visually, positive = CW visually
-        // Our signedTorque is negative for the standard setup → CCW
-        if(signedMoment < 0) return {text: '↺ Counter-clockwise (ACW)', color: '#60a5fa'};
-        return {text: '↻ Clockwise (CW)', color: '#f97316'};
-    }
+    document.getElementById('vc1').addEventListener('input',function(e){v1=parseFloat(e.target.value);if(variant!=='cantilever'){document.getElementById('vc4').max=v1;if(v4>v1)v4=v1;}updateVals();variantDraw();});
+    document.getElementById('vc2').addEventListener('input',function(e){v2=parseFloat(e.target.value);updateVals();variantDraw();});
+    document.getElementById('vc3').addEventListener('input',function(e){v3=parseFloat(e.target.value);updateVals();variantDraw();});
+    document.getElementById('vc4').addEventListener('input',function(e){v4=parseFloat(e.target.value);updateVals();variantDraw();});
 
-    // ===== MAIN DRAW =====
-    window.rotateDraw = function(){
-        clearCanvas(ctx, canvas);
-        var W = canvas.width, H = canvas.height;
-        var rad = angle * PI / 180;
-        var sinA = Math.sin(rad), cosA = Math.cos(rad);
-        var moment = force * armLen * sinA;
-        var Fperp = force * sinA;
-        var Fpar = force * cosA;
-        var dPerp = armLen * sinA;
+    window.variantDraw = function(){
+        clearCanvas(ctx,canvas);
+        var W=canvas.width, H=canvas.height;
 
-        // Signed moment for direction display
-        var signedMoment = -force * armLen * sinA; // negative = CCW
-
-        // ============ LEVER / SPANNER ============
-        if(scenario === 'lever' || scenario === 'spanner'){
-            var pivotX = W * 0.3, pivotY = H * 0.42;
-            var armPx = armLen * 500;
-            var fArrowLen = Math.min(100, force * 1.8);
-
-            // === Pivot ===
-            ctx.save();
-            if(scenario === 'spanner'){
-                ctx.fillStyle = '#475569'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
-                ctx.beginPath(); ctx.arc(pivotX, pivotY, 20, 0, PI*2); ctx.fill(); ctx.stroke();
-                ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.lineWidth = 1;
-                for(var i=0;i<6;i++){
-                    var ha = i*PI/3 + rotAngle;
-                    ctx.beginPath(); ctx.moveTo(pivotX, pivotY);
-                    ctx.lineTo(pivotX+14*Math.cos(ha), pivotY+14*Math.sin(ha)); ctx.stroke();
-                }
-                ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(pivotX,pivotY,6,0,PI*2); ctx.fill();
-            } else {
-                ctx.fillStyle = '#f97316';
-                ctx.beginPath(); ctx.arc(pivotX, pivotY, 8, 0, PI*2); ctx.fill();
-                ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
-            }
-            ctx.restore();
-            drawLabel(ctx, 'Pivot', pivotX, pivotY + 32, 'rgba(255,255,255,.5)', 'center', 11);
-
-            // === Lever (rotated) ===
-            ctx.save();
-            ctx.translate(pivotX, pivotY);
-            ctx.rotate(rotAngle);
-
-            // Lever body
-            ctx.strokeStyle = '#94a3b8';
-            ctx.lineWidth = scenario === 'spanner' ? 14 : 6;
-            ctx.lineCap = 'round';
-            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(armPx, 0); ctx.stroke();
-
-            if(scenario === 'spanner'){
-                ctx.fillStyle = '#64748b'; ctx.fillRect(-12, -18, 24, 36);
-            }
-
-            // Length label
-            ctx.save();
-            ctx.strokeStyle = 'rgba(250,204,21,.4)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
-            ctx.beginPath(); ctx.moveTo(0, 24); ctx.lineTo(armPx, 24); ctx.stroke();
-            ctx.setLineDash([]);
-            drawLabel(ctx, 'L = '+armLen.toFixed(2)+' m', armPx/2, 40, '#facc15', 'center', 12);
-            ctx.restore();
-
-            // Application point
-            ctx.fillStyle = '#3b82f6';
-            ctx.beginPath(); ctx.arc(armPx, 0, 5, 0, PI*2); ctx.fill();
-
-            // === Force arrow ===
-            // Force direction in lever-local coords:
-            // θ is measured between the force and the lever
-            // Force points "up and to the left" relative to lever end
-            var fDirX = -cosA;  // component along negative lever direction
-            var fDirY = -sinA;  // component perpendicular (upward in canvas = negative y)
-
-            var fEndX = armPx + fArrowLen * fDirX;
-            var fEndY = fArrowLen * fDirY;
-
-            drawArrow(ctx, armPx, 0, fEndX, fEndY, '#3b82f6', 3);
-            drawLabel(ctx, 'F = '+force+' N',
-                fEndX + (fDirX < 0 ? -10 : 10), fEndY - 12,
-                '#3b82f6', fDirX < 0 ? 'right' : 'left', 13);
-
-            // === LINE OF ACTION (extended) ===
-            if(showPerpDist){
-                ctx.save();
-                ctx.strokeStyle = 'rgba(96,165,250,0.3)';
-                ctx.lineWidth = 1.5;
-                ctx.setLineDash([8, 6]);
-                var extLen = 350;
-                ctx.beginPath();
-                ctx.moveTo(armPx - extLen*fDirX, -extLen*fDirY);
-                ctx.lineTo(armPx + extLen*fDirX, extLen*fDirY);
-                ctx.stroke();
-                ctx.setLineDash([]);
-                // Label
-                var loaLabelX = armPx + extLen*0.5*fDirX;
-                var loaLabelY = extLen*0.5*fDirY;
-                drawLabel(ctx, 'Line of action',
-                    loaLabelX + 15, loaLabelY + 15,
-                    'rgba(96,165,250,0.4)', 'left', 10);
-                ctx.restore();
-
-                // === PERPENDICULAR DISTANCE from pivot to line of action ===
-                // Line: P(s) = (armPx, 0) + s*(fDirX, fDirY)
-                // Foot from origin: s = -(armPx*fDirX + 0*fDirY) / (fDirX²+fDirY²)
-                var denom = fDirX*fDirX + fDirY*fDirY;
-                if(denom < 0.001) denom = 0.001;
-                var s_foot = -(armPx * fDirX) / denom;
-                var footX = armPx + s_foot * fDirX;
-                var footY = s_foot * fDirY;
-
-                // Perpendicular line: pivot → foot
-                ctx.save();
-                ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 2.5;
-                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(footX, footY); ctx.stroke();
-
-                // Right angle symbol
-                var pAngle1 = Math.atan2(fDirY, fDirX);
-                var pAngle2 = Math.atan2(-footY, -footX);
-                drawRightAngle(ctx, footX, footY, pAngle1, pAngle2, 12, '#22c55e');
-
-                // Dot at foot
-                ctx.fillStyle = '#22c55e';
-                ctx.beginPath(); ctx.arc(footX, footY, 4, 0, PI*2); ctx.fill();
-                ctx.restore();
-
-                // d⊥ label
-                var midX = footX/2, midY = footY/2;
-                var offX = footY > 0 ? -20 : 20;
-                var offY = footX > 0 ? 20 : -20;
-                ctx.save();
-                ctx.font = '700 14px "JetBrains Mono",monospace';
-                ctx.fillStyle = '#22c55e'; ctx.textAlign = 'center';
-                ctx.fillText('d⊥ = '+(dPerp*100).toFixed(1)+' cm', midX+offX, midY+offY);
-                ctx.font = '500 11px Inter'; ctx.fillStyle = 'rgba(34,197,94,.6)';
-                ctx.fillText('('+dPerp.toFixed(3)+' m)', midX+offX, midY+offY+16);
-                ctx.restore();
-            }
-
-            // === Force components ===
-            if(showComps && angle > 2 && angle < 178 && angle !== 90){
-                var compScale = fArrowLen;
-                // F⊥ (perpendicular to lever: points in -y = up)
-                var fperpLen = sinA * compScale;
-                ctx.save(); ctx.setLineDash([5, 4]);
-                drawArrow(ctx, armPx, 0, armPx, -fperpLen, '#22c55e', 2.5);
-                ctx.setLineDash([]); ctx.restore();
-                drawLabel(ctx, 'F⊥ = '+Fperp.toFixed(1)+' N', armPx+15, -fperpLen/2, '#22c55e', 'left', 11);
-                drawLabel(ctx, '(creates moment)', armPx+15, -fperpLen/2+14, 'rgba(34,197,94,.5)', 'left', 9);
-
-                // F∥ (along lever: points in -x = toward pivot)
-                var fparLen = Math.abs(cosA) * compScale;
-                ctx.save(); ctx.setLineDash([5, 4]);
-                drawArrow(ctx, armPx, 0, armPx - fparLen, 0, '#ef4444', 2);
-                ctx.setLineDash([]); ctx.restore();
-                drawLabel(ctx, 'F∥ = '+Math.abs(Fpar).toFixed(1)+' N', armPx-fparLen/2, 18, '#ef4444', 'center', 10);
-                drawLabel(ctx, '(wasted — no moment)', armPx-fparLen/2, 30, 'rgba(239,68,68,.5)', 'center', 9);
-
-                // Dashed box showing resolution
-                ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
-                ctx.strokeRect(armPx - fparLen, -fperpLen, fparLen, fperpLen);
-                ctx.setLineDash([]); ctx.restore();
-            }
-
-            // === Angle arc ===
-            if(angle > 2 && angle < 178){
-                ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.5;
-                var arcR = 32;
-                // Arc from lever direction (0°=right) to force direction
-                // Force is at angle (PI + PI - rad) from positive x... 
-                // Actually force direction angle from positive x = atan2(fDirY, fDirX) = atan2(-sinA, -cosA) = PI + A (measured from +x)
-                var leverAngle = 0; // lever points right
-                var forceAngle = Math.atan2(fDirY, fDirX); // direction of force
-
-                // Draw arc from lever to force direction (the angle between them = θ)
-                ctx.beginPath();
-                // Always draw the SMALLER arc
-                ctx.arc(armPx, 0, arcR, PI, PI + rad, false);
-                ctx.stroke();
-
-                var labelA = PI + rad/2;
-                drawLabel(ctx, 'θ = '+angle+'°',
-                    armPx + (arcR+18)*Math.cos(labelA), (arcR+18)*Math.sin(labelA),
-                    'rgba(255,255,255,.7)', 'center', 12);
-                ctx.restore();
-            }
-
-            ctx.restore(); // end lever rotation
-
-            // === Rotation direction arrow (world coords) ===
-            if(animating && Math.abs(angVel) > 0.01){
-                ctx.save();
-                var rotDir = angVel > 0 ? 1 : -1;
-                var arcStart = rotAngle - rotDir * 0.2;
-                var arcEnd = rotAngle + rotDir * 0.9;
-                ctx.strokeStyle = rotDir > 0 ? 'rgba(249,115,22,.5)' : 'rgba(96,165,250,.5)';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                if(rotDir > 0) ctx.arc(pivotX, pivotY, armPx+25, arcStart, arcEnd);
-                else ctx.arc(pivotX, pivotY, armPx+25, arcEnd, arcStart);
-                ctx.stroke();
-                // Arrowhead
-                var tipAngle = arcEnd;
-                var tipR = armPx + 25;
-                var tipX = pivotX + tipR*Math.cos(tipAngle);
-                var tipY = pivotY + tipR*Math.sin(tipAngle);
-                var prevAngle = tipAngle - rotDir*0.08;
-                var prevX = pivotX + tipR*Math.cos(prevAngle);
-                var prevY = pivotY + tipR*Math.sin(prevAngle);
-                drawArrow(ctx, prevX, prevY, tipX, tipY, ctx.strokeStyle, 2.5);
-                ctx.restore();
-            }
-
-            // === Rotation direction label ===
-            var rotInfo = getRotLabel(signedMoment);
-            if(angle > 0 && angle < 180){
-                ctx.save();
-                ctx.font = '600 14px Inter'; ctx.textAlign = 'center';
-                ctx.fillStyle = rotInfo.color;
-                ctx.fillText(rotInfo.text, pivotX + armPx/2, pivotY - armPx*0.5 - 20);
-                ctx.fillStyle = 'rgba(255,255,255,.3)';
-                ctx.font = '500 11px Inter';
-                ctx.fillText('F pulls lever end upward → rotates ACW', pivotX + armPx/2, pivotY - armPx*0.5 - 3);
-                ctx.restore();
-            }
-
-            // === Moment gauge ===
-            var maxMoment = 100 * 0.6;
-            var gaugeX = W-130, gaugeY = 50, gaugeH = 200, gaugeW = 25;
-            ctx.save();
-            ctx.fillStyle = 'rgba(255,255,255,.05)';
-            roundedRect(ctx, gaugeX, gaugeY, gaugeW, gaugeH, 4); ctx.fill();
-            var fillH = Math.min(gaugeH, (moment/maxMoment)*gaugeH);
-            var gCol = moment > maxMoment*0.7 ? '#22c55e' : moment > maxMoment*0.3 ? '#facc15' : '#ef4444';
-            ctx.fillStyle = gCol;
-            roundedRect(ctx, gaugeX, gaugeY+gaugeH-fillH, gaugeW, fillH, 4); ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.lineWidth = 1;
-            roundedRect(ctx, gaugeX, gaugeY, gaugeW, gaugeH, 4); ctx.stroke();
-            drawLabel(ctx, 'τ', gaugeX+gaugeW/2, gaugeY-12, 'rgba(255,255,255,.4)', 'center', 11);
-            // 90° reference line
-            ctx.strokeStyle = 'rgba(34,197,94,.4)'; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.moveTo(gaugeX-4, gaugeY); ctx.lineTo(gaugeX+gaugeW+4, gaugeY); ctx.stroke();
-            drawLabel(ctx, '90°→max', gaugeX+gaugeW+8, gaugeY, 'rgba(34,197,94,.4)', 'left', 9);
-            ctx.restore();
-
-            // === Big readout ===
-            ctx.save();
-            ctx.font = '800 26px "JetBrains Mono"'; ctx.fillStyle = '#fff'; ctx.textAlign = 'right';
-            ctx.fillText('τ = '+moment.toFixed(1)+' N m', W-20, H-30);
-            ctx.font = '500 12px Inter'; ctx.fillStyle = rotInfo.color;
-            ctx.fillText(rotInfo.text, W-20, H-10);
-            ctx.restore();
-
-            // === sin θ indicator ===
-            ctx.save();
-            ctx.font = '600 16px "JetBrains Mono"'; ctx.fillStyle = '#facc15'; ctx.textAlign = 'left';
-            ctx.fillText('sin '+angle+'° = '+sinA.toFixed(4), 20, H-50);
-            ctx.font = '500 12px Inter'; ctx.fillStyle = 'rgba(255,255,255,.4)';
-            var effMsg = angle===90 ? '→ Maximum moment!' : (angle===0||angle===180) ? '→ Zero moment!' : '→ '+(sinA*100).toFixed(0)+'% of maximum';
-            ctx.fillText(effMsg, 20, H-30);
-            ctx.restore();
-
-            // === Calc panel ===
-            var dirText = signedMoment < 0 ? '↺ ACW (counter-clockwise)' : signedMoment > 0 ? '↻ CW (clockwise)' : 'No rotation';
-
-            calcDiv.innerHTML =
-                '<span class="calc-label">Method 1 — Perpendicular Distance:</span><br>' +
-                'd⊥ = L sinθ = '+armLen.toFixed(2)+' × sin'+angle+'° = '+armLen.toFixed(2)+' × '+sinA.toFixed(4)+' = <span class="calc-val">'+dPerp.toFixed(4)+' m</span><br>' +
-                'τ = F × d⊥ = '+force+' × '+dPerp.toFixed(4)+' = <span class="calc-val highlight-row">'+moment.toFixed(2)+' N m</span><br><br>' +
-                '<span class="calc-label">Method 2 — Perpendicular Component:</span><br>' +
-                'F⊥ = F sinθ = '+force+' × sin'+angle+'° = <span class="calc-val">'+Fperp.toFixed(1)+' N</span> (creates moment)<br>' +
-                'F∥ = F cosθ = '+force+' × cos'+angle+'° = <span style="color:#ef4444">'+Math.abs(Fpar).toFixed(1)+' N</span> (wasted — pushes along lever)<br>' +
-                'τ = F⊥ × L = '+Fperp.toFixed(1)+' × '+armLen.toFixed(2)+' = <span class="calc-val highlight-row">'+(Fperp*armLen).toFixed(2)+' N m ✓</span><br><br>' +
-                '<span class="calc-label">Direction:</span> <span style="color:'+rotInfo.color+'">'+dirText+'</span><br>' +
-                '<span class="calc-label">Reason:</span> F⊥ pushes the end of the lever <strong>upward</strong> (away from lever) → ACW rotation about pivot.<br><br>' +
-                (angle===90 ? '<span style="color:#22c55e">💡 At 90°: ALL of F is perpendicular → maximum moment!</span>' :
-                 (angle===0||angle===180) ? '<span style="color:#ef4444">⚠ At 0°/180°: F is along the lever → zero moment! Line of action passes through pivot.</span>' :
-                 '<span class="calc-label">💡 Efficiency:</span> <span class="calc-val">'+(sinA*100).toFixed(0)+'%</span> of F creates moment. <span style="color:#ef4444">'+(Math.abs(cosA)*100).toFixed(0)+'%</span> is wasted.');
-
-        // ============ TRAPDOOR ============
-        } else if(scenario === 'trapdoor'){
-            var hingeX = 150, hingeY = H * 0.55;
-            var doorLen = armLen * 500;
-            signedMoment = -force * armLen * sinA;
-            moment = force * armLen * sinA;
-
+        if(variant==='cantilever'){
+            var wallX=100, beamY=220, bThick=14;
+            var beamEndX=wallX+v1*90;
             // Wall
             ctx.save();
-            ctx.fillStyle = '#334155';
-            ctx.fillRect(hingeX-25, hingeY-150, 25, 200);
-            ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
-            ctx.strokeRect(hingeX-25, hingeY-150, 25, 200);
+            ctx.fillStyle='#334155';
+            ctx.fillRect(wallX-30, beamY-120, 30, 240);
+            ctx.strokeStyle='#64748b'; ctx.lineWidth=2;
+            ctx.strokeRect(wallX-30, beamY-120, 30, 240);
+            for(var y=beamY-120;y<beamY+120;y+=12){ctx.beginPath();ctx.moveTo(wallX-30,y);ctx.lineTo(wallX-18,y+12);ctx.stroke();}
             ctx.restore();
-
-            // Hinge
-            ctx.save();
-            ctx.fillStyle = '#f97316';
-            ctx.beginPath(); ctx.arc(hingeX, hingeY, 8, 0, PI*2); ctx.fill();
-            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+            // Beam
+            ctx.save(); ctx.fillStyle='#475569'; ctx.strokeStyle='#94a3b8'; ctx.lineWidth=2;
+            ctx.fillRect(wallX,beamY-bThick/2,beamEndX-wallX,bThick);
+            ctx.strokeRect(wallX,beamY-bThick/2,beamEndX-wallX,bThick);
             ctx.restore();
-            drawLabel(ctx, 'Hinge (pivot)', hingeX, hingeY+28, 'rgba(255,255,255,.5)', 'center', 11);
-
-            // Door (rotated)
-            ctx.save();
-            ctx.translate(hingeX, hingeY);
-            ctx.rotate(rotAngle);
-
-            // Door panel
-            ctx.fillStyle = 'rgba(139,92,42,.3)'; ctx.strokeStyle = '#a0785a'; ctx.lineWidth = 3;
-            ctx.fillRect(0, -8, doorLen, 16);
-            ctx.strokeRect(0, -8, doorLen, 16);
-
-            // Rope attachment
-            ctx.fillStyle = '#3b82f6';
-            ctx.beginPath(); ctx.arc(doorLen, 0, 5, 0, PI*2); ctx.fill();
-
-            // Rope force: same angle convention as lever
-            var fLen = Math.min(100, force*1.5);
-            var rDirX = -cosA, rDirY = -sinA;
-            drawArrow(ctx, doorLen, 0, doorLen+fLen*rDirX, fLen*rDirY, '#3b82f6', 3);
-            drawLabel(ctx, 'T = '+force+' N',
-                doorLen+fLen*rDirX+(rDirX<0?-10:10), fLen*rDirY-12,
-                '#3b82f6', rDirX<0?'right':'left', 13);
-
-            // Line of action
-            if(showPerpDist){
-                ctx.save();
-                ctx.strokeStyle = 'rgba(96,165,250,.3)'; ctx.lineWidth = 1.5; ctx.setLineDash([8,6]);
-                ctx.beginPath();
-                ctx.moveTo(doorLen-250*rDirX, -250*rDirY);
-                ctx.lineTo(doorLen+250*rDirX, 250*rDirY);
-                ctx.stroke(); ctx.setLineDash([]);
-                ctx.restore();
-
-                // Perpendicular from hinge to line of action
-                var d2 = rDirX*rDirX + rDirY*rDirY;
-                if(d2<0.001) d2=0.001;
-                var sf = -(doorLen*rDirX)/d2;
-                var fX = doorLen+sf*rDirX, fY = sf*rDirY;
-                ctx.save();
-                ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 2.5;
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(fX,fY); ctx.stroke();
-                ctx.fillStyle = '#22c55e';
-                ctx.beginPath(); ctx.arc(fX,fY,4,0,PI*2); ctx.fill();
-                drawRightAngle(ctx, fX, fY, Math.atan2(rDirY,rDirX), Math.atan2(-fY,-fX), 12, '#22c55e');
-                ctx.restore();
-                drawLabel(ctx, 'd⊥ = '+(dPerp*100).toFixed(1)+' cm', fX/2-20, fY/2+22, '#22c55e', 'center', 13);
+            // Beam weight
+            if(v3>0){
+                var bwX=wallX+v1*45;
+                drawArrow(ctx,bwX,beamY+bThick/2+5,bwX,beamY+bThick/2+50,'#94a3b8',2);
+                drawLabel(ctx,'Wb='+v3+'N',bwX,beamY+bThick/2+62,'#94a3b8','center',11);
             }
+            // Sign
+            drawArrow(ctx,beamEndX,beamY+bThick/2+5,beamEndX,beamY+bThick/2+65,'#ef4444',3);
+            ctx.save(); ctx.fillStyle='rgba(239,68,68,0.2)'; ctx.strokeStyle='#ef4444'; ctx.lineWidth=2;
+            ctx.fillRect(beamEndX-25,beamY+bThick/2+65,50,35);
+            ctx.strokeRect(beamEndX-25,beamY+bThick/2+65,50,35);
+            ctx.font='700 11px Inter'; ctx.fillStyle='#ef4444'; ctx.textAlign='center';
+            ctx.fillText(v2+'N',beamEndX,beamY+bThick/2+87); ctx.restore();
+            // Reaction
+            drawArrow(ctx,wallX,beamY,wallX,beamY-60,'#22c55e',2);
+            drawLabel(ctx,'R ↑',wallX+15,beamY-40,'#22c55e','left',11);
 
-            // Components
-            if(showComps && angle>2 && angle<178 && angle!==90){
-                var cS = fLen;
-                ctx.save(); ctx.setLineDash([5,4]);
-                drawArrow(ctx, doorLen, 0, doorLen, -sinA*cS, '#22c55e', 2.5);
-                drawArrow(ctx, doorLen, 0, doorLen-Math.abs(cosA)*cS, 0, '#ef4444', 2);
-                ctx.setLineDash([]); ctx.restore();
-                drawLabel(ctx, 'T⊥='+Fperp.toFixed(1)+'N', doorLen+12, -sinA*cS/2, '#22c55e', 'left', 10);
-                drawLabel(ctx, 'T∥='+Math.abs(Fpar).toFixed(1)+'N', doorLen-Math.abs(cosA)*cS/2, 16, '#ef4444', 'center', 10);
-            }
+            var momSign=v2*v1, momBeam=v3*v1/2, total=momSign+momBeam;
+            calcDiv.innerHTML=
+                '<span class="calc-label">🏗️ Cantilever — moments about wall:</span><br><br>'+
+                '<span class="moment-color-cw">CW:</span><br>'+
+                '&nbsp;&nbsp;Sign: '+v2+' × '+v1+' = <span class="calc-val">'+momSign+' Nm</span><br>'+
+                (v3>0?'&nbsp;&nbsp;Beam: '+v3+' × '+(v1/2).toFixed(1)+' = <span class="calc-val">'+momBeam.toFixed(0)+' Nm</span><br>':'')+
+                '&nbsp;&nbsp;<strong>Total = <span class="calc-val highlight-row">'+total.toFixed(0)+' Nm</span></strong><br><br>'+
+                'Wall provides R = '+(v2+v3)+' N upward and '+total.toFixed(0)+' Nm ACW moment.';
 
-            // Angle arc
-            if(angle>2 && angle<178){
-                ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1.5;
-                ctx.beginPath(); ctx.arc(doorLen, 0, 30, PI, PI+rad, false); ctx.stroke();
-                drawLabel(ctx, 'θ='+angle+'°', doorLen-40, -22, 'rgba(255,255,255,.6)', 'center', 11);
-                ctx.restore();
-            }
-
-            // Length
-            drawLabel(ctx, 'L = '+armLen.toFixed(2)+' m', doorLen/2, 30, '#facc15', 'center', 12);
-
-            ctx.restore(); // end door rotation
-
-            // Rotation indicator
-            if(animating && Math.abs(angVel)>0.01){
-                ctx.save();
-                var rd = angVel>0?1:-1;
-                ctx.strokeStyle = rd>0?'rgba(249,115,22,.5)':'rgba(96,165,250,.5)';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                var as = rotAngle-rd*0.2, ae = rotAngle+rd*0.8;
-                if(rd>0) ctx.arc(hingeX, hingeY, doorLen+15, as, ae);
-                else ctx.arc(hingeX, hingeY, doorLen+15, ae, as);
-                ctx.stroke();
-                ctx.restore();
-            }
-
-            // Direction label
-            var rl = getRotLabel(signedMoment);
-            ctx.save(); ctx.font='600 14px Inter'; ctx.textAlign='center';
-            ctx.fillStyle = rl.color;
-            ctx.fillText(rl.text + ' — rope lifts door', W/2, 30);
+        } else if(variant==='twosupports'){
+            var leftX=100, rightX=100+v1*90, beamY=250;
+            var loadX=leftX+v4*90, beamCGx=leftX+v1*45;
+            // Supports
+            ctx.save(); ctx.fillStyle='#94a3b8';
+            ctx.beginPath();ctx.moveTo(leftX,beamY+8);ctx.lineTo(leftX-18,beamY+38);ctx.lineTo(leftX+18,beamY+38);ctx.closePath();ctx.fill();
+            ctx.beginPath();ctx.moveTo(rightX,beamY+8);ctx.lineTo(rightX-18,beamY+38);ctx.lineTo(rightX+18,beamY+38);ctx.closePath();ctx.fill();
             ctx.restore();
+            drawLabel(ctx,'R₁',leftX,beamY+52,'#22c55e','center',13);
+            drawLabel(ctx,'R₂',rightX,beamY+52,'#60a5fa','center',13);
+            // Beam
+            ctx.save();ctx.fillStyle='#475569';ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;
+            ctx.fillRect(leftX,beamY-8,rightX-leftX,16);ctx.strokeRect(leftX,beamY-8,rightX-leftX,16);ctx.restore();
+            // Load
+            drawArrow(ctx,loadX,beamY-15,loadX,beamY-65,'#ef4444',3);
+            ctx.save();ctx.fillStyle='rgba(239,68,68,0.2)';ctx.strokeStyle='#ef4444';ctx.lineWidth=2;
+            ctx.fillRect(loadX-22,beamY-95,44,32);ctx.strokeRect(loadX-22,beamY-95,44,32);
+            ctx.font='700 11px Inter';ctx.fillStyle='#ef4444';ctx.textAlign='center';
+            ctx.fillText(v2+'N',loadX,beamY-74);ctx.restore();
+            // Beam weight
+            if(v3>0){drawArrow(ctx,beamCGx,beamY+12,beamCGx,beamY+55,'#94a3b8',2);drawLabel(ctx,'W='+v3+'N',beamCGx+30,beamY+38,'#94a3b8','left',11);}
+            // R arrows
+            drawArrow(ctx,leftX,beamY+5,leftX,beamY-35,'#22c55e',2);
+            drawArrow(ctx,rightX,beamY+5,rightX,beamY-35,'#60a5fa',2);
+            // Dimensions
+            ctx.save();ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+            ctx.beginPath();ctx.moveTo(leftX,beamY+70);ctx.lineTo(loadX,beamY+70);ctx.stroke();
+            drawLabel(ctx,v4.toFixed(1)+'m',(leftX+loadX)/2,beamY+82,'rgba(255,255,255,.4)','center',10);
+            ctx.beginPath();ctx.moveTo(leftX,beamY+95);ctx.lineTo(rightX,beamY+95);ctx.stroke();
+            drawLabel(ctx,v1+'m',(leftX+rightX)/2,beamY+107,'rgba(255,255,255,.4)','center',10);
+            ctx.setLineDash([]);ctx.restore();
 
-            // Big readout
-            ctx.save();
-            ctx.font='800 26px "JetBrains Mono"'; ctx.fillStyle='#fff'; ctx.textAlign='right';
-            ctx.fillText('τ = '+moment.toFixed(1)+' N m', W-20, H-30);
+            var momLoad=v2*v4, momBeam=v3*v1/2, totalCW=momLoad+momBeam;
+            var R2=totalCW/v1, R1=v2+v3-R2;
+            calcDiv.innerHTML=
+                '<span class="calc-label">🌉 Two Supports — moments about R₁ (left):</span><br><br>'+
+                '<span class="moment-color-cw">CW:</span> Load: '+v2+'×'+v4.toFixed(1)+' = <span class="calc-val">'+momLoad.toFixed(1)+' Nm</span><br>'+
+                (v3>0?'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Beam: '+v3+'×'+(v1/2).toFixed(1)+' = <span class="calc-val">'+momBeam.toFixed(1)+' Nm</span><br>':'')+
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total = <span class="calc-val">'+totalCW.toFixed(1)+' Nm</span><br><br>'+
+                '<span class="moment-color-acw">ACW:</span> R₂ × '+v1+'<br><br>'+
+                'R₂ × '+v1+' = '+totalCW.toFixed(1)+' → <span class="calc-val highlight-row">R₂ = '+R2.toFixed(1)+' N</span><br>'+
+                'R₁ = '+v2+'+'+v3+' − '+R2.toFixed(1)+' = <span class="calc-val highlight-row">'+R1.toFixed(1)+' N</span>';
+
+        } else if(variant==='ladder'){
+            var floorY=400, wallX=550;
+            var angle=65*Math.PI/180;
+            var lScale=55;
+            var footXpx=wallX-v1*lScale*Math.cos(angle);
+            var topYpx=floorY-v1*lScale*Math.sin(angle);
+            // Wall
+            ctx.save();ctx.fillStyle='#334155';ctx.fillRect(wallX,topYpx-40,30,floorY-topYpx+40);
+            ctx.strokeStyle='#64748b';ctx.lineWidth=2;ctx.strokeRect(wallX,topYpx-40,30,floorY-topYpx+40);ctx.restore();
+            // Floor
+            ctx.save();ctx.strokeStyle='#64748b';ctx.lineWidth=2;
+            ctx.beginPath();ctx.moveTo(50,floorY);ctx.lineTo(wallX+30,floorY);ctx.stroke();
+            for(var x=50;x<wallX+30;x+=18){ctx.beginPath();ctx.moveTo(x,floorY);ctx.lineTo(x-10,floorY+14);ctx.stroke();}
             ctx.restore();
-
-            calcDiv.innerHTML =
-                '<span class="calc-label">🪟 Rope on Trapdoor:</span><br>' +
-                'τ = F × L × sinθ = '+force+' × '+armLen.toFixed(2)+' × sin'+angle+'°<br>' +
-                '= '+force+' × '+armLen.toFixed(2)+' × '+sinA.toFixed(4)+'<br>' +
-                '<span class="calc-val highlight-row">τ = '+moment.toFixed(2)+' N m ('+rl.text+')</span><br><br>' +
-                'd⊥ = L sinθ = '+(dPerp*100).toFixed(1)+' cm<br>' +
-                '<span class="calc-label">Direction:</span> Rope pulls door end <strong>upward</strong> → door opens (ACW about hinge).<br>' +
-                '<span class="calc-label">At 90°:</span> τ = '+(force*armLen).toFixed(1)+' N m — currently at '+(sinA*100).toFixed(0)+'% efficiency.';
-
-        // ============ STEERING WHEEL ============
-        } else if(scenario === 'steering'){
-            var cx = W*0.45, cy = H*0.45, wheelR = armLen*350;
-            moment = force * armLen * 2;
-            signedMoment = -moment; // CCW
-
-            ctx.save(); ctx.fillStyle='#475569';
-            ctx.fillRect(cx-8, cy+wheelR+5, 16, 80); ctx.restore();
-
-            ctx.save(); ctx.translate(cx,cy); ctx.rotate(rotAngle);
-            ctx.strokeStyle='#94a3b8'; ctx.lineWidth=10;
-            ctx.beginPath(); ctx.arc(0,0,wheelR,0,PI*2); ctx.stroke();
-            ctx.lineWidth=3;
-            for(var i=0;i<3;i++){var a=i*PI*2/3;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(wheelR*Math.cos(a),wheelR*Math.sin(a));ctx.stroke();}
-            ctx.fillStyle='#475569'; ctx.beginPath();ctx.arc(0,0,14,0,PI*2);ctx.fill();
-
-            // Left hand pushes UP (CCW contribution)
-            var fLen=Math.min(70,force);
-            drawArrow(ctx, -wheelR, 0, -wheelR, -fLen, '#3b82f6', 3);
-            drawLabel(ctx, 'F='+force+'N (up)', -wheelR-15, -fLen/2, '#3b82f6', 'right', 11);
-            // Right hand pushes DOWN (also CCW contribution)
-            drawArrow(ctx, wheelR, 0, wheelR, fLen, '#ef4444', 3);
-            drawLabel(ctx, 'F='+force+'N (down)', wheelR+15, fLen/2, '#ef4444', 'left', 11);
-
-            // Diameter label
-            ctx.save(); ctx.strokeStyle='rgba(250,204,21,.3)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
-            ctx.beginPath(); ctx.moveTo(-wheelR,14); ctx.lineTo(wheelR,14); ctx.stroke();
-            ctx.setLineDash([]);
-            drawLabel(ctx, 'd = '+(armLen*2).toFixed(2)+' m', 0, 30, '#facc15', 'center', 12);
+            // Ladder
+            ctx.save();ctx.strokeStyle='#f97316';ctx.lineWidth=6;ctx.lineCap='round';
+            ctx.beginPath();ctx.moveTo(footXpx,floorY);ctx.lineTo(wallX,topYpx);ctx.stroke();
+            ctx.lineWidth=2;
+            for(var i=1;i<6;i++){var t=i/6;var rx=footXpx+(wallX-footXpx)*t;var ry=floorY+(topYpx-floorY)*t;
+            var px=Math.sin(angle)*12,py=Math.cos(angle)*12;
+            ctx.beginPath();ctx.moveTo(rx-px,ry-py);ctx.lineTo(rx+px,ry+py);ctx.stroke();}
             ctx.restore();
+            // Person
+            var pT=v4/v1;
+            var pX=footXpx+(wallX-footXpx)*pT, pY=floorY+(topYpx-floorY)*pT;
+            drawLabel(ctx,'🧑',pX-15,pY-15,'#fff','center',22);
+            drawArrow(ctx,pX,pY+5,pX,pY+55,'#ef4444',2);
+            drawLabel(ctx,v2+'N',pX+15,pY+35,'#ef4444','left',11);
+            // Ladder weight
+            var lcx=footXpx+(wallX-footXpx)*0.5, lcy=floorY+(topYpx-floorY)*0.5;
+            if(v3>0){drawArrow(ctx,lcx,lcy,lcx,lcy+45,'#94a3b8',2);drawLabel(ctx,v3+'N',lcx-15,lcy+30,'#94a3b8','right',11);}
+            // Forces
+            drawArrow(ctx,wallX,topYpx,wallX-45,topYpx,'#60a5fa',2);
+            drawLabel(ctx,'Rw',wallX-55,topYpx-10,'#60a5fa','right',11);
+            drawArrow(ctx,footXpx,floorY,footXpx,floorY-45,'#22c55e',2);
+            drawLabel(ctx,'Rn',footXpx-15,floorY-30,'#22c55e','right',11);
+            drawArrow(ctx,footXpx,floorY,footXpx+40,floorY,'#f97316',2);
+            drawLabel(ctx,'f',footXpx+45,floorY-8,'#f97316','left',11);
 
-            // CCW arrow
-            ctx.save(); ctx.strokeStyle='rgba(96,165,250,.5)'; ctx.lineWidth=3;
-            ctx.beginPath(); ctx.arc(0,0,wheelR+25, -0.5, PI*1.2); ctx.stroke();
-            drawArrow(ctx,
-                (wheelR+25)*Math.cos(PI*1.2-0.05), (wheelR+25)*Math.sin(PI*1.2-0.05),
-                (wheelR+25)*Math.cos(PI*1.2), (wheelR+25)*Math.sin(PI*1.2),
-                'rgba(96,165,250,.6)', 2);
-            drawLabel(ctx, '↺ ACW', 0, -wheelR-40, '#60a5fa', 'center', 13);
-            ctx.restore();
-
-            ctx.restore();
-
-            ctx.save(); ctx.font='800 26px "JetBrains Mono"'; ctx.fillStyle='#fff'; ctx.textAlign='right';
-            ctx.fillText('τ = '+moment.toFixed(1)+' N m', W-20, H-30); ctx.restore();
-
-            calcDiv.innerHTML =
-                '<span class="calc-label">🚗 Steering Wheel — Couple:</span><br>' +
-                'Left hand pushes UP, right hand pushes DOWN → both contribute to <strong>↺ ACW</strong> rotation.<br><br>' +
-                'Torque = F × d = '+force+' × '+(armLen*2).toFixed(2)+' = <span class="calc-val highlight-row">'+moment.toFixed(1)+' N m (ACW)</span><br><br>' +
-                '<span class="calc-label">💡</span> ΣF = 0 (forces cancel) but Στ ≠ 0 → <strong>pure rotation</strong>.<br>' +
-                'Both forces create ACW moments: left force (up) × left radius + right force (down) × right radius.';
-
-        // ============ PROPELLER ============
-        } else if(scenario === 'propeller'){
-            var cx = W*0.45, cy = H*0.45, bladeR = 130;
-            moment = 3 * force * 0.25;
-            signedMoment = -moment;
-
-            ctx.save(); ctx.translate(cx,cy); ctx.rotate(rotAngle);
-            ctx.fillStyle='#475569'; ctx.strokeStyle='#94a3b8'; ctx.lineWidth=2;
-            ctx.beginPath(); ctx.arc(0,0,16,0,PI*2); ctx.fill(); ctx.stroke();
-            for(var i=0;i<3;i++){
-                var a=i*PI*2/3;
-                ctx.save(); ctx.rotate(a);
-                ctx.fillStyle='rgba(96,165,250,.25)'; ctx.strokeStyle='#60a5fa'; ctx.lineWidth=2;
-                ctx.beginPath();
-                ctx.moveTo(16,0);
-                ctx.quadraticCurveTo(bladeR*0.4,-22,bladeR,-6);
-                ctx.lineTo(bladeR,6);
-                ctx.quadraticCurveTo(bladeR*0.4,18,16,0);
-                ctx.fill(); ctx.stroke();
-                // Force on each blade (perpendicular to blade)
-                drawArrow(ctx, bladeR, 0, bladeR, -(force*0.5), '#22c55e', 2);
-                drawLabel(ctx, 'F', bladeR+10, -(force*0.25), '#22c55e', 'left', 10);
-                ctx.restore();
-            }
-            // CCW indicator
-            ctx.save(); ctx.strokeStyle='rgba(96,165,250,.4)'; ctx.lineWidth=3;
-            ctx.beginPath(); ctx.arc(0,0,bladeR+20, 0.2, PI*1.5); ctx.stroke();
-            drawLabel(ctx, '↺', (bladeR+35)*Math.cos(PI*0.8), (bladeR+35)*Math.sin(PI*0.8), 'rgba(96,165,250,.6)', 'center', 20);
-            ctx.restore();
-            ctx.restore();
-
-            ctx.save(); ctx.font='800 26px "JetBrains Mono"'; ctx.fillStyle='#fff'; ctx.textAlign='right';
-            ctx.fillText('τ = '+moment.toFixed(1)+' N m', W-20, H-30); ctx.restore();
-
-            calcDiv.innerHTML =
-                '<span class="calc-label">✈️ Propeller (3 blades, each perpendicular force):</span><br>' +
-                'Each: F = '+force+' N at r = 0.25 m → τ = '+force+' × 0.25 = '+(force*0.25).toFixed(1)+' N m<br>' +
-                'Total = 3 × '+(force*0.25).toFixed(1)+' = <span class="calc-val highlight-row">'+moment.toFixed(1)+' N m (ACW)</span><br><br>' +
-                '<span class="calc-label">💡</span> Engine provides this torque. Each blade pushes air backward → reaction pushes aircraft forward.';
+            var angDeg=65;
+            var rad=angle;
+            var momPerson=v2*v4*Math.cos(rad), momLadder=v3*(v1/2)*Math.cos(rad);
+            var totalCW=momPerson+momLadder;
+            var Rwall=totalCW/(v1*Math.sin(rad));
+            calcDiv.innerHTML=
+                '<span class="calc-label">🪜 Ladder (smooth wall, rough floor, 65°)</span><br><br>'+
+                '<span class="calc-label">Moments about foot:</span><br>'+
+                '<span class="moment-color-cw">CW:</span> Person: '+v2+'×'+v4+'×cos65° = <span class="calc-val">'+momPerson.toFixed(1)+' Nm</span><br>'+
+                (v3>0?'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ladder: '+v3+'×'+(v1/2).toFixed(1)+'×cos65° = <span class="calc-val">'+momLadder.toFixed(1)+' Nm</span><br>':'')+
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total = <span class="calc-val">'+totalCW.toFixed(1)+' Nm</span><br><br>'+
+                '<span class="moment-color-acw">ACW:</span> Rw × '+v1+' × sin65° = Rw × '+(v1*Math.sin(rad)).toFixed(2)+'<br><br>'+
+                'Rw = '+totalCW.toFixed(1)+' / '+(v1*Math.sin(rad)).toFixed(2)+' = <span class="calc-val highlight-row">'+Rwall.toFixed(1)+' N</span><br>'+
+                'Friction f = Rw = <span class="calc-val">'+Rwall.toFixed(1)+' N</span><br>'+
+                'Normal Rn = '+v2+'+'+v3+' = <span class="calc-val">'+(v2+v3)+' N</span>';
         }
     };
-
-    // ===== ANGLE TABLE =====
-    function updateAngleTable(){
-        var tbody = document.getElementById('angleTableBody');
-        if(!tbody) return;
-        var angles = [0,15,30,45,60,75,90,120,150,180];
-        var html = '';
-        for(var i=0;i<angles.length;i++){
-            var a = angles[i], s = Math.sin(a*PI/180);
-            var dp = armLen*s, mom = force*dp;
-            var eff = '';
-            if(a===0||a===180) eff='❌ Zero';
-            else if(a===90) eff='✅ Maximum';
-            else if(s>0.85) eff='🟢 Excellent';
-            else if(s>0.5) eff='🟡 Good';
-            else eff='🟠 Poor';
-            var hl = (a===angle) ? ' style="background:#1e3a5f;color:#fff;font-weight:700"' : '';
-            html += '<tr'+hl+'><td>'+a+'°'+(a===angle?' ◄':'')+'</td><td>'+s.toFixed(4)+'</td><td>'+(dp*100).toFixed(1)+' cm</td><td>'+mom.toFixed(1)+' N m</td><td>'+eff+'</td></tr>';
-        }
-        tbody.innerHTML = html;
-    }
-    updateAngleTable();
-    rotateDraw();
+    setupVariant();
+    variantDraw();
 })();
-    
-// ============================================================
-// COG SIMULATION (fixed)
-// ============================================================
-(function(){var canvas=document.getElementById('cogCanvas'),ctx=canvas.getContext('2d'),calcDiv=document.getElementById('cogCalc');var bW=100,bH=160,cgP=50,tilt=0;
-document.getElementById('cogWidth').addEventListener('input',function(e){bW=parseInt(e.target.value);document.getElementById('cogWidthVal').textContent=bW;cogDraw();});
-document.getElementById('cogHeight').addEventListener('input',function(e){bH=parseInt(e.target.value);document.getElementById('cogHeightVal').textContent=bH;cogDraw();});
-document.getElementById('cogCG').addEventListener('input',function(e){cgP=parseInt(e.target.value);document.getElementById('cogCGVal').textContent=cgP+'%';cogDraw();});
-document.getElementById('cogTilt').addEventListener('input',function(e){tilt=parseInt(e.target.value);document.getElementById('cogTiltVal').textContent=tilt+'°';cogDraw();});
-window.cogDraw=function(){clearCanvas(ctx,canvas);var W=canvas.width,H=canvas.height,gY=H-80;ctx.save();ctx.strokeStyle='#64748b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,gY);ctx.lineTo(W,gY);ctx.stroke();for(var x=0;x<W;x+=18){ctx.beginPath();ctx.moveTo(x,gY);ctx.lineTo(x-10,gY+14);ctx.stroke();}ctx.restore();
-var cx=W/2,tr=tilt*PI/180,pWX=cx+bW/2,pWY=gY,cgLX=bW/2,cgLY=bH*(cgP/100);
-ctx.save();ctx.translate(pWX,pWY);ctx.rotate(-tr);ctx.fillStyle='rgba(59,130,246,.3)';ctx.strokeStyle='#60a5fa';ctx.lineWidth=2;ctx.fillRect(-bW,-bH,bW,bH);ctx.strokeRect(-bW,-bH,bW,bH);
-var cgRX=cgLX-bW,cgRY=-cgLY;ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(cgRX,cgRY,9,0,PI*2);ctx.fill();ctx.font='700 10px Inter';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('CG',cgRX,cgRY);
-ctx.fillStyle='#22c55e';ctx.beginPath();ctx.arc(-bW,0,5,0,PI*2);ctx.fill();ctx.beginPath();ctx.arc(0,0,5,0,PI*2);ctx.fill();ctx.restore();
-var cT=Math.cos(-tr),sT=Math.sin(-tr),cwX=pWX+cgRX*cT-cgRY*sT,cwY=pWY+cgRX*sT+cgRY*cT;
-ctx.save();ctx.strokeStyle='rgba(239,68,68,.6)';ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cwX,Math.min(cwY,gY-20));ctx.lineTo(cwX,gY+30);ctx.stroke();ctx.setLineDash([]);ctx.restore();
-var blRX=-bW,blWX=pWX+blRX*cT,bL=Math.min(blWX,pWX),bR=Math.max(blWX,pWX);
-ctx.save();ctx.strokeStyle='#22c55e';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(bL,gY+18);ctx.lineTo(bR,gY+18);ctx.stroke();drawLabel(ctx,'base',(bL+bR)/2,gY+32,'#22c55e','center',11);ctx.restore();
-var top=cwX>bR+2||cwX<bL-2;ctx.save();ctx.font='700 16px Inter';ctx.textAlign='center';if(tilt===0){ctx.fillStyle='#22c55e';ctx.fillText('✓ Stable',W/2,32);}else if(top){ctx.fillStyle='#ef4444';ctx.fillText('⚠ TOPPLES!',W/2,32);}else{ctx.fillStyle='#facc15';ctx.fillText('⚖ Tilted — returns',W/2,32);}ctx.restore();
-var ca=Math.atan2(bW/2,cgLY)*180/PI;
-calcDiv.innerHTML='<span class="calc-label">Tilt:</span> '+tilt+'° | <span class="calc-label">Critical angle:</span> <span class="calc-val highlight-row">'+ca.toFixed(1)+'°</span><br>= arctan('+(bW/2)+'/'+cgLY.toFixed(0)+') = '+ca.toFixed(1)+'°<br><br>'+(top?'<span style="color:#ef4444">⚠ Tilt > critical → Topples!</span>':tilt>0?'<span style="color:#22c55e">✓ Tilt < critical → Stable</span>':'💡 Increase tilt. Lower CG / wider base = more stable.');};cogDraw();})();
+
 
 // ============================================================
-// VARIANTS (condensed, same as fixed version)
+//  QUIZ SYSTEM
 // ============================================================
-(function(){var canvas=document.getElementById('variantCanvas'),ctx=canvas.getContext('2d'),calcDiv=document.getElementById('variantCalc');var vr='cantilever',v1=3,v2=200,v3=100,v4=1.5;
-document.querySelectorAll('#variantCards .variant-card').forEach(function(c){c.addEventListener('click',function(){document.querySelectorAll('#variantCards .variant-card').forEach(function(x){x.classList.remove('active')});c.classList.add('active');vr=c.dataset.variant;sv();variantDraw();});});
-function sv(){var g=document.getElementById('vc4Group');if(vr==='cantilever'){document.getElementById('vc1Label').textContent='Length:';document.getElementById('vc2Label').textContent='Sign wt:';document.getElementById('vc3Label').textContent='Beam wt:';document.getElementById('vc1').value=v1=3;document.getElementById('vc2').value=v2=200;document.getElementById('vc3').value=v3=100;g.style.display='none';}else if(vr==='twosupports'){document.getElementById('vc1Label').textContent='Length:';document.getElementById('vc2Label').textContent='Load:';document.getElementById('vc3Label').textContent='Beam wt:';document.getElementById('vc4Label').textContent='Load pos:';document.getElementById('vc1').value=v1=4;document.getElementById('vc2').value=v2=300;document.getElementById('vc3').value=v3=100;document.getElementById('vc4').value=v4=1;document.getElementById('vc4').max=v1;g.style.display='';}else{document.getElementById('vc1Label').textContent='Length:';document.getElementById('vc2Label').textContent='Person wt:';document.getElementById('vc3Label').textContent='Ladder wt:';document.getElementById('vc4Label').textContent='Person pos:';document.getElementById('vc1').value=v1=5;document.getElementById('vc2').value=v2=600;document.getElementById('vc3').value=v3=100;document.getElementById('vc4').value=v4=3;document.getElementById('vc4').max=v1;g.style.display='';}uv();}
-function uv(){document.getElementById('vc1Val').textContent=v1+' m';document.getElementById('vc2Val').textContent=v2+' N';document.getElementById('vc3Val').textContent=v3+' N';document.getElementById('vc4Val').textContent=v4+' m';}
-document.getElementById('vc1').addEventListener('input',function(e){v1=parseFloat(e.target.value);if(vr!=='cantilever'){document.getElementById('vc4').max=v1;if(v4>v1)v4=v1;}uv();variantDraw();});
-document.getElementById('vc2').addEventListener('input',function(e){v2=parseFloat(e.target.value);uv();variantDraw();});
-document.getElementById('vc3').addEventListener('input',function(e){v3=parseFloat(e.target.value);uv();variantDraw();});
-document.getElementById('vc4').addEventListener('input',function(e){v4=parseFloat(e.target.value);uv();variantDraw();});
-window.variantDraw=function(){clearCanvas(ctx,canvas);var W=canvas.width,H=canvas.height;
-if(vr==='cantilever'){var wX=100,bY=220,bt=14,bE=wX+v1*90;ctx.save();ctx.fillStyle='#334155';ctx.fillRect(wX-30,bY-120,30,240);ctx.strokeStyle='#64748b';ctx.lineWidth=2;ctx.strokeRect(wX-30,bY-120,30,240);ctx.restore();ctx.save();ctx.fillStyle='#475569';ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;ctx.fillRect(wX,bY-bt/2,bE-wX,bt);ctx.strokeRect(wX,bY-bt/2,bE-wX,bt);ctx.restore();if(v3>0){drawArrow(ctx,wX+v1*45,bY+bt/2+5,wX+v1*45,bY+bt/2+50,'#94a3b8',2);drawLabel(ctx,'Wb='+v3+'N',wX+v1*45,bY+bt/2+62,'#94a3b8','center',11);}drawArrow(ctx,bE,bY+bt/2+5,bE,bY+bt/2+65,'#ef4444',3);ctx.save();ctx.fillStyle='rgba(239,68,68,.2)';ctx.fillRect(bE-25,bY+bt/2+65,50,35);ctx.strokeStyle='#ef4444';ctx.lineWidth=2;ctx.strokeRect(bE-25,bY+bt/2+65,50,35);ctx.font='700 11px Inter';ctx.fillStyle='#ef4444';ctx.textAlign='center';ctx.fillText(v2+'N',bE,bY+bt/2+87);ctx.restore();drawArrow(ctx,wX,bY,wX,bY-60,'#22c55e',2);
-var ms=v2*v1,mb=v3*v1/2,tt=ms+mb;calcDiv.innerHTML='<span class="calc-label">🏗️ Cantilever:</span><br>Sign: '+v2+'×'+v1+' = <span class="calc-val">'+ms+' Nm</span><br>'+(v3>0?'Beam: '+v3+'×'+(v1/2).toFixed(1)+' = <span class="calc-val">'+mb.toFixed(0)+' Nm</span><br>':'')+'<strong>Total = <span class="calc-val highlight-row">'+tt.toFixed(0)+' Nm</span></strong>';
-}else if(vr==='twosupports'){var lX=100,rX=100+v1*90,bY=250,ldX=lX+v4*90,bcX=lX+v1*45;ctx.save();ctx.fillStyle='#94a3b8';ctx.beginPath();ctx.moveTo(lX,bY+8);ctx.lineTo(lX-18,bY+38);ctx.lineTo(lX+18,bY+38);ctx.closePath();ctx.fill();ctx.beginPath();ctx.moveTo(rX,bY+8);ctx.lineTo(rX-18,bY+38);ctx.lineTo(rX+18,bY+38);ctx.closePath();ctx.fill();ctx.restore();ctx.save();ctx.fillStyle='#475569';ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;ctx.fillRect(lX,bY-8,rX-lX,16);ctx.strokeRect(lX,bY-8,rX-lX,16);ctx.restore();drawArrow(ctx,ldX,bY-15,ldX,bY-65,'#ef4444',3);drawLabel(ctx,v2+'N',ldX,bY-75,'#ef4444','center',12);if(v3>0){drawArrow(ctx,bcX,bY+12,bcX,bY+55,'#94a3b8',2);}drawArrow(ctx,lX,bY+5,lX,bY-35,'#22c55e',2);drawArrow(ctx,rX,bY+5,rX,bY-35,'#60a5fa',2);drawLabel(ctx,'R₁',lX,bY+52,'#22c55e','center',13);drawLabel(ctx,'R₂',rX,bY+52,'#60a5fa','center',13);
-var ml=v2*v4,mb=v3*v1/2,tc=ml+mb,R2=tc/v1,R1=v2+v3-R2;calcDiv.innerHTML='<span class="calc-label">🌉 Moments about R₁:</span><br>Load:'+v2+'×'+v4.toFixed(1)+' = <span class="calc-val">'+ml.toFixed(1)+'</span><br>'+(v3>0?'Beam:'+v3+'×'+(v1/2).toFixed(1)+' = <span class="calc-val">'+mb.toFixed(1)+'</span><br>':'')+'R₂×'+v1+' = '+tc.toFixed(1)+' → <span class="calc-val highlight-row">R₂='+R2.toFixed(1)+' N</span><br>R₁='+v2+'+'+v3+'−'+R2.toFixed(1)+' = <span class="calc-val highlight-row">'+R1.toFixed(1)+' N</span>';
-}else{var fY=400,wX=550,a=65*PI/180,lS=55,fX=wX-v1*lS*Math.cos(a),tY=fY-v1*lS*Math.sin(a);ctx.save();ctx.fillStyle='#334155';ctx.fillRect(wX,tY-40,30,fY-tY+40);ctx.strokeStyle='#64748b';ctx.lineWidth=2;ctx.strokeRect(wX,tY-40,30,fY-tY+40);ctx.strokeStyle='#64748b';ctx.beginPath();ctx.moveTo(50,fY);ctx.lineTo(wX+30,fY);ctx.stroke();ctx.restore();ctx.save();ctx.strokeStyle='#f97316';ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(fX,fY);ctx.lineTo(wX,tY);ctx.stroke();ctx.restore();var pT=v4/v1,pX=fX+(wX-fX)*pT,pY=fY+(tY-fY)*pT;drawLabel(ctx,'🧑',pX-15,pY-15,'#fff','center',22);drawArrow(ctx,pX,pY+5,pX,pY+55,'#ef4444',2);if(v3>0){var lc=fX+(wX-fX)*.5,ly=fY+(tY-fY)*.5;drawArrow(ctx,lc,ly,lc,ly+45,'#94a3b8',2);}drawArrow(ctx,wX,tY,wX-45,tY,'#60a5fa',2);drawArrow(ctx,fX,fY,fX,fY-45,'#22c55e',2);drawArrow(ctx,fX,fY,fX+40,fY,'#f97316',2);
-var mp=v2*v4*Math.cos(a),ml=v3*(v1/2)*Math.cos(a),tc=mp+ml,Rw=tc/(v1*Math.sin(a));calcDiv.innerHTML='<span class="calc-label">🪜 Ladder (65°):</span><br>Person:'+v2+'×'+v4+'×cos65° = <span class="calc-val">'+mp.toFixed(1)+'</span><br>'+(v3>0?'Ladder:'+v3+'×'+(v1/2).toFixed(1)+'×cos65° = <span class="calc-val">'+ml.toFixed(1)+'</span><br>':'')+'Rw×'+(v1*Math.sin(a)).toFixed(2)+' = '+tc.toFixed(1)+'<br><span class="calc-val highlight-row">Rw='+Rw.toFixed(1)+' N</span><br>f=Rw='+Rw.toFixed(1)+' N | Rn='+(v2+v3)+' N';}};sv();variantDraw();})();
-
-// ============================================================
-// QUIZ
-// ============================================================
-var qE={q1:{c:'✅ N m.',i:'❌ Moment = F×d → N m.'},q2:{c:'✅ 40×0.5=20 Nm.',i:'❌ 40×0.5=20 Nm.'},q3:{c:'✅ 30W=18→W=0.6 N.',i:'❌ ACW:W×30, CW:1.2×15=18. W=0.6 N.'},q4:{c:'✅ Both ΣF=0 AND Στ=0.',i:'❌ Need BOTH.'},q5:{c:'✅ Larger distance→larger moment.',i:'❌ Larger d→larger moment.'},q6:{c:'✅ R₁=190 N.',i:'❌ Moments about right: R₁L=200×¾L+80×½L=190L.'},q7:{c:'✅ Where weight acts.',i:'❌ Point where entire weight acts.'},q8:{c:'✅ Rises→returns.',i:'❌ Stable: CG rises when tilted.'},q9:{c:'✅ 15×0.4=6 Nm.',i:'❌ Couple torque=F×d=6 Nm.'},q10:{c:'✅ τ=50×0.4×sin30°=50×0.4×0.5=10 Nm.',i:'❌ τ=F×L×sinθ=50×0.4×sin30°=50×0.4×0.5=10 Nm.'}};
-var ans=0,sc=0;function checkAnswer(q,cv){var el=document.getElementById(q);if(el.classList.contains('correct')||el.classList.contains('incorrect'))return;var s=el.querySelector('input[name="'+q+'"]:checked');if(!s)return;var ok=s.value===cv;ans++;if(ok)sc++;el.classList.add(ok?'correct':'incorrect');el.querySelectorAll('.quiz-option').forEach(function(o){var i=o.querySelector('input');if(i.value===cv)o.classList.add('correct-answer');else if(i.checked&&!ok)o.classList.add('wrong-answer');i.disabled=true;});var fb=document.getElementById(q+'-feedback');fb.textContent=ok?qE[q].c:qE[q].i;fb.classList.add('show',ok?'correct':'incorrect');el.querySelector('.check-btn').disabled=true;if(ans>=10){var sd=document.getElementById('quizScore');sd.style.display='block';document.getElementById('scoreNum').textContent=sc+'/10';var m=document.getElementById('scoreMsg');m.textContent=sc===10?'🏆 Perfect!':sc>=8?'🌟 Excellent!':sc>=6?'👍 Good!':'📖 Keep practising!';sd.scrollIntoView({behavior:'smooth',block:'center'});}}
-function resetQuiz(){ans=0;sc=0;document.querySelectorAll('.quiz-question').forEach(function(q){q.classList.remove('correct','incorrect');q.querySelectorAll('.quiz-option').forEach(function(o){o.classList.remove('correct-answer','wrong-answer','selected');o.querySelector('input').disabled=false;o.querySelector('input').checked=false;});q.querySelector('.check-btn').disabled=false;var f=q.querySelector('.quiz-feedback');f.classList.remove('show','correct','incorrect');f.textContent='';});document.getElementById('quizScore').style.display='none';document.getElementById('quizContainer').scrollIntoView({behavior:'smooth'});}
-document.querySelectorAll('.quiz-option').forEach(function(o){o.addEventListener('click',function(){var n=o.querySelector('input').name;document.querySelectorAll('input[name="'+n+'"]').forEach(function(i){i.closest('.quiz-option').classList.remove('selected')});o.classList.add('selected');o.querySelector('input').checked=true;});});
+var quizExpl = {
+    q1:{c:'✅ Correct! Moment = F×d → unit is N×m = N m.',i:'❌ Moment = F×d. Unit = N m.'},
+    q2:{c:'✅ Correct! 40 × 0.5 = 20 N m.',i:'❌ Moment = 40 × 0.5 = 20 N m.'},
+    q3:{c:'✅ Correct! CG at 50cm. ACW: W×30 = CW: 1.2×15 → 30W = 18 → W = 0.6 N.',i:'❌ ACW: W×(35−5)=30W. CW: 1.2×(50−35)=18. 30W=18 → W=0.6 N.'},
+    q4:{c:'✅ Correct! Both resultant force AND moment must be zero.',i:'❌ Both conditions required: resultant force = 0 AND resultant moment = 0.'},
+    q5:{c:'✅ Correct! Larger perpendicular distance = larger moment.',i:'❌ At the handle, d is larger → larger moment for same force.'},
+    q6:{c:'✅ Correct! Moments about right: R₁×L = 200×¾L + 80×½L = 190L → R₁ = 190 N.',i:'❌ Take moments about right end: R₁×L = 200×(¾L)+80×(½L) = 190L → R₁ = 190 N.'},
+    q7:{c:'✅ Correct! CG = point where entire weight may be considered to act.',i:'❌ CG is the point where the entire weight may be considered to act.'},
+    q8:{c:'✅ Correct! Stable: CG rises when displaced → restoring moment.',i:'❌ Stable = CG rises → returns. Unstable = CG falls → topples.'},
+    q9:{c:'✅ Correct! Torque = F×d = 15×0.4 = 6 N m.',i:'❌ Torque of couple = F×d = 15×0.4 = 6 N m. Don\'t multiply by 2!'},
+    q10:{c:'✅ Correct! Moments about left: T×3 = 120×2 → T = 80 N.',i:'❌ Take moments about left end: T×3 = 120×2 = 240 → T = 80 N.'}
+};
+var answered=0,score=0;
+function checkAnswer(qId,cv){
+    var q=document.getElementById(qId);
+    if(q.classList.contains('correct')||q.classList.contains('incorrect'))return;
+    var sel=q.querySelector('input[name="'+qId+'"]:checked');
+    if(!sel)return;
+    var ok=sel.value===cv;answered++;if(ok)score++;
+    q.classList.add(ok?'correct':'incorrect');
+    q.querySelectorAll('.quiz-option').forEach(function(opt){
+        var inp=opt.querySelector('input');
+        if(inp.value===cv)opt.classList.add('correct-answer');
+        else if(inp.checked&&!ok)opt.classList.add('wrong-answer');
+        inp.disabled=true;
+    });
+    var fb=document.getElementById(qId+'-feedback');
+    fb.textContent=ok?quizExpl[qId].c:quizExpl[qId].i;
+    fb.classList.add('show',ok?'correct':'incorrect');
+    q.querySelector('.check-btn').disabled=true;
+    if(answered>=10){
+        var sd=document.getElementById('quizScore');sd.style.display='block';
+        document.getElementById('scoreNum').textContent=score+' / 10';
+        var m=document.getElementById('scoreMsg');
+        if(score===10)m.textContent='🏆 Perfect!';
+        else if(score>=8)m.textContent='🌟 Excellent!';
+        else if(score>=6)m.textContent='👍 Good work!';
+        else m.textContent='📖 Keep practising!';
+        sd.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+}
+function resetQuiz(){
+    answered=0;score=0;
+    document.querySelectorAll('.quiz-question').forEach(function(q){
+        q.classList.remove('correct','incorrect');
+        q.querySelectorAll('.quiz-option').forEach(function(o){
+            o.classList.remove('correct-answer','wrong-answer','selected');
+            o.querySelector('input').disabled=false;o.querySelector('input').checked=false;
+        });
+        q.querySelector('.check-btn').disabled=false;
+        var fb=q.querySelector('.quiz-feedback');
+        fb.classList.remove('show','correct','incorrect');fb.textContent='';
+    });
+    document.getElementById('quizScore').style.display='none';
+    document.getElementById('quizContainer').scrollIntoView({behavior:'smooth'});
+}
+document.querySelectorAll('.quiz-option').forEach(function(opt){
+    opt.addEventListener('click',function(){
+        var n=opt.querySelector('input').name;
+        document.querySelectorAll('input[name="'+n+'"]').forEach(function(i){i.closest('.quiz-option').classList.remove('selected')});
+        opt.classList.add('selected');
+        opt.querySelector('input').checked=true;
+    });
+});
 </script>
 </body>
 </html>
