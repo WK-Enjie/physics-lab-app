@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Lab 6091 | O-Level Physics Interactive Learning</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+    <nav class="navbar">
+        <div class="logo">⚛️ Physics Lab 6091</div>
+        <div class="nav-links">
+            <a href="#topics">Topics</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-content">
+        <h1>Master O-Level Physics</h1>
+        <p class="hero-subtitle">
+            Interactive simulations, visual explanations and practice questions
+            aligned to Singapore GCE O-Level Physics (6091)
+        </p>
+        <a href="#topics" class="btn btn-primary btn-glow">Start Learning →</a>
+    </div>
+</header>
+
+<!-- ============ TOPICS ============ -->
+<main>
+<section id="topics" class="topics-section">
+    <h2 class="section-title">Topics</h2>
+    <div class="topics-grid">
+
+        <a href="topics/newton-laws.html" class="topic-card" style="--card-accent:#4a9eff">
+            <div class="topic-icon">🚀</div>
+            <div class="topic-badge">6 interactive sims</div>
+            <h3>Newton's Laws of Motion</h3>
+            <p>Inertia, F = ma, action-reaction pairs, free body diagrams, connected objects and types of forces.</p>
+            <div class="topic-tags">
+                <span class="tag">Dynamics</span>
+                <span class="tag">Forces</span>
+                <span class="tag">FBD</span>
+            </div>
+            <div class="card-arrow">→</div>
+        </a>
+
+        <a href="topics/turning-effects.html" class="topic-card" style="--card-accent:#34a853">
+            <div class="topic-icon">⚖️</div>
+            <div class="topic-badge">4 interactive sims</div>
+            <h3>Turning Effects of Forces</h3>
+            <p>Moments, principle of moments, conditions for equilibrium, centre of gravity and classic problems.</p>
+            <div class="topic-tags">
+                <span class="tag">Moments</span>
+                <span class="tag">Equilibrium</span>
+                <span class="tag">Torque</span>
+            </div>
+            <div class="card-arrow">→</div>
+        </a>
+
+        <a href="topics/pressure.html" class="topic-card" style="--card-accent:#fbbc04">
+            <div class="topic-icon">💧</div>
+            <div class="topic-badge">3 interactive sims</div>
+            <h3>Pressure</h3>
+            <p>P = F/A, liquid pressure P = hρg, hydraulic press, Pascal's principle and manometers.</p>
+            <div class="topic-tags">
+                <span class="tag">Pressure</span>
+                <span class="tag">Hydraulics</span>
+                <span class="tag">Fluids</span>
+            </div>
+            <div class="card-arrow">→</div>
+        </a>
+
+        <a href="topics/energy.html" class="topic-card" style="--card-accent:#ea4335">
+            <div class="topic-icon">⚡</div>
+            <div class="topic-badge">3 interactive sims</div>
+            <h3>Conservation of Energy</h3>
+            <p>Energy stores (not types!), KE, GPE, energy transfers, conservation principle and efficiency.</p>
+            <div class="topic-tags">
+                <span class="tag">Energy Stores</span>
+                <span class="tag">Conservation</span>
+                <span class="tag">KE &amp; GPE</span>
+            </div>
+            <div class="card-arrow">→</div>
+        </a>
+
+    </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="about-section">
+    <h2 class="section-title">How It Works</h2>
+    <div class="about-content">
+        <div class="about-card">
+            <div class="about-icon">📖</div>
+            <h3>Learn</h3>
+            <p>Clear, concise theory with key formulas and visual explanations. Every concept mapped to the 6091 syllabus.</p>
+        </div>
+        <div class="about-card">
+            <div class="about-icon">🔬</div>
+            <h3>Experiment</h3>
+            <p>Drag sliders, change masses, apply forces. Watch physics respond in real-time through Canvas simulations.</p>
+        </div>
+        <div class="about-card">
+            <div class="about-icon">📐</div>
+            <h3>Visualise</h3>
+            <p>Animated free body diagrams, force vectors and energy bar charts make abstract concepts concrete.</p>
+        </div>
+        <div class="about-card">
+            <div class="about-icon">✏️</div>
+            <h3>Practice</h3>
+            <p>Exam-style MCQ and structured questions with instant marking, worked solutions and score tracking.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============ SYLLABUS ============ -->
+<section class="syllabus-section">
+    <div class="syllabus-inner">
+        <h2 class="section-title" style="color:white">Aligned to Syllabus 6091</h2>
+        <p class="syllabus-text">
+            Content follows the latest SEAB GCE O-Level Physics syllabus, including the updated
+            <strong>energy stores</strong> framework. All worked examples use <strong>g = 10 m/s²</strong>
+            as per exam convention. Questions are pitched at N-Level to A-Level bridging difficulty.
+        </p>
+    </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+    <p><strong>Physics Lab 6091</strong> — Built for Singapore GCE O-Level Physics Students</p>
+    <p style="margin-top:0.5rem">
+        Open-source educational tool · 
+        <a href="https://github.com/" target="_blank">View on GitHub</a>
+    </p>
+</footer>
+
+<!-- ============ HERO ANIMATION ============ -->
+<script>
+(() => {
+    const canvas = document.getElementById('heroCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const symbols = [
+        'F = ma', 'ΣF = 0', 'p = mv', 'W = Fd', 'P = F/A',
+        'τ = Fd', 'KE = ½mv²', 'GPE = mgh', 'P = hρg',
+        'a = Δv/Δt', 'F₁d₁ = F₂d₂', 'η = useful/total'
+    ];
+
+    const particles = Array.from({length: 18}, () => ({
+        x: Math.random() * (canvas.width || 800),
+        y: Math.random() * (canvas.height || 600),
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.3,
+        text: symbols[Math.floor(Math.random() * symbols.length)],
+        opacity: Math.random() * 0.18 + 0.04,
+        size: Math.random() * 10 + 13
+    }));
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (const p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < -100) p.x = canvas.width + 50;
+            if (p.x > canvas.width + 100) p.x = -50;
+            if (p.y < -30) p.y = canvas.height + 20;
+            if (p.y > canvas.height + 30) p.y = -20;
+            ctx.font = `${p.size}px 'JetBrains Mono', monospace`;
+            ctx.fillStyle = `rgba(180, 210, 255, ${p.opacity})`;
+            ctx.fillText(p.text, p.x, p.y);
+        }
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+</script>
+
+</body>
+</html>
