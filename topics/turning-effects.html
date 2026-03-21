@@ -426,7 +426,7 @@ var h='<span class="calc-label">Moments about pivot ('+pp.toFixed(1)+' m):</span
             var moment = force * armLen * Math.sin(rad);
             if(scenario === 'steering') moment = force * armLen * 2;
             if(scenario === 'propeller') moment = 3 * force * 0.25;
-            rotAngle += moment * 0.0002;
+            rotAngle -= moment * 0.0002;
             rotateDraw();
             animId = requestAnimationFrame(anim);
         }
