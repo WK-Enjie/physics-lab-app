@@ -131,29 +131,60 @@
 </div>
 
 <!-- ============================================================
-     NEW TAB: ROTATING OBJECTS
+     TAB: ROTATING OBJECTS — FORCE AT AN ANGLE
      ============================================================ -->
 <div class="tab-content" id="tab-rotate">
     <div class="content-card">
-        <h2>🔧 Rotating Objects — Applied Moments</h2>
-        <p>Explore how forces create rotation in real-world objects. Change the applied force, its angle, and the distance from the pivot. See how only the <strong>perpendicular component</strong> of the force contributes to the moment!</p>
+        <h2>🔧 Force at an Angle — Perpendicular Distance</h2>
+        <p>This is one of the <strong>most commonly misunderstood concepts</strong> in O-Level Physics. When a force acts at an angle to a lever, only the <strong>perpendicular component</strong> creates a moment — or equivalently, we use the <strong>perpendicular distance</strong> from the pivot to the <strong>line of action</strong> of the force.</p>
+
+        <div class="formula-box">
+            <span class="formula-label">Moment with Force at Angle θ</span>
+            <span class="formula">τ = F × d⊥ = F × L × sin θ</span>
+        </div>
+
         <div class="key-concept">
-            <strong>💡 Key Formula for Force at an Angle:</strong><br>
-            When a force F is applied at angle θ to the lever arm of length L:<br>
-            <strong>τ = F × L × sin θ</strong><br>
-            Maximum moment occurs when θ = 90° (force is perpendicular to lever).
+            <strong>💡 Two equivalent methods to find the moment:</strong><br><br>
+            <strong>Method 1 — Use perpendicular distance:</strong><br>
+            Extend the <strong>line of action</strong> of F. Drop a perpendicular from the pivot to this line. This distance is d⊥ = L sin θ.<br>
+            τ = F × d⊥<br><br>
+            <strong>Method 2 — Use perpendicular component of force:</strong><br>
+            Resolve F into components: F⊥ = F sin θ (perpendicular to lever) and F∥ = F cos θ (along lever).<br>
+            τ = F⊥ × L = (F sin θ) × L<br><br>
+            <strong>Both give the same answer!</strong> τ = F × L × sin θ
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ Common Exam Mistake:</strong> Students often multiply F × L without considering the angle. If F is not perpendicular to the lever, you <strong>must</strong> include sin θ. When θ = 90°, sin θ = 1 and the formula simplifies to τ = F × L.
         </div>
     </div>
 
+    <!-- MAIN SIMULATION -->
     <div class="sim-container">
         <div class="rotate-scenarios" id="rotateScenarios">
-            <div class="rotate-scenario active" data-scenario="spanner"><div class="rs-icon">🔧</div>Spanner on Bolt</div>
-            <div class="rotate-scenario" data-scenario="door"><div class="rs-icon">🚪</div>Opening a Door</div>
-            <div class="rotate-scenario" data-scenario="steering"><div class="rs-icon">🚗</div>Steering Wheel</div>
-            <div class="rotate-scenario" data-scenario="propeller"><div class="rs-icon">✈️</div>Propeller / Fan</div>
+            <div class="rotate-scenario active" data-scenario="lever">
+                <div class="rs-icon">📐</div>
+                Force on Lever<br>(Perp. distance)
+            </div>
+            <div class="rotate-scenario" data-scenario="spanner">
+                <div class="rs-icon">🔧</div>
+                Spanner on Bolt
+            </div>
+            <div class="rotate-scenario" data-scenario="trapdoor">
+                <div class="rs-icon">🪟</div>
+                Rope on Trapdoor
+            </div>
+            <div class="rotate-scenario" data-scenario="steering">
+                <div class="rs-icon">🚗</div>
+                Steering (Couple)
+            </div>
+            <div class="rotate-scenario" data-scenario="propeller">
+                <div class="rs-icon">✈️</div>
+                Propeller
+            </div>
         </div>
 
-        <canvas id="rotateCanvas" width="800" height="550" class="rotate-canvas"></canvas>
+        <canvas id="rotateCanvas" width="800" height="600" class="rotate-canvas"></canvas>
 
         <div class="sim-controls" id="rotateControls">
             <div class="sim-control-group">
@@ -161,20 +192,81 @@
                 <input type="range" id="rotForce" min="5" max="100" value="40" step="1">
             </div>
             <div class="sim-control-group" id="rotAngleGroup">
-                <label>Angle θ: <span id="rotAngleVal" class="value-display">90°</span></label>
-                <input type="range" id="rotAngle" min="0" max="180" value="90" step="1">
+                <label>Angle θ: <span id="rotAngleVal" class="value-display">60°</span></label>
+                <input type="range" id="rotAngle" min="0" max="180" value="60" step="1">
             </div>
             <div class="sim-control-group" id="rotLengthGroup">
-                <label>Arm length: <span id="rotLenVal" class="value-display">0.30 m</span></label>
-                <input type="range" id="rotLen" min="0.1" max="0.6" value="0.3" step="0.02">
+                <label>Lever length L: <span id="rotLenVal" class="value-display">0.40 m</span></label>
+                <input type="range" id="rotLen" min="0.10" max="0.60" value="0.40" step="0.02">
             </div>
-            <button class="sim-btn sim-btn-play" id="rotAnimate">▶ Show Rotation</button>
+            <div class="sim-control-group">
+                <label>
+                    <input type="checkbox" id="rotShowComponents" checked style="accent-color:var(--primary-light)">
+                    Show force components
+                </label>
+            </div>
+            <div class="sim-control-group">
+                <label>
+                    <input type="checkbox" id="rotShowPerpDist" checked style="accent-color:#22c55e">
+                    Show perpendicular distance
+                </label>
+            </div>
+            <button class="sim-btn sim-btn-play" id="rotAnimate">▶ Animate Rotation</button>
+            <button class="sim-btn sim-btn-reset" id="rotStop">⏸ Stop</button>
         </div>
 
         <div class="calc-display" id="rotateCalc"></div>
     </div>
-</div>
 
+    <!-- COMPARISON TABLE -->
+    <div class="content-card" style="margin-top:1.5rem">
+        <h3>📊 How Angle Affects Moment</h3>
+        <p>This table shows how the moment changes as the angle varies — notice how sin θ peaks at 90°.</p>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>θ</th><th>sin θ</th><th>d⊥ = L sin θ</th><th>Moment = F × d⊥</th><th>Effectiveness</th></tr></thead>
+                <tbody id="angleTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- WORKED EXAMPLES -->
+    <div class="content-card" style="margin-top:1rem">
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example — Force at an Angle on a Spanner</div>
+            <div class="worked-example-body">
+                <p><strong>Q:</strong> A force of 60 N is applied at 30° to the end of a 0.25 m spanner. Calculate the moment about the bolt.</p>
+                <div class="step"><div class="step-number">1</div><div class="step-content">
+                    <p>Identify: F = 60 N, L = 0.25 m, θ = 30°</p>
+                </div></div>
+                <div class="step"><div class="step-number">2</div><div class="step-content">
+                    <p><strong>Method 1 (perpendicular distance):</strong></p>
+                    <span class="math">d⊥ = L sin θ = 0.25 × sin 30° = 0.25 × 0.5 = 0.125 m</span><br>
+                    <span class="math">τ = F × d⊥ = 60 × 0.125 = 7.5 N m</span>
+                </div></div>
+                <div class="step"><div class="step-number">3</div><div class="step-content">
+                    <p><strong>Method 2 (perpendicular component):</strong></p>
+                    <span class="math">F⊥ = F sin θ = 60 × sin 30° = 60 × 0.5 = 30 N</span><br>
+                    <span class="math">τ = F⊥ × L = 30 × 0.25 = 7.5 N m ✓ Same answer!</span>
+                </div></div>
+            </div>
+        </div>
+
+        <div class="worked-example">
+            <div class="worked-example-header">📝 Worked Example — Rope on a Trapdoor</div>
+            <div class="worked-example-body">
+                <p><strong>Q:</strong> A rope is attached to the end of a 1.2 m trapdoor, pulling with 80 N at 45° to the door. Find the moment about the hinge.</p>
+                <div class="step"><div class="step-number">1</div><div class="step-content">
+                    <span class="math">τ = F × L × sin θ = 80 × 1.2 × sin 45°</span><br>
+                    <span class="math">= 80 × 1.2 × 0.707 = 67.9 N m</span>
+                </div></div>
+                <div class="step"><div class="step-number">2</div><div class="step-content">
+                    <p><strong>Compare:</strong> If the rope pulled at 90°, τ = 80 × 1.2 × 1 = 96 N m — that's <strong>41% more effective!</strong></p>
+                </div></div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- ===== TAB: CENTRE OF GRAVITY ===== -->
 <div class="tab-content" id="tab-cog">
     <div class="content-card">
